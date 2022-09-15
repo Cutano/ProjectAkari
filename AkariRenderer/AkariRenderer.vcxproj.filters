@@ -6,6 +6,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
+    <ClInclude Include="Src\d3dx12.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

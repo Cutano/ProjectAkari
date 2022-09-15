@@ -7,6 +7,8 @@
 
 int main()
 {
+    spdlog::info("Launching Akari Renderer...");
+    
     const int width = 800, height = 600;
 
     glfwInit();

@@ -56,6 +56,7 @@
 #include <functional>
 #include <ppltasks.h>
 
+#include <spdlog/spdlog.h>
 
 extern "C" {
 inline __declspec(dllexport) extern constexpr UINT D3D12SDKVersion = 606;
