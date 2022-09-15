@@ -8,7 +8,9 @@
 int main()
 {
     spdlog::info("Launching Akari Renderer...");
-    
+    Math::Vector3 v(1, 2, 3);
+    std::cout << v.GetX() << std::endl;
+
     const int width = 800, height = 600;
 
     glfwInit();

@@ -3,10 +3,27 @@
   <ItemGroup>
     <ClCompile Include="Src\pch.cpp" />
     <ClCompile Include="Src\AkariRenderer.cpp" />
+    <ClCompile Include="Src\Math\BoundingSphere.cpp" />
+    <ClCompile Include="Src\Math\Frustum.cpp" />
+    <ClCompile Include="Src\Math\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
     <ClInclude Include="Src\d3dx12.h" />
+    <ClInclude Include="Src\Math\BoundingBox.h" />
+    <ClInclude Include="Src\Math\BoundingPlane.h" />
+    <ClInclude Include="Src\Math\BoundingSphere.h" />
+    <ClInclude Include="Src\Math\Common.h" />
+    <ClInclude Include="Src\Math\Frustum.h" />
+    <ClInclude Include="Src\Math\Functions.inl" />
+    <ClInclude Include="Src\Math\Matrix3.h" />
+    <ClInclude Include="Src\Math\Matrix4.h" />
+    <ClInclude Include="Src\Math\Quaternion.h" />
+    <ClInclude Include="Src\Math\Random.h" />
+    <ClInclude Include="Src\Math\Scalar.h" />
+    <ClInclude Include="Src\Math\Transform.h" />
+    <ClInclude Include="Src\Math\Vector.h" />
+    <ClInclude Include="Src\VectorMath.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

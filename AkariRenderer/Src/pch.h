@@ -28,11 +28,6 @@
 #include <wrl/client.h>
 #include <wrl/event.h>
 
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <DirectXColors.h>
-#include <DirectXCollision.h>
-
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include "d3dx12.h"
@@ -67,3 +62,5 @@ extern "C" {
 inline __declspec(dllexport) extern constexpr UINT D3D12SDKVersion = 606;
 inline __declspec(dllexport) extern const char8_t* D3D12SDKPath = u8".\\D3D12\\";
 }
+
+#include "VectorMath.h"
