@@ -69,7 +69,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Lib\spdlog;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DXGI.lib;spdlog.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxguid.lib;DXGI.lib;D3d12.lib;spdlog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -93,7 +93,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Lib\spdlog;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>DXGI.lib;spdlog.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxguid.lib;DXGI.lib;D3d12.lib;spdlog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -146,6 +146,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Src\RHI\Renderer.cpp" />
     <ClCompile Include="Src\Timing\DeltaTime.cpp" />
     <ClCompile Include="Src\Window\WindowsWindow.cpp" />
   </ItemGroup>
@@ -186,17 +187,16 @@
     <ClInclude Include="Src\Math\Transform.h" />
     <ClInclude Include="Src\Math\Vector.h" />
     <ClInclude Include="Src\pch.h" />
+    <ClInclude Include="Src\RHI\Renderer.h" />
     <ClInclude Include="Src\Timing\DeltaTime.h" />
     <ClInclude Include="Src\Timing\Timer.h" />
+    <ClInclude Include="Src\Utils.h" />
     <ClInclude Include="Src\VectorMath.h" />
     <ClInclude Include="Src\Window\Window.h" />
     <ClInclude Include="Src\Window\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Src\RHI" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\imgui\.editorconfig" />

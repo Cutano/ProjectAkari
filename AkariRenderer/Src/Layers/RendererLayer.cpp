@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "RendererLayer.h"
 
+#include "RHI/Renderer.h"
+
 namespace Akari
 {
     RendererLayer::RendererLayer()
@@ -17,11 +19,12 @@ namespace Akari
 
     void RendererLayer::OnAttach()
     {
-        
+        Renderer::GetInstance().Init();
     }
 
     void RendererLayer::OnDetach()
     {
+        Renderer::GetInstance().ShutDown();
     }
 
     void RendererLayer::OnUpdate(DeltaTime deltaTime)

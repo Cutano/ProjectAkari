@@ -58,12 +58,8 @@
 
 #include <spdlog/spdlog.h>
 
-extern "C" {
-inline __declspec(dllexport) extern constexpr UINT D3D12SDKVersion = 606;
-inline __declspec(dllexport) extern const char8_t* D3D12SDKPath = u8".\\D3D12\\";
-}
-
 #define BIT(x) (1u << (x))
 #define BIND_EVENT_FN(fn) std::bind(&##fn, this, std::placeholders::_1)
 
 #include "VectorMath.h"
+#include "Utils.h"

@@ -22,6 +22,7 @@
     <ClCompile Include="Src\Layers\Layer.cpp" />
     <ClCompile Include="Src\Layers\RendererLayer.cpp" />
     <ClCompile Include="Src\Timing\DeltaTime.cpp" />
+    <ClCompile Include="Src\RHI\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -65,6 +66,8 @@
     <ClInclude Include="Src\Layers\RendererLayer.h" />
     <ClInclude Include="Src\Timing\DeltaTime.h" />
     <ClInclude Include="Src\Timing\Timer.h" />
+    <ClInclude Include="Src\RHI\Renderer.h" />
+    <ClInclude Include="Src\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
