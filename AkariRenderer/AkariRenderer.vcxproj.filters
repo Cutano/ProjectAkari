@@ -6,6 +6,22 @@
     <ClCompile Include="Src\Math\BoundingSphere.cpp" />
     <ClCompile Include="Src\Math\Frustum.cpp" />
     <ClCompile Include="Src\Math\Random.cpp" />
+    <ClCompile Include="Src\Window\WindowsWindow.cpp" />
+    <ClCompile Include="Lib\imgui\backends\imgui_impl_dx12.cpp" />
+    <ClCompile Include="Lib\imgui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Lib\imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="Lib\imgui\imgui.cpp" />
+    <ClCompile Include="Lib\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Lib\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Lib\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Lib\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Lib\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="Src\Application\Application.cpp" />
+    <ClCompile Include="Src\Input\WindowsInput.cpp" />
+    <ClCompile Include="Src\Layers\ImGuiLayer.cpp" />
+    <ClCompile Include="Src\Layers\Layer.cpp" />
+    <ClCompile Include="Src\Layers\RendererLayer.cpp" />
+    <ClCompile Include="Src\Timing\DeltaTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -24,8 +40,36 @@
     <ClInclude Include="Src\Math\Transform.h" />
     <ClInclude Include="Src\Math\Vector.h" />
     <ClInclude Include="Src\VectorMath.h" />
+    <ClInclude Include="Src\Events\ApplicationEvent.h" />
+    <ClInclude Include="Src\Events\Event.h" />
+    <ClInclude Include="Src\Events\KeyEvent.h" />
+    <ClInclude Include="Src\Events\MouseEvent.h" />
+    <ClInclude Include="Src\KeyCodes.h" />
+    <ClInclude Include="Src\Window\Window.h" />
+    <ClInclude Include="Src\Window\WindowsWindow.h" />
+    <ClInclude Include="Lib\imgui\backends\imgui_impl_dx12.h" />
+    <ClInclude Include="Lib\imgui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="Lib\imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="Lib\imgui\imconfig.h" />
+    <ClInclude Include="Lib\imgui\imgui.h" />
+    <ClInclude Include="Lib\imgui\imgui_internal.h" />
+    <ClInclude Include="Lib\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Lib\imgui\imstb_textedit.h" />
+    <ClInclude Include="Lib\imgui\imstb_truetype.h" />
+    <ClInclude Include="Lib\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="Lib\imgui\misc\single_file\imgui_single_file.h" />
+    <ClInclude Include="Src\Application\Application.h" />
+    <ClInclude Include="Src\Input\Input.h" />
+    <ClInclude Include="Src\Layers\ImGuiLayer.h" />
+    <ClInclude Include="Src\Layers\Layer.h" />
+    <ClInclude Include="Src\Layers\RendererLayer.h" />
+    <ClInclude Include="Src\Timing\DeltaTime.h" />
+    <ClInclude Include="Src\Timing\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Lib\imgui\misc\debuggers\imgui.natvis" />
   </ItemGroup>
 </Project>

@@ -1,43 +1,52 @@
 ﻿#include "pch.h"
-#include <iostream>
 
-#include <glfw/glfw3.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <glfw/glfw3native.h>
+#include "Application/Application.h"
 
-int main()
+class AkariRendererApp : public Akari::Application
 {
-    spdlog::info("Launching Akari Renderer...");
-    Math::Vector3 v(1, 2, 3);
-    std::cout << v.GetX() << std::endl;
-
-    const int width = 800, height = 600;
-
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-    auto window = glfwCreateWindow(width, height, "glfw - DX12", nullptr, nullptr);
-    if (!window)
+public:
+    AkariRendererApp(const Akari::ApplicationSpecification& specification, std::string_view projectPath)
+        : Application(specification), m_ProjectPath(projectPath)
     {
-        std::cout << "Creat window error" << std::endl;
-        return -1;
+
     }
 
-    auto process_keystrokes_input = [](GLFWwindow* window)
+    void OnInit() override
     {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, 1);
-    };
-
-    auto hMainWnd = glfwGetWin32Window(window);
-
-    while (!glfwWindowShouldClose(window))
-    {
-        process_keystrokes_input(window);
-
-        glfwPollEvents();
+        spdlog::info("Launching Akari Renderer...");
+        m_ImGuiLayer = std::make_unique<Akari::ImGuiLayer>();
+        m_RendererLayer = std::make_unique<Akari::RendererLayer>();
     }
 
-    glfwTerminate();
+private:
+    std::string m_ProjectPath;
+};
 
+Akari::Application* Akari::CreateApplication(const int argc, const char** argv)
+{
+    std::string_view projectPath;
+    if (argc > 1)
+        projectPath = argv[1];
+
+    ApplicationSpecification spec;
+    spec.Name = "Akari Renderer";
+    spec.WindowWidth = 1600;
+    spec.WindowHeight = 900;
+    spec.StartMaximized = false;
+    spec.WindowDecorated = true;
+    spec.VSync = true;
+
+    return new AkariRendererApp(spec, projectPath);
+}
+
+
+int main(const int argc, const char** argv)
+{
+    const auto app = Akari::CreateApplication(argc, argv);
+
+    app->Run();
+
+    app->Close();
+    delete app;
     return 0;
 }
