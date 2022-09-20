@@ -27,9 +27,12 @@ namespace Akari
         void OnUpdate(DeltaTime dt);
         void OnResize() const;
 
-        [[nodiscard]] std::shared_ptr<CommandList> getCommandListDirect() const;
-        [[nodiscard]] std::shared_ptr<CommandList> getCommandListCopy() const;
-        [[nodiscard]] std::shared_ptr<CommandList> getCommandListCompute() const;
+        [[nodiscard]] std::shared_ptr<CommandList> GetCommandListDirect() const;
+        [[nodiscard]] std::shared_ptr<CommandList> GetCommandListCopy() const;
+        [[nodiscard]] std::shared_ptr<CommandList> GetCommandListCompute() const;
+
+        [[nodiscard]] std::shared_ptr<Device> GetDevice() const;
+        [[nodiscard]] std::shared_ptr<SwapChain> GetSwapChain() const;
 
         void ExecuteCommandList(std::shared_ptr<CommandList> commandList) const;
 

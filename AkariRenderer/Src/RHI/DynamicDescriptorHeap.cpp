@@ -263,7 +263,7 @@ void DynamicDescriptorHeap::CommitStagedDescriptorsForDispatch( CommandList& com
                              &ID3D12GraphicsCommandList::SetComputeRootUnorderedAccessView );
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE DynamicDescriptorHeap::CopyDescriptor( CommandList&                comandList,
+D3D12_GPU_DESCRIPTOR_HANDLE DynamicDescriptorHeap::CopyDescriptor( CommandList&                commandList,
                                                                    D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptor )
 {
     if ( !m_CurrentDescriptorHeap || m_NumFreeHandles < 1 )
@@ -273,7 +273,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE DynamicDescriptorHeap::CopyDescriptor( CommandList& 
         m_CurrentGPUDescriptorHandle = m_CurrentDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
         m_NumFreeHandles             = m_NumDescriptorsPerHeap;
 
-        comandList.SetDescriptorHeap( m_DescriptorHeapType, m_CurrentDescriptorHeap.Get() );
+        commandList.SetDescriptorHeap( m_DescriptorHeapType, m_CurrentDescriptorHeap.Get() );
 
         // When updating the descriptor heap on the command list, all descriptor
         // tables must be (re)recopied to the new descriptor heap (not just

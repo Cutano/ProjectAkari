@@ -50,6 +50,11 @@ namespace Akari
 
     void Renderer::OnUpdate(DeltaTime dt)
     {
+        const auto& commandList = GetCommandListDirect();
+        const FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
+        commandList->ClearTexture(m_SwapChain->GetRenderTarget().GetTexture(Color0), clearColor);
+        ExecuteCommandList(commandList);
+        
         m_SwapChain->Present();
     }
 
@@ -64,19 +69,29 @@ namespace Akari
         spdlog::info("Window resized to {0}, {1}.", width, height);
     }
 
-    std::shared_ptr<CommandList> Renderer::getCommandListDirect() const
+    std::shared_ptr<CommandList> Renderer::GetCommandListDirect() const
     {
         return m_Device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT).GetCommandList();
     }
 
-    std::shared_ptr<CommandList> Renderer::getCommandListCopy() const
+    std::shared_ptr<CommandList> Renderer::GetCommandListCopy() const
     {
         return m_Device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COPY).GetCommandList();
     }
 
-    std::shared_ptr<CommandList> Renderer::getCommandListCompute() const
+    std::shared_ptr<CommandList> Renderer::GetCommandListCompute() const
     {
         return m_Device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COMPUTE).GetCommandList();
+    }
+
+    std::shared_ptr<Device> Renderer::GetDevice() const
+    {
+        return m_Device;
+    }
+
+    std::shared_ptr<SwapChain> Renderer::GetSwapChain() const
+    {
+        return m_SwapChain;
     }
 
     void Renderer::ExecuteCommandList(std::shared_ptr<CommandList> commandList) const

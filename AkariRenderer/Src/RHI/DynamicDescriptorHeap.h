@@ -93,7 +93,7 @@ public:
      *
      * @return The GPU visible descriptor.
      */
-    D3D12_GPU_DESCRIPTOR_HANDLE CopyDescriptor( CommandList& comandList, D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptor );
+    D3D12_GPU_DESCRIPTOR_HANDLE CopyDescriptor( CommandList& commandList, D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptor );
 
     /**
      * Parse the root signature to determine which root parameters contain

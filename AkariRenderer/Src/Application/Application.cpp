@@ -10,6 +10,8 @@
 #include "RHI/Renderer.h"
 #include "Layers/LogicLayer.h"
 #include "Layers/ImGuiLayer.h"
+#include "RHI/Device.h"
+#include "RHI/SwapChain.h"
 
 extern ImGuiContext* GImGui;
 namespace Akari {
@@ -48,8 +50,8 @@ namespace Akari {
 		Renderer::GetInstance().Init();
 		// Renderer::WaitAndRender();
 
-		m_ImGuiLayer = std::make_unique<ImGuiLayer>();
-		m_LogicLayer = std::make_unique<LogicLayer>();
+		m_ImGuiLayer = std::make_shared<ImGuiLayer>();
+		m_LogicLayer = std::make_shared<LogicLayer>();
 	}
 
 	Application::~Application()
@@ -81,8 +83,9 @@ namespace Akari {
 				// Renderer::BeginFrame();
 				{
 					SCOPE_PERF("Application Layer::OnUpdate");
-					Renderer::GetInstance().OnUpdate(m_DeltaTime);
+					m_LogicLayer->OnUpdate(m_DeltaTime);
 					m_ImGuiLayer->OnUpdate(m_DeltaTime);
+					Renderer::GetInstance().OnUpdate(m_DeltaTime);
 				}
 			
 				// Render ImGui on render thread

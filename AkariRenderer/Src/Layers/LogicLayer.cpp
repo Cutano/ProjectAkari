@@ -3,10 +3,6 @@
 
 namespace Akari
 {
-    LogicLayer::LogicLayer()
-    {
-    }
-
     LogicLayer::LogicLayer(const std::string& name)
     {
     }

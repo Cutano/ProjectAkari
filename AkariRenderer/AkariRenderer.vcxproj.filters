@@ -20,7 +20,6 @@
     <ClCompile Include="Src\Input\WindowsInput.cpp" />
     <ClCompile Include="Src\Layers\ImGuiLayer.cpp" />
     <ClCompile Include="Src\Layers\Layer.cpp" />
-    <ClCompile Include="Src\Layers\RendererLayer.cpp" />
     <ClCompile Include="Src\Timing\DeltaTime.cpp" />
     <ClCompile Include="Src\RHI\Renderer.cpp" />
     <ClCompile Include="Src\RHI\Adapter.cpp" />
@@ -55,6 +54,7 @@
     <ClCompile Include="Src\RHI\UploadBuffer.cpp" />
     <ClCompile Include="Src\RHI\VertexBuffer.cpp" />
     <ClCompile Include="Src\RHI\VertexTypes.cpp" />
+    <ClCompile Include="Src\Layers\LogicLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -95,7 +95,6 @@
     <ClInclude Include="Src\Input\Input.h" />
     <ClInclude Include="Src\Layers\ImGuiLayer.h" />
     <ClInclude Include="Src\Layers\Layer.h" />
-    <ClInclude Include="Src\Layers\RendererLayer.h" />
     <ClInclude Include="Src\Timing\DeltaTime.h" />
     <ClInclude Include="Src\Timing\Timer.h" />
     <ClInclude Include="Src\RHI\Renderer.h" />
@@ -135,6 +134,7 @@
     <ClInclude Include="Src\RHI\VertexBuffer.h" />
     <ClInclude Include="Src\RHI\VertexTypes.h" />
     <ClInclude Include="Src\RHI\Visitor.h" />
+    <ClInclude Include="Src\Layers\LogicLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -145,5 +145,7 @@
   <ItemGroup>
     <FxCompile Include="Src\RHI\GenerateMips_CS.hlsl" />
     <FxCompile Include="Src\RHI\PanoToCubemap_CS.hlsl" />
+    <FxCompile Include="Src\Shaders\ImGUI_PS.hlsl" />
+    <FxCompile Include="Src\Shaders\ImGUI_VS.hlsl" />
   </ItemGroup>
 </Project>

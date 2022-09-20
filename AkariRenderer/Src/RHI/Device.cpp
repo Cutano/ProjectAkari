@@ -19,6 +19,7 @@
 #include "Texture.h"
 #include "UnorderedAccessView.h"
 #include "VertexBuffer.h"
+// #include "Layers/ImGuiLayer.h"
 
 using namespace Akari;
 
@@ -381,9 +382,10 @@ std::shared_ptr<SwapChain> Device::CreateSwapChain( HWND hWnd, DXGI_FORMAT backB
     return swapChain;
 }
 
-// std::shared_ptr<GUI> Device::CreateGUI( HWND hWnd, const RenderTarget& renderTarget )
+// std::shared_ptr<ImGuiLayer> Device::CreateGUI( const RenderTarget& renderTarget )
 // {
-//     std::shared_ptr<GUI> gui = std::make_shared<MakeGUI>( *this, hWnd, renderTarget );
+//     std::shared_ptr<ImGuiLayer> gui = std::make_shared<ImGuiLayer>();
+//     gui->SetRenderTarget(renderTarget);
 //
 //     return gui;
 // }

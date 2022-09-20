@@ -44,7 +44,7 @@ class CommandList;
 class ConstantBuffer;
 class ConstantBufferView;
 class DescriptorAllocator;
-class GUI;
+// class ImGuiLayer;
 class IndexBuffer;
 class PipelineStateObject;
 class RenderTarget;
@@ -102,7 +102,7 @@ public:
     /**
      * Create a GUI object.
      */
-    std::shared_ptr<GUI> CreateGUI( HWND hWnd, const RenderTarget& renderTarget );
+    // std::shared_ptr<ImGuiLayer> CreateGUI( const RenderTarget& renderTarget );
 
     /**
      * Create a ConstantBuffer from a given ID3D12Resoure.

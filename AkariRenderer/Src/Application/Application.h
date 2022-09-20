@@ -9,8 +9,7 @@
 
 
 namespace Akari {
-	class ImGuiLayer;
-	class LogicLayer;
+	class Layer;
 	
 	struct RendererConfig
 	{
@@ -124,8 +123,8 @@ namespace Akari {
 		static Application* s_Instance;
 
 	protected:
-		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
-		std::unique_ptr<LogicLayer> m_LogicLayer;
+		std::shared_ptr<Layer> m_ImGuiLayer;
+		std::shared_ptr<Layer> m_LogicLayer;
 	};
 
 	// Implemented by CLIENT
