@@ -23,9 +23,8 @@ namespace Akari
 
         void Init();
         void ShutDown();
-
+        
         void OnUpdate(DeltaTime dt);
-
         void OnResize() const;
 
         [[nodiscard]] std::shared_ptr<CommandList> getCommandListDirect() const;

@@ -138,6 +138,7 @@
     <ClCompile Include="Src\Input\WindowsInput.cpp" />
     <ClCompile Include="Src\Layers\ImGuiLayer.cpp" />
     <ClCompile Include="Src\Layers\Layer.cpp" />
+    <ClCompile Include="Src\Layers\LogicLayer.cpp" />
     <ClCompile Include="Src\Math\BoundingSphere.cpp" />
     <ClCompile Include="Src\Math\Frustum.cpp" />
     <ClCompile Include="Src\Math\Random.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Src\KeyCodes.h" />
     <ClInclude Include="Src\Layers\ImGuiLayer.h" />
     <ClInclude Include="Src\Layers\Layer.h" />
+    <ClInclude Include="Src\Layers\LogicLayer.h" />
     <ClInclude Include="Src\Math\BoundingBox.h" />
     <ClInclude Include="Src\Math\BoundingPlane.h" />
     <ClInclude Include="Src\Math\BoundingSphere.h" />

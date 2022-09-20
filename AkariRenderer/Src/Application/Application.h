@@ -3,12 +3,14 @@
 #include "Timing/DeltaTime.h"
 #include "Timing/Timer.h"
 #include "Window/Window.h"
-#include "Layers/ImGuiLayer.h"
 #include "Events/ApplicationEvent.h"
 
 #include <queue>
 
+
 namespace Akari {
+	class ImGuiLayer;
+	class LogicLayer;
 	
 	struct RendererConfig
 	{
@@ -123,6 +125,7 @@ namespace Akari {
 
 	protected:
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
+		std::unique_ptr<LogicLayer> m_LogicLayer;
 	};
 
 	// Implemented by CLIENT

@@ -50,7 +50,7 @@ namespace Akari
 
     void Renderer::OnUpdate(DeltaTime dt)
     {
-        
+        m_SwapChain->Present();
     }
 
     void Renderer::OnResize() const

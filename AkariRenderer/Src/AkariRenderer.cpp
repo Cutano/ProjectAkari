@@ -14,13 +14,11 @@ public:
     void OnInit() override
     {
         spdlog::info("Launching Akari Renderer...");
-        m_ImGuiLayer = std::make_unique<Akari::ImGuiLayer>();
-        m_ImGuiLayer->OnAttach();
     }
 
     void OnShutdown() override
     {
-        m_ImGuiLayer->OnDetach();
+        
     }
 
 private:

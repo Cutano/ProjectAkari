@@ -8,6 +8,8 @@
 #include <filesystem>
 
 #include "RHI/Renderer.h"
+#include "Layers/LogicLayer.h"
+#include "Layers/ImGuiLayer.h"
 
 extern ImGuiContext* GImGui;
 namespace Akari {
@@ -45,6 +47,9 @@ namespace Akari {
 		// Init renderer and execute command queue to compile all shaders
 		Renderer::GetInstance().Init();
 		// Renderer::WaitAndRender();
+
+		m_ImGuiLayer = std::make_unique<ImGuiLayer>();
+		m_LogicLayer = std::make_unique<LogicLayer>();
 	}
 
 	Application::~Application()
@@ -60,6 +65,10 @@ namespace Akari {
 	void Application::Run()
 	{
 		OnInit();
+		
+		m_ImGuiLayer->OnAttach();
+		m_LogicLayer->OnAttach();
+		
 		while (m_Running)
 		{
 			static uint64_t frameCounter = 0;
@@ -101,6 +110,10 @@ namespace Akari {
 			//HZ_CORE_INFO("-- END FRAME {0}", frameCounter);
 			frameCounter++;
 		}
+
+		m_ImGuiLayer->OnDetach();
+		m_LogicLayer->OnDetach();
+		
 		OnShutdown();
 	}
 
