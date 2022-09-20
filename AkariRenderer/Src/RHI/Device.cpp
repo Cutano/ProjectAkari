@@ -210,9 +210,31 @@ public:
 
 void Device::EnableDebugLayer()
 {
-    ComPtr<ID3D12Debug> debugInterface;
+    ComPtr<ID3D12Debug6> debugInterface;
     ThrowIfFailed( D3D12GetDebugInterface( IID_PPV_ARGS( &debugInterface ) ) );
+    
     debugInterface->EnableDebugLayer();
+    spdlog::info("D3D12 debug validation layer enabled.");
+
+    debugInterface->SetEnableGPUBasedValidation(true);
+    spdlog::info("GPU based validation enabled, could slow down performance.");
+
+    ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
+    {
+        dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
+        dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
+
+        DXGI_INFO_QUEUE_MESSAGE_ID hide[] =
+        {
+            // IDXGISwapChain::GetContainingOutput: The swapchain's adapter does not control the output on which the swapchain's window resides.
+            80,
+        };
+        DXGI_INFO_QUEUE_FILTER filter = {};
+        filter.DenyList.NumIDs = _countof(hide);
+        filter.DenyList.pIDList = hide;
+        dxgiInfoQueue->AddStorageFilterEntries(DXGI_DEBUG_DXGI, &filter);
+    }
 }
 
 void Device::ReportLiveObjects()

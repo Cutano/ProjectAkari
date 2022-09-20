@@ -2,6 +2,9 @@
 
 namespace Akari
 {
+    class Device;
+    class SwapChain;
+    
     class Renderer
     {
     public:
@@ -22,16 +25,8 @@ namespace Akari
     private:
         Renderer() = default;
 
-        D3D12_VIEWPORT m_Viewport;
-        D3D12_RECT m_ScissorRect;
-        ComPtr<ID3D12Device9> m_Device;
-        ComPtr<IDXGISwapChain4> m_SwapChain;
-        ComPtr<ID3D12Resource2> m_RenderTargets[FrameCount];
-        ComPtr<ID3D12CommandQueue> m_CommandQueueDirect;
-        ComPtr<ID3D12DescriptorHeap> m_RtvHeap;
-
-        UINT m_FrameIndex;
-        UINT m_RtvDescriptorSize;
+        std::shared_ptr<Device> m_Device = nullptr;
+        std::shared_ptr<SwapChain> m_SwapChain = nullptr;
     };
     
 }
