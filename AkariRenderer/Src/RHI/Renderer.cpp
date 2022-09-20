@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "Renderer.h"
 
+#include "CommandQueue.h"
 #include "Device.h"
 #include "SwapChain.h"
+#include "CommandList.h"
 #include "Application/Application.h"
 #include "Window/WindowsWindow.h"
 
@@ -44,5 +46,41 @@ namespace Akari
         m_Device.reset();
 
         atexit(&Device::ReportLiveObjects);
+    }
+
+    void Renderer::OnUpdate(DeltaTime dt)
+    {
+        
+    }
+
+    void Renderer::OnResize() const
+    {
+        const auto window = &Application::Get().GetWindow();
+        const auto width = window->GetWidth();
+        const auto height = window->GetHeight();
+
+        m_SwapChain->Resize(width, height);
+        
+        spdlog::info("Window resized to {0}, {1}.", width, height);
+    }
+
+    std::shared_ptr<CommandList> Renderer::getCommandListDirect() const
+    {
+        return m_Device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT).GetCommandList();
+    }
+
+    std::shared_ptr<CommandList> Renderer::getCommandListCopy() const
+    {
+        return m_Device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COPY).GetCommandList();
+    }
+
+    std::shared_ptr<CommandList> Renderer::getCommandListCompute() const
+    {
+        return m_Device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COMPUTE).GetCommandList();
+    }
+
+    void Renderer::ExecuteCommandList(std::shared_ptr<CommandList> commandList) const
+    {
+        m_Device->GetCommandQueue(commandList->GetCommandListType()).ExecuteCommandList(commandList);
     }
 }

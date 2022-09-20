@@ -4,7 +4,6 @@
 #include "Timing/Timer.h"
 #include "Window/Window.h"
 #include "Layers/ImGuiLayer.h"
-#include "Layers/RendererLayer.h"
 #include "Events/ApplicationEvent.h"
 
 #include <queue>
@@ -123,7 +122,6 @@ namespace Akari {
 		static Application* s_Instance;
 
 	protected:
-		std::unique_ptr<RendererLayer> m_RendererLayer;
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
 	};
 

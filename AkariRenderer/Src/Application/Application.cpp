@@ -7,6 +7,8 @@
 
 #include <filesystem>
 
+#include "RHI/Renderer.h"
+
 extern ImGuiContext* GImGui;
 namespace Akari {
 
@@ -41,7 +43,7 @@ namespace Akari {
 		m_Window->SetResizable(specification.Resizable);
 
 		// Init renderer and execute command queue to compile all shaders
-		// Renderer::Init();
+		Renderer::GetInstance().Init();
 		// Renderer::WaitAndRender();
 	}
 
@@ -49,7 +51,7 @@ namespace Akari {
 	{
 		m_Window->SetEventCallback([](Event& e) {});
 
-		// Renderer::Shutdown();
+		Renderer::GetInstance().ShutDown();
 
 		delete m_Profiler;
 		m_Profiler = nullptr;
@@ -70,7 +72,7 @@ namespace Akari {
 				// Renderer::BeginFrame();
 				{
 					SCOPE_PERF("Application Layer::OnUpdate");
-					m_RendererLayer->OnUpdate(m_DeltaTime);
+					Renderer::GetInstance().OnUpdate(m_DeltaTime);
 					m_ImGuiLayer->OnUpdate(m_DeltaTime);
 				}
 			
@@ -143,8 +145,8 @@ namespace Akari {
 		
 		m_ImGuiLayer->OnEvent(event);
 		if (event.Handled) return;
-		m_RendererLayer->OnEvent(event);
-		if (event.Handled) return;
+		// m_RendererLayer->OnEvent(event);
+		// if (event.Handled) return;
 
 		// TODO(Peter): Should these callbacks be called BEFORE the layers recieve events?
 		//				We may actually want that since most of these callbacks will be functions REQUIRED in order for the game
@@ -169,7 +171,7 @@ namespace Akari {
 		}
 		//m_Minimized = false;
 		
-		// m_Window->GetSwapChain().OnResize(width, height);
+		Renderer::GetInstance().OnResize();
 
 		return false;
 	}

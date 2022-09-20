@@ -1,9 +1,11 @@
 #pragma once
+#include "Timing/DeltaTime.h"
 
 namespace Akari
 {
     class Device;
     class SwapChain;
+    class CommandList;
     
     class Renderer
     {
@@ -21,6 +23,16 @@ namespace Akari
 
         void Init();
         void ShutDown();
+
+        void OnUpdate(DeltaTime dt);
+
+        void OnResize() const;
+
+        [[nodiscard]] std::shared_ptr<CommandList> getCommandListDirect() const;
+        [[nodiscard]] std::shared_ptr<CommandList> getCommandListCopy() const;
+        [[nodiscard]] std::shared_ptr<CommandList> getCommandListCompute() const;
+
+        void ExecuteCommandList(std::shared_ptr<CommandList> commandList) const;
 
     private:
         Renderer() = default;
