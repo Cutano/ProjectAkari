@@ -72,7 +72,7 @@ public:
     void Reset();
 
 protected:
-    friend class std::default_delete<UploadBuffer>;
+    friend struct std::default_delete<UploadBuffer>;
 
     /**
      * @param pageSize The size to use to allocate new pages in GPU memory.

@@ -516,7 +516,7 @@ public:
 protected:
     friend class CommandQueue;
     friend class DynamicDescriptorHeap;
-    friend class std::default_delete<CommandList>;
+    friend struct std::default_delete<CommandList>;
 
     CommandList( Device& device, D3D12_COMMAND_LIST_TYPE type );
     virtual ~CommandList();

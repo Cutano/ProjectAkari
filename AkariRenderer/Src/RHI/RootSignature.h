@@ -55,7 +55,7 @@ public:
     uint32_t GetNumDescriptors( uint32_t rootIndex ) const;
 
 protected:
-    friend class std::default_delete<RootSignature>;
+    friend struct std::default_delete<RootSignature>;
 
     RootSignature( Device& device, const D3D12_ROOT_SIGNATURE_DESC1& rootSignatureDesc );
 

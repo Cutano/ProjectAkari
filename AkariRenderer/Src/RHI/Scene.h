@@ -33,10 +33,10 @@
 #include <DirectXCollision.h> // For DirectX::BoundingBox
 #include <map>
 
-class aiMaterial;
-class aiMesh;
-class aiNode;
-class aiScene;
+struct aiMaterial;
+struct aiMesh;
+struct aiNode;
+struct aiScene;
 
 namespace Akari
 {
