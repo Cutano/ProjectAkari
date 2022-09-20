@@ -23,6 +23,38 @@
     <ClCompile Include="Src\Layers\RendererLayer.cpp" />
     <ClCompile Include="Src\Timing\DeltaTime.cpp" />
     <ClCompile Include="Src\RHI\Renderer.cpp" />
+    <ClCompile Include="Src\RHI\Adapter.cpp" />
+    <ClCompile Include="Src\RHI\Buffer.cpp" />
+    <ClCompile Include="Src\RHI\ByteAddressBuffer.cpp" />
+    <ClCompile Include="Src\RHI\CommandList.cpp" />
+    <ClCompile Include="Src\RHI\CommandQueue.cpp" />
+    <ClCompile Include="Src\RHI\ConstantBuffer.cpp" />
+    <ClCompile Include="Src\RHI\ConstantBufferView.cpp" />
+    <ClCompile Include="Src\RHI\DescriptorAllocation.cpp" />
+    <ClCompile Include="Src\RHI\DescriptorAllocator.cpp" />
+    <ClCompile Include="Src\RHI\DescriptorAllocatorPage.cpp" />
+    <ClCompile Include="Src\RHI\Device.cpp" />
+    <ClCompile Include="Src\RHI\DynamicDescriptorHeap.cpp" />
+    <ClCompile Include="Src\RHI\GenerateMipsPSO.cpp" />
+    <ClCompile Include="Src\RHI\IndexBuffer.cpp" />
+    <ClCompile Include="Src\RHI\Material.cpp" />
+    <ClCompile Include="Src\RHI\Mesh.cpp" />
+    <ClCompile Include="Src\RHI\PanoToCubemapPSO.cpp" />
+    <ClCompile Include="Src\RHI\PipelineStateObject.cpp" />
+    <ClCompile Include="Src\RHI\RenderTarget.cpp" />
+    <ClCompile Include="Src\RHI\Resource.cpp" />
+    <ClCompile Include="Src\RHI\ResourceStateTracker.cpp" />
+    <ClCompile Include="Src\RHI\RootSignature.cpp" />
+    <ClCompile Include="Src\RHI\Scene.cpp" />
+    <ClCompile Include="Src\RHI\SceneNode.cpp" />
+    <ClCompile Include="Src\RHI\ShaderResourceView.cpp" />
+    <ClCompile Include="Src\RHI\StructuredBuffer.cpp" />
+    <ClCompile Include="Src\RHI\SwapChain.cpp" />
+    <ClCompile Include="Src\RHI\Texture.cpp" />
+    <ClCompile Include="Src\RHI\UnorderedAccessView.cpp" />
+    <ClCompile Include="Src\RHI\UploadBuffer.cpp" />
+    <ClCompile Include="Src\RHI\VertexBuffer.cpp" />
+    <ClCompile Include="Src\RHI\VertexTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -68,11 +100,50 @@
     <ClInclude Include="Src\Timing\Timer.h" />
     <ClInclude Include="Src\RHI\Renderer.h" />
     <ClInclude Include="Src\Utils.h" />
+    <ClInclude Include="Src\RHI\Adapter.h" />
+    <ClInclude Include="Src\RHI\Buffer.h" />
+    <ClInclude Include="Src\RHI\ByteAddressBuffer.h" />
+    <ClInclude Include="Src\RHI\CommandList.h" />
+    <ClInclude Include="Src\RHI\CommandQueue.h" />
+    <ClInclude Include="Src\RHI\ConstantBuffer.h" />
+    <ClInclude Include="Src\RHI\ConstantBufferView.h" />
+    <ClInclude Include="Src\RHI\Defines.h" />
+    <ClInclude Include="Src\RHI\DescriptorAllocation.h" />
+    <ClInclude Include="Src\RHI\DescriptorAllocator.h" />
+    <ClInclude Include="Src\RHI\DescriptorAllocatorPage.h" />
+    <ClInclude Include="Src\RHI\Device.h" />
+    <ClInclude Include="Src\RHI\DynamicDescriptorHeap.h" />
+    <ClInclude Include="Src\RHI\GenerateMipsPSO.h" />
+    <ClInclude Include="Src\RHI\IndexBuffer.h" />
+    <ClInclude Include="Src\RHI\Material.h" />
+    <ClInclude Include="Src\RHI\Mesh.h" />
+    <ClInclude Include="Src\RHI\PanoToCubemapPSO.h" />
+    <ClInclude Include="Src\RHI\PipelineStateObject.h" />
+    <ClInclude Include="Src\RHI\RenderTarget.h" />
+    <ClInclude Include="Src\RHI\Resource.h" />
+    <ClInclude Include="Src\RHI\ResourceStateTracker.h" />
+    <ClInclude Include="Src\RHI\RootSignature.h" />
+    <ClInclude Include="Src\RHI\Scene.h" />
+    <ClInclude Include="Src\RHI\SceneNode.h" />
+    <ClInclude Include="Src\RHI\ShaderResourceView.h" />
+    <ClInclude Include="Src\RHI\StructuredBuffer.h" />
+    <ClInclude Include="Src\RHI\SwapChain.h" />
+    <ClInclude Include="Src\RHI\Texture.h" />
+    <ClInclude Include="Src\RHI\ThreadSafeQueue.h" />
+    <ClInclude Include="Src\RHI\UnorderedAccessView.h" />
+    <ClInclude Include="Src\RHI\UploadBuffer.h" />
+    <ClInclude Include="Src\RHI\VertexBuffer.h" />
+    <ClInclude Include="Src\RHI\VertexTypes.h" />
+    <ClInclude Include="Src\RHI\Visitor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Lib\imgui\misc\debuggers\imgui.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\RHI\GenerateMips_CS.hlsl" />
+    <FxCompile Include="Src\RHI\PanoToCubemap_CS.hlsl" />
   </ItemGroup>
 </Project>

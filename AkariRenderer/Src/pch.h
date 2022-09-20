@@ -30,6 +30,7 @@
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include <DirectXTex.h>
 #include "d3dx12.h"
 #ifdef _DEBUG
     #include <dxgidebug.h>
@@ -54,6 +55,7 @@
 #include <random>
 #include <fstream>
 #include <functional>
+#include <filesystem>
 #include <ppltasks.h>
 
 #include <spdlog/spdlog.h>
