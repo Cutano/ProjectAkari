@@ -89,8 +89,8 @@ void Mesh::Draw( CommandList& commandList, uint32_t instanceCount, uint32_t star
         commandList.SetVertexBuffer( vertexBuffer.first, vertexBuffer.second );
     }
 
-    auto indexCount = GetIndexCount();
-    auto vertexCount = GetVertexCount();
+    const auto indexCount = static_cast<uint32_t>(GetIndexCount());
+    const auto vertexCount = static_cast<uint32_t>(GetVertexCount());
 
     if ( indexCount > 0 )
     {

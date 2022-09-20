@@ -20,7 +20,7 @@ ConstantBufferView::ConstantBufferView( Device& device, const std::shared_ptr<Co
     D3D12_CONSTANT_BUFFER_VIEW_DESC cbv;
     cbv.BufferLocation = d3d12Resource->GetGPUVirtualAddress() + offset;
     cbv.SizeInBytes =
-        Math::AlignUp( m_ConstantBuffer->GetSizeInBytes(),
+        Math::AlignUp( static_cast<UINT>(m_ConstantBuffer->GetSizeInBytes()),
                        D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT );  // Constant buffers must be aligned for
                                                                           // hardware requirements.
 

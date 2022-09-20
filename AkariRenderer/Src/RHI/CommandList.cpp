@@ -1220,7 +1220,7 @@ void CommandList::SetVertexBuffers( uint32_t                                    
         }
     }
 
-    m_d3d12CommandList->IASetVertexBuffers( startSlot, views.size(), views.data() );
+    m_d3d12CommandList->IASetVertexBuffers( startSlot, static_cast<UINT>(views.size()), views.data() );
 }
 
 void CommandList::SetVertexBuffer( uint32_t slot, const std::shared_ptr<VertexBuffer>& vertexBuffer )
