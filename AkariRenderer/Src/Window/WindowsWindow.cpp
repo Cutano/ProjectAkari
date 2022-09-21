@@ -53,13 +53,7 @@ namespace Akari {
 		}
 
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-		if (!m_Specification.Decorated)
-		{
-			// This removes titlebar on all platforms
-			// and all of the native window effects on non-Windows platforms
-			glfwWindowHint(GLFW_DECORATED, false);
-		}
+		glfwWindowHint(GLFW_DECORATED, m_Specification.Decorated);
 
 		if (m_Specification.Fullscreen)
 		{

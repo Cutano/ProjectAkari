@@ -133,9 +133,9 @@ void SwapChain::Resize( uint32_t width, uint32_t height )
             m_BackBufferTextures[i].reset();
         }
 
-        DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-        ThrowIfFailed( m_dxgiSwapChain->GetDesc( &swapChainDesc ) );
-        ThrowIfFailed( m_dxgiSwapChain->ResizeBuffers( BufferCount, m_Width, m_Height, swapChainDesc.BufferDesc.Format,
+        DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+        ThrowIfFailed( m_dxgiSwapChain->GetDesc1( &swapChainDesc ) );
+        ThrowIfFailed( m_dxgiSwapChain->ResizeBuffers( BufferCount, m_Width, m_Height, swapChainDesc.Format,
                                                        swapChainDesc.Flags ) );
 
         m_CurrentBackBufferIndex = m_dxgiSwapChain->GetCurrentBackBufferIndex();

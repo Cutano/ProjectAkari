@@ -30,7 +30,7 @@ namespace Akari {
 	{
 		std::string Name = "Hazel";
 		uint32_t WindowWidth = 1600, WindowHeight = 900;
-		bool WindowDecorated = false;
+		bool WindowDecorated = true;
 		bool Fullscreen = false;
 		bool VSync = true;
 		std::string WorkingDirectory;
