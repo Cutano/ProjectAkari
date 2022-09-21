@@ -27,3 +27,6 @@ Build/
 /.idea
 /.vs
 /.vscode
+
+# Deps
+/Assimp/*

@@ -2,3 +2,6 @@
 	path = AkariRenderer/Lib/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+[submodule "AkariRenderer/Lib/assimp"]
+	path = AkariRenderer/Lib/assimp
+	url = https://github.com/assimp/assimp.git

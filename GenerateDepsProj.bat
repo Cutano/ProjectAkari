@@ -1,0 +1,1 @@
+cmake .\AkariRenderer\Lib\assimp\CMakeLists.txt -B .\Assimp -D BUILD_SHARED_LIBS=OFF

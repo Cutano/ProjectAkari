@@ -62,14 +62,14 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Lib\spdlog;$(ProjectDir)Lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>dxguid.lib;DXGI.lib;D3d12.lib;spdlogd.lib;assimp-vc143-mtd.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Lib\spdlog;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>dxguid.lib;DXGI.lib;D3d12.lib;spdlogd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -84,7 +84,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -92,8 +92,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)Lib\spdlog;$(ProjectDir)Lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>dxguid.lib;DXGI.lib;D3d12.lib;spdlog.lib;assimp-vc143-mt.lib;zlibstatic.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Lib\spdlog;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>dxguid.lib;DXGI.lib;D3d12.lib;spdlog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -433,6 +433,14 @@
       <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_ImGUI_VS</VariableName>
       <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)Src\Shaders\Generated\%(Filename).h</HeaderFileOutput>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Assimp\code\assimp.vcxproj">
+      <Project>{0ab055d0-3aba-3fb3-aa2f-1af913092cc3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Assimp\contrib\zlib\zlibstatic.vcxproj">
+      <Project>{3c53329d-21fa-3ef5-b518-47f6adfcdc2f}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
