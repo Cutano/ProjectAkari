@@ -61,12 +61,8 @@ namespace Akari
         
     }
 
-    void Renderer::OnResize() const
+    void Renderer::OnResize(uint32_t width, uint32_t height) const
     {
-        const auto window = &Application::Get().GetWindow();
-        const auto width = window->GetWidth();
-        const auto height = window->GetHeight();
-
         // Flush any pending commands before resizing resources.
         m_Device->Flush();
         

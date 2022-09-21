@@ -26,7 +26,7 @@ namespace Akari
         void LoadScene(std::wstring path);
         
         void OnUpdate(DeltaTime dt);
-        void OnResize() const;
+        void OnResize(uint32_t width, uint32_t height) const;
 
         [[nodiscard]] std::shared_ptr<CommandList> GetCommandListDirect() const;
         [[nodiscard]] std::shared_ptr<CommandList> GetCommandListCopy() const;

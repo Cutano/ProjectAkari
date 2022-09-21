@@ -197,7 +197,7 @@ namespace Akari {
 		}
 		//m_Minimized = false;
 		
-		Renderer::GetInstance().OnResize();
+		Renderer::GetInstance().OnResize(width, height);
 
 		return false;
 	}
