@@ -46,7 +46,7 @@ class SwapChain
 {
 public:
     // Number of swapchain back buffers.
-    static const UINT BufferCount = 3;
+    static const UINT BufferCount = 2;
 
     /**
      * Check to see if the swap chain is in full-screen exclusive mode.
