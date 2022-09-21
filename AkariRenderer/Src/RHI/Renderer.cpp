@@ -48,14 +48,17 @@ namespace Akari
         atexit(&Device::ReportLiveObjects);
     }
 
+    void Renderer::LoadScene(std::wstring path)
+    {
+        auto& commandQueue = m_Device->GetCommandQueue( D3D12_COMMAND_LIST_TYPE_COPY );
+        auto  commandList  = commandQueue.GetCommandList();
+
+        auto scene = commandList->LoadSceneFromFile(path);
+    }
+
     void Renderer::OnUpdate(DeltaTime dt)
     {
-        const auto& commandList = GetCommandListDirect();
-        const FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
-        commandList->ClearTexture(m_SwapChain->GetRenderTarget().GetTexture(Color0), clearColor);
-        ExecuteCommandList(commandList);
         
-        m_SwapChain->Present();
     }
 
     void Renderer::OnResize() const
@@ -64,6 +67,9 @@ namespace Akari
         const auto width = window->GetWidth();
         const auto height = window->GetHeight();
 
+        // Flush any pending commands before resizing resources.
+        m_Device->Flush();
+        
         m_SwapChain->Resize(width, height);
         
         spdlog::info("Window resized to {0}, {1}.", width, height);

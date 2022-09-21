@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 
 #include "Application/Application.h"
+#include "RenderPipelines/ForwardPipeline.h"
 
 class AkariRendererApp : public Akari::Application
 {
@@ -14,6 +15,8 @@ public:
     void OnInit() override
     {
         spdlog::info("Launching Akari Renderer...");
+        
+        m_RenderPipeline = std::make_shared<Akari::ForwardPipeline>();
     }
 
     void OnShutdown() override
@@ -31,6 +34,8 @@ Akari::Application* Akari::CreateApplication(const int argc, const char** argv)
     if (argc > 1)
         projectPath = argv[1];
 
+    const std::filesystem::path exePath(argv[0]);
+
     ApplicationSpecification spec;
     spec.Name = "Akari Renderer";
     spec.WindowWidth = 1600;
@@ -38,6 +43,7 @@ Akari::Application* Akari::CreateApplication(const int argc, const char** argv)
     spec.StartMaximized = false;
     spec.WindowDecorated = true;
     spec.VSync = true;
+    spec.WorkingDirectory = exePath.parent_path().string();
 
     return new AkariRendererApp(spec, projectPath);
 }
@@ -49,7 +55,6 @@ int main(const int argc, const char** argv)
 
     app->Run();
 
-    app->Close();
     delete app;
     return 0;
 }

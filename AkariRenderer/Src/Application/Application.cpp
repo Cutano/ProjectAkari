@@ -12,6 +12,8 @@
 #include "Layers/ImGuiLayer.h"
 #include "RHI/Device.h"
 #include "RHI/SwapChain.h"
+#include "RPI/RenderContext.h"
+#include "RPI/RenderPipeline.h"
 
 extern ImGuiContext* GImGui;
 namespace Akari {
@@ -58,8 +60,6 @@ namespace Akari {
 	{
 		m_Window->SetEventCallback([](Event& e) {});
 
-		Renderer::GetInstance().ShutDown();
-
 		delete m_Profiler;
 		m_Profiler = nullptr;
 	}
@@ -70,6 +70,11 @@ namespace Akari {
 		
 		m_ImGuiLayer->OnAttach();
 		m_LogicLayer->OnAttach();
+
+		m_RenderPipeline->SetGuiLayer(m_ImGuiLayer);
+
+		// TODO: Load resource and prepare first frame
+		RenderContext context{};
 		
 		while (m_Running)
 		{
@@ -83,9 +88,10 @@ namespace Akari {
 				// Renderer::BeginFrame();
 				{
 					SCOPE_PERF("Application Layer::OnUpdate");
+					context.dt = &m_DeltaTime;
 					m_LogicLayer->OnUpdate(m_DeltaTime);
-					m_ImGuiLayer->OnUpdate(m_DeltaTime);
-					Renderer::GetInstance().OnUpdate(m_DeltaTime);
+					m_RenderPipeline->Render(context);
+					// Renderer::GetInstance().OnUpdate(m_DeltaTime);
 				}
 			
 				// Render ImGui on render thread
@@ -113,9 +119,6 @@ namespace Akari {
 			//HZ_CORE_INFO("-- END FRAME {0}", frameCounter);
 			frameCounter++;
 		}
-
-		m_ImGuiLayer->OnDetach();
-		m_LogicLayer->OnDetach();
 		
 		OnShutdown();
 	}
@@ -127,6 +130,13 @@ namespace Akari {
 
 	void Application::OnShutdown()
 	{
+		m_RenderPipeline.reset();
+
+		m_ImGuiLayer->OnDetach();
+		m_LogicLayer->OnDetach();
+
+		Renderer::GetInstance().ShutDown();
+		
 		m_EventCallbacks.clear();
 	}
 

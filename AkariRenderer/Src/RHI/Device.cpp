@@ -12,7 +12,7 @@
 #include "PipelineStateObject.h"
 #include "ResourceStateTracker.h"
 #include "RootSignature.h"
-#include "Scene.h"
+#include "SceneComponents/Scene.h"
 #include "ShaderResourceView.h"
 #include "StructuredBuffer.h"
 #include "SwapChain.h"

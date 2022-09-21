@@ -1,9 +1,9 @@
 #include "pch.h"
 
-#include "CommandList.h"
-#include "IndexBuffer.h"
+#include "RHI/CommandList.h"
+#include "RHI/IndexBuffer.h"
+#include "RHI/VertexBuffer.h"
 #include "Mesh.h"
-#include "VertexBuffer.h"
 #include "Visitor.h"
 
 using namespace Akari;

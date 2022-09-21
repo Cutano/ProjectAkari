@@ -2,13 +2,13 @@
 
 #include "Scene.h"
 
-#include "CommandList.h"
-#include "Device.h"
+#include "RHI/CommandList.h"
+#include "RHI/Device.h"
+#include "RHI/Texture.h"
+#include "RHI/VertexTypes.h"
 #include "Material.h"
 #include "Mesh.h"
 #include "SceneNode.h"
-#include "Texture.h"
-#include "VertexTypes.h"
 #include "Visitor.h"
 
 #include <assimp/Exporter.hpp>

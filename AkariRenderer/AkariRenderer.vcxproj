@@ -146,6 +146,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Src\RenderPipelines\ForwardPipeline.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\ForwardOpaquePass.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\ShadowPass.cpp" />
     <ClCompile Include="Src\RHI\Adapter.cpp" />
     <ClCompile Include="Src\RHI\Buffer.cpp" />
     <ClCompile Include="Src\RHI\ByteAddressBuffer.cpp" />
@@ -160,8 +163,6 @@
     <ClCompile Include="Src\RHI\DynamicDescriptorHeap.cpp" />
     <ClCompile Include="Src\RHI\GenerateMipsPSO.cpp" />
     <ClCompile Include="Src\RHI\IndexBuffer.cpp" />
-    <ClCompile Include="Src\RHI\Material.cpp" />
-    <ClCompile Include="Src\RHI\Mesh.cpp" />
     <ClCompile Include="Src\RHI\PanoToCubemapPSO.cpp" />
     <ClCompile Include="Src\RHI\PipelineStateObject.cpp" />
     <ClCompile Include="Src\RHI\Renderer.cpp" />
@@ -169,8 +170,6 @@
     <ClCompile Include="Src\RHI\Resource.cpp" />
     <ClCompile Include="Src\RHI\ResourceStateTracker.cpp" />
     <ClCompile Include="Src\RHI\RootSignature.cpp" />
-    <ClCompile Include="Src\RHI\Scene.cpp" />
-    <ClCompile Include="Src\RHI\SceneNode.cpp" />
     <ClCompile Include="Src\RHI\ShaderResourceView.cpp" />
     <ClCompile Include="Src\RHI\StructuredBuffer.cpp" />
     <ClCompile Include="Src\RHI\SwapChain.cpp" />
@@ -179,6 +178,380 @@
     <ClCompile Include="Src\RHI\UploadBuffer.cpp" />
     <ClCompile Include="Src\RHI\VertexBuffer.cpp" />
     <ClCompile Include="Src\RHI\VertexTypes.cpp" />
+    <ClCompile Include="Src\RPI\RenderContext.cpp" />
+    <ClCompile Include="Src\RPI\RenderPipeline.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\Camera.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>HAS_DIRECTXTEX;HAS_GLFW;_DEBUG;_CONSOLE;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\cutanojiang\source\repos\ProjectAkari\packages\directxtex_desktop_win10.2022.7.30.1\build\native\..\..\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\Microsoft.Direct3D.D3D12.1.606.4\build\native\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\glfw.3.3.8\build\native\include/;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Src;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\imgui;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\spdlog\include;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\assimp\include;C:\Users\cutanojiang\source\repos\ProjectAkari\Assimp\include;</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
+    <ClCompile Include="Src\SceneComponents\Camera\OrthogonalCamera.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\PerspectiveCamera.cpp" />
+    <ClCompile Include="Src\SceneComponents\Material.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>HAS_DIRECTXTEX;HAS_GLFW;_DEBUG;_CONSOLE;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\cutanojiang\source\repos\ProjectAkari\packages\directxtex_desktop_win10.2022.7.30.1\build\native\..\..\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\Microsoft.Direct3D.D3D12.1.606.4\build\native\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\glfw.3.3.8\build\native\include/;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Src;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\imgui;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\spdlog\include;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\assimp\include;C:\Users\cutanojiang\source\repos\ProjectAkari\Assimp\include;</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
+    <ClCompile Include="Src\SceneComponents\Mesh.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>HAS_DIRECTXTEX;HAS_GLFW;_DEBUG;_CONSOLE;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\cutanojiang\source\repos\ProjectAkari\packages\directxtex_desktop_win10.2022.7.30.1\build\native\..\..\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\Microsoft.Direct3D.D3D12.1.606.4\build\native\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\glfw.3.3.8\build\native\include/;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Src;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\imgui;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\spdlog\include;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\assimp\include;C:\Users\cutanojiang\source\repos\ProjectAkari\Assimp\include;</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
+    <ClCompile Include="Src\SceneComponents\Scene.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>HAS_DIRECTXTEX;HAS_GLFW;_DEBUG;_CONSOLE;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\cutanojiang\source\repos\ProjectAkari\packages\directxtex_desktop_win10.2022.7.30.1\build\native\..\..\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\Microsoft.Direct3D.D3D12.1.606.4\build\native\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\glfw.3.3.8\build\native\include/;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Src;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\imgui;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\spdlog\include;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\assimp\include;C:\Users\cutanojiang\source\repos\ProjectAkari\Assimp\include;</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
+    <ClCompile Include="Src\SceneComponents\SceneNode.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\vc143.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\AkariRenderer.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Build\Inter\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>HAS_DIRECTXTEX;HAS_GLFW;_DEBUG;_CONSOLE;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\cutanojiang\source\repos\ProjectAkari\packages\directxtex_desktop_win10.2022.7.30.1\build\native\..\..\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\Microsoft.Direct3D.D3D12.1.606.4\build\native\include;C:\Users\cutanojiang\source\repos\ProjectAkari\packages\glfw.3.3.8\build\native\include/;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Src;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\imgui;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\spdlog\include;C:\Users\cutanojiang\source\repos\ProjectAkari\AkariRenderer\Lib\assimp\include;C:\Users\cutanojiang\source\repos\ProjectAkari\Assimp\include;</AdditionalIncludeDirectories>
+      <LinkCompiled>true</LinkCompiled>
+    </ClCompile>
     <ClCompile Include="Src\Timing\DeltaTime.cpp" />
     <ClCompile Include="Src\Window\WindowsWindow.cpp" />
   </ItemGroup>
@@ -219,6 +592,9 @@
     <ClInclude Include="Src\Math\Transform.h" />
     <ClInclude Include="Src\Math\Vector.h" />
     <ClInclude Include="Src\pch.h" />
+    <ClInclude Include="Src\RenderPipelines\ForwardPipeline.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\ForwardOpaquePass.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\ShadowPass.h" />
     <ClInclude Include="Src\RHI\Adapter.h" />
     <ClInclude Include="Src\RHI\Buffer.h" />
     <ClInclude Include="Src\RHI\ByteAddressBuffer.h" />
@@ -234,8 +610,6 @@
     <ClInclude Include="Src\RHI\DynamicDescriptorHeap.h" />
     <ClInclude Include="Src\RHI\GenerateMipsPSO.h" />
     <ClInclude Include="Src\RHI\IndexBuffer.h" />
-    <ClInclude Include="Src\RHI\Material.h" />
-    <ClInclude Include="Src\RHI\Mesh.h" />
     <ClInclude Include="Src\RHI\PanoToCubemapPSO.h" />
     <ClInclude Include="Src\RHI\PipelineStateObject.h" />
     <ClInclude Include="Src\RHI\Renderer.h" />
@@ -243,8 +617,6 @@
     <ClInclude Include="Src\RHI\Resource.h" />
     <ClInclude Include="Src\RHI\ResourceStateTracker.h" />
     <ClInclude Include="Src\RHI\RootSignature.h" />
-    <ClInclude Include="Src\RHI\Scene.h" />
-    <ClInclude Include="Src\RHI\SceneNode.h" />
     <ClInclude Include="Src\RHI\ShaderResourceView.h" />
     <ClInclude Include="Src\RHI\StructuredBuffer.h" />
     <ClInclude Include="Src\RHI\SwapChain.h" />
@@ -254,7 +626,17 @@
     <ClInclude Include="Src\RHI\UploadBuffer.h" />
     <ClInclude Include="Src\RHI\VertexBuffer.h" />
     <ClInclude Include="Src\RHI\VertexTypes.h" />
-    <ClInclude Include="Src\RHI\Visitor.h" />
+    <ClInclude Include="Src\RPI\RenderContext.h" />
+    <ClInclude Include="Src\RPI\RenderPass.h" />
+    <ClInclude Include="Src\RPI\RenderPipeline.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\Camera.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\OrthogonalCamera.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\PerspectiveCamera.h" />
+    <ClInclude Include="Src\SceneComponents\Material.h" />
+    <ClInclude Include="Src\SceneComponents\Mesh.h" />
+    <ClInclude Include="Src\SceneComponents\Scene.h" />
+    <ClInclude Include="Src\SceneComponents\SceneNode.h" />
+    <ClInclude Include="Src\SceneComponents\Visitor.h" />
     <ClInclude Include="Src\Timing\DeltaTime.h" />
     <ClInclude Include="Src\Timing\Timer.h" />
     <ClInclude Include="Src\Utils.h" />

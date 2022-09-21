@@ -10,6 +10,8 @@
 
 namespace Akari {
 	class Layer;
+	class Scene;
+	class RenderPipeline;
 	
 	struct RendererConfig
 	{
@@ -106,7 +108,6 @@ namespace Akari {
 		
 	private:
 		std::unique_ptr<Window> m_Window;
-		ApplicationSpecification m_Specification;
 		bool m_Running = true, m_Minimized = false;
 		DeltaTime m_Frametime;
 		DeltaTime m_DeltaTime;
@@ -123,8 +124,12 @@ namespace Akari {
 		static Application* s_Instance;
 
 	protected:
+		ApplicationSpecification m_Specification;
+		
 		std::shared_ptr<Layer> m_ImGuiLayer;
 		std::shared_ptr<Layer> m_LogicLayer;
+		
+		std::shared_ptr<RenderPipeline> m_RenderPipeline;
 	};
 
 	// Implemented by CLIENT
