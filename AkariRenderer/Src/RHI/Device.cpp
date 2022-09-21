@@ -211,6 +211,7 @@ public:
 
 void Device::EnableDebugLayer()
 {
+#ifdef _DEBUG
     ComPtr<ID3D12Debug6> debugInterface;
     ThrowIfFailed( D3D12GetDebugInterface( IID_PPV_ARGS( &debugInterface ) ) );
     
@@ -236,16 +237,18 @@ void Device::EnableDebugLayer()
         filter.DenyList.pIDList = hide;
         dxgiInfoQueue->AddStorageFilterEntries(DXGI_DEBUG_DXGI, &filter);
     }
+#endif
 }
 
 void Device::ReportLiveObjects()
 {
-
+#ifdef _DEBUG
     IDXGIDebug1* dxgiDebug;
     DXGIGetDebugInterface1( 0, IID_PPV_ARGS( &dxgiDebug ) );
 
     dxgiDebug->ReportLiveObjects( DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_IGNORE_INTERNAL );
     dxgiDebug->Release();
+#endif
 }
 
 std::shared_ptr<Device> Device::Create( std::shared_ptr<Adapter> adapter )
