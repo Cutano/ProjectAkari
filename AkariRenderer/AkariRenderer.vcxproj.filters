@@ -63,6 +63,9 @@
     <ClCompile Include="Src\SceneComponents\Mesh.cpp" />
     <ClCompile Include="Src\SceneComponents\Scene.cpp" />
     <ClCompile Include="Src\SceneComponents\ModelNode.cpp" />
+    <ClCompile Include="Src\SceneComponents\Model.cpp" />
+    <ClCompile Include="Src\SceneComponents\SceneObject.cpp" />
+    <ClCompile Include="Src\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -152,6 +155,9 @@
     <ClInclude Include="Src\SceneComponents\Scene.h" />
     <ClInclude Include="Src\SceneComponents\ModelNode.h" />
     <ClInclude Include="Src\SceneComponents\Visitor.h" />
+    <ClInclude Include="Src\SceneComponents\Model.h" />
+    <ClInclude Include="Src\SceneComponents\SceneObject.h" />
+    <ClInclude Include="Src\UUID.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

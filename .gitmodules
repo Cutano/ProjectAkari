@@ -5,3 +5,6 @@
 [submodule "AkariRenderer/Lib/assimp"]
 	path = AkariRenderer/Lib/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "AkariRenderer/Lib/entt"]
+	path = AkariRenderer/Lib/entt
+	url = https://github.com/skypjack/entt.git
