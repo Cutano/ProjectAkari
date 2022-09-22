@@ -89,7 +89,7 @@ protected:
      * The scene can be preloaded into a byte array and the
      * scene can be loaded from the loaded byte array.
      *
-     * @param scene The byte encoded scene file.
+     * @param sceneStr The byte encoded scene file.
      * @param format The format of the scene file.
      */
     bool LoadModelFromString( CommandList& commandList, const std::string& sceneStr, const std::string& format );
