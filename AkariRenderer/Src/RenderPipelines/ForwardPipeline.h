@@ -1,5 +1,6 @@
 #pragma once
 #include "RPI/RenderPipeline.h"
+#include "Pass/ForwardOpaquePass.h"
 
 namespace Akari
 {
@@ -11,6 +12,8 @@ namespace Akari
         ForwardPipeline();
 
         void Render(const RenderContext& context) override;
-        
+
+    private:
+        std::unique_ptr<ForwardOpaquePass> m_ForwardOpaquePass = nullptr;
     };
 }

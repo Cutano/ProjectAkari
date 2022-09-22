@@ -35,7 +35,7 @@ namespace Akari
         [[nodiscard]] std::shared_ptr<Device> GetDevice() const;
         [[nodiscard]] std::shared_ptr<SwapChain> GetSwapChain() const;
 
-        void ExecuteCommandList(std::shared_ptr<CommandList> commandList) const;
+        uint64_t ExecuteCommandList(std::shared_ptr<CommandList> commandList) const;
 
     private:
         Renderer() = default;

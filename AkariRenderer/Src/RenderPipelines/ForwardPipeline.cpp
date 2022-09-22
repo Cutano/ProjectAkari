@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ForwardPipeline.h"
+#include "Pass/ForwardOpaquePass.h"
 
 #include "Layers/Layer.h"
 #include "RHI/Renderer.h"
@@ -11,7 +12,7 @@ namespace Akari
 {
     ForwardPipeline::ForwardPipeline()
     {
-
+        m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>();
     }
 
     void ForwardPipeline::Render(const RenderContext& context)
@@ -20,6 +21,8 @@ namespace Akari
         constexpr FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
         cmd->ClearTexture(Renderer::GetInstance().GetSwapChain()->GetRenderTarget().GetTexture(Color0), clearColor);
         Renderer::GetInstance().ExecuteCommandList(cmd);
+
+        m_ForwardOpaquePass->Render(context);
 
         if (m_GuiLayer != nullptr)
         {

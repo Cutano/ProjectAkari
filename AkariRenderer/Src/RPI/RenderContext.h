@@ -5,6 +5,7 @@ namespace Akari
     class Scene;
     class SceneNode;
     class Mesh;
+    class Camera;
     class DeltaTime;
     
     struct RenderContext
@@ -12,6 +13,8 @@ namespace Akari
         Scene* scene;
         SceneNode* sceneNode;
         Mesh* mesh;
+
+        Camera* camera;
 
         DeltaTime* dt;
     };

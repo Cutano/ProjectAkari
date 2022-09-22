@@ -96,8 +96,8 @@ namespace Akari
         return m_SwapChain;
     }
 
-    void Renderer::ExecuteCommandList(std::shared_ptr<CommandList> commandList) const
+    uint64_t Renderer::ExecuteCommandList(std::shared_ptr<CommandList> commandList) const
     {
-        m_Device->GetCommandQueue(commandList->GetCommandListType()).ExecuteCommandList(commandList);
+        return m_Device->GetCommandQueue(commandList->GetCommandListType()).ExecuteCommandList(commandList);
     }
 }

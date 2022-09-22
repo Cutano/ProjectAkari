@@ -8,12 +8,12 @@ namespace Akari
     class RenderPass
     {
     public:
-        RenderPass();
-        virtual ~RenderPass();
+        RenderPass() = default;
+        virtual ~RenderPass() = default;
 
-        virtual void Render(const RenderContext& context);
+        virtual void Render(const RenderContext& context) = 0;
     protected:
-        std::unique_ptr<Visitor> m_Visitor;
+        std::unique_ptr<Visitor> m_Visitor = nullptr;
     };
     
 }
