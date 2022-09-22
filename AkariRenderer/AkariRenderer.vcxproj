@@ -187,7 +187,10 @@
     <ClCompile Include="Src\SceneComponents\Mesh.cpp" />
     <ClCompile Include="Src\SceneComponents\Model.cpp" />
     <ClCompile Include="Src\SceneComponents\ModelNode.cpp" />
+    <ClCompile Include="Src\SceneComponents\Scene.cpp" />
+    <ClCompile Include="Src\SceneComponents\SceneObject.cpp" />
     <ClCompile Include="Src\Timing\DeltaTime.cpp" />
+    <ClCompile Include="Src\UUID.cpp" />
     <ClCompile Include="Src\Window\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -271,10 +274,13 @@
     <ClInclude Include="Src\SceneComponents\Mesh.h" />
     <ClInclude Include="Src\SceneComponents\Model.h" />
     <ClInclude Include="Src\SceneComponents\ModelNode.h" />
+    <ClInclude Include="Src\SceneComponents\Scene.h" />
+    <ClInclude Include="Src\SceneComponents\SceneObject.h" />
     <ClInclude Include="Src\SceneComponents\Visitor.h" />
     <ClInclude Include="Src\Timing\DeltaTime.h" />
     <ClInclude Include="Src\Timing\Timer.h" />
     <ClInclude Include="Src\Utils.h" />
+    <ClInclude Include="Src\UUID.h" />
     <ClInclude Include="Src\VectorMath.h" />
     <ClInclude Include="Src\Window\Window.h" />
     <ClInclude Include="Src\Window\WindowsWindow.h" />
