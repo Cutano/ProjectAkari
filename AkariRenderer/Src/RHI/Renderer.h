@@ -23,7 +23,7 @@ namespace Akari
 
         void Init();
         void ShutDown();
-        void LoadScene(std::wstring path);
+        void LoadModel(std::wstring path);
         
         void OnUpdate(DeltaTime dt);
         void OnResize(uint32_t width, uint32_t height) const;

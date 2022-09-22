@@ -2,16 +2,16 @@
 
 namespace Akari
 {
-    class Scene;
-    class SceneNode;
+    class Model;
+    class ModelNode;
     class Mesh;
     class Camera;
     class DeltaTime;
     
     struct RenderContext
     {
-        Scene* scene;
-        SceneNode* sceneNode;
+        Model* scene;
+        ModelNode* sceneNode;
         Mesh* mesh;
 
         Camera* camera;

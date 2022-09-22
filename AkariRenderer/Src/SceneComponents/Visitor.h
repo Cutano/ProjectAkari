@@ -32,8 +32,8 @@
 
 namespace Akari
 {
-class Scene;
-class SceneNode;
+class Model;
+class ModelNode;
 class Mesh;
 
 class Visitor
@@ -42,8 +42,8 @@ public:
     Visitor()          = default;
     virtual ~Visitor() = default;
 
-    virtual void Visit( Scene& scene ) = 0;
-    virtual void Visit( SceneNode& sceneNode ) = 0;
+    virtual void Visit( Model& model ) = 0;
+    virtual void Visit( ModelNode& modelNode ) = 0;
     virtual void Visit( Mesh& mesh )           = 0;
 };
 

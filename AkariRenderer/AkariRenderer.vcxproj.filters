@@ -36,16 +36,12 @@
     <ClCompile Include="Src\RHI\DynamicDescriptorHeap.cpp" />
     <ClCompile Include="Src\RHI\GenerateMipsPSO.cpp" />
     <ClCompile Include="Src\RHI\IndexBuffer.cpp" />
-    <ClCompile Include="Src\RHI\Material.cpp" />
-    <ClCompile Include="Src\RHI\Mesh.cpp" />
     <ClCompile Include="Src\RHI\PanoToCubemapPSO.cpp" />
     <ClCompile Include="Src\RHI\PipelineStateObject.cpp" />
     <ClCompile Include="Src\RHI\RenderTarget.cpp" />
     <ClCompile Include="Src\RHI\Resource.cpp" />
     <ClCompile Include="Src\RHI\ResourceStateTracker.cpp" />
     <ClCompile Include="Src\RHI\RootSignature.cpp" />
-    <ClCompile Include="Src\RHI\Scene.cpp" />
-    <ClCompile Include="Src\RHI\SceneNode.cpp" />
     <ClCompile Include="Src\RHI\ShaderResourceView.cpp" />
     <ClCompile Include="Src\RHI\StructuredBuffer.cpp" />
     <ClCompile Include="Src\RHI\SwapChain.cpp" />
@@ -55,6 +51,18 @@
     <ClCompile Include="Src\RHI\VertexBuffer.cpp" />
     <ClCompile Include="Src\RHI\VertexTypes.cpp" />
     <ClCompile Include="Src\Layers\LogicLayer.cpp" />
+    <ClCompile Include="Src\RenderPipelines\ForwardPipeline.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\ForwardOpaquePass.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\ShadowPass.cpp" />
+    <ClCompile Include="Src\RPI\RenderContext.cpp" />
+    <ClCompile Include="Src\RPI\RenderPipeline.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\Camera.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\OrthogonalCamera.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\PerspectiveCamera.cpp" />
+    <ClCompile Include="Src\SceneComponents\Material.cpp" />
+    <ClCompile Include="Src\SceneComponents\Mesh.cpp" />
+    <ClCompile Include="Src\SceneComponents\Scene.cpp" />
+    <ClCompile Include="Src\SceneComponents\ModelNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -114,16 +122,12 @@
     <ClInclude Include="Src\RHI\DynamicDescriptorHeap.h" />
     <ClInclude Include="Src\RHI\GenerateMipsPSO.h" />
     <ClInclude Include="Src\RHI\IndexBuffer.h" />
-    <ClInclude Include="Src\RHI\Material.h" />
-    <ClInclude Include="Src\RHI\Mesh.h" />
     <ClInclude Include="Src\RHI\PanoToCubemapPSO.h" />
     <ClInclude Include="Src\RHI\PipelineStateObject.h" />
     <ClInclude Include="Src\RHI\RenderTarget.h" />
     <ClInclude Include="Src\RHI\Resource.h" />
     <ClInclude Include="Src\RHI\ResourceStateTracker.h" />
     <ClInclude Include="Src\RHI\RootSignature.h" />
-    <ClInclude Include="Src\RHI\Scene.h" />
-    <ClInclude Include="Src\RHI\SceneNode.h" />
     <ClInclude Include="Src\RHI\ShaderResourceView.h" />
     <ClInclude Include="Src\RHI\StructuredBuffer.h" />
     <ClInclude Include="Src\RHI\SwapChain.h" />
@@ -133,8 +137,21 @@
     <ClInclude Include="Src\RHI\UploadBuffer.h" />
     <ClInclude Include="Src\RHI\VertexBuffer.h" />
     <ClInclude Include="Src\RHI\VertexTypes.h" />
-    <ClInclude Include="Src\RHI\Visitor.h" />
     <ClInclude Include="Src\Layers\LogicLayer.h" />
+    <ClInclude Include="Src\RenderPipelines\ForwardPipeline.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\ForwardOpaquePass.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\ShadowPass.h" />
+    <ClInclude Include="Src\RPI\RenderContext.h" />
+    <ClInclude Include="Src\RPI\RenderPass.h" />
+    <ClInclude Include="Src\RPI\RenderPipeline.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\Camera.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\OrthogonalCamera.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\PerspectiveCamera.h" />
+    <ClInclude Include="Src\SceneComponents\Material.h" />
+    <ClInclude Include="Src\SceneComponents\Mesh.h" />
+    <ClInclude Include="Src\SceneComponents\Scene.h" />
+    <ClInclude Include="Src\SceneComponents\ModelNode.h" />
+    <ClInclude Include="Src\SceneComponents\Visitor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

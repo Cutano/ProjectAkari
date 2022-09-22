@@ -18,8 +18,8 @@
 #include "Resource.h"
 #include "ResourceStateTracker.h"
 #include "RootSignature.h"
-#include "SceneComponents/Scene.h"
-#include "SceneComponents/SceneNode.h"
+#include "SceneComponents/Model.h"
+#include "SceneComponents/ModelNode.h"
 #include "ShaderResourceView.h"
 #include "StructuredBuffer.h"
 #include "Texture.h"
@@ -723,30 +723,30 @@ void CommandList::PanoToCubemap( const std::shared_ptr<Texture>& cubemapTexture,
     }
 }
 
-std::shared_ptr<Scene> CommandList::LoadSceneFromFile( const std::wstring&                 fileName,
+std::shared_ptr<Model> CommandList::LoadModelFromFile( const std::wstring&                 fileName,
                                                        const std::function<bool( float )>& loadingProgress )
 {
-    auto scene = std::make_shared<Scene>();
+    auto model = std::make_shared<Model>();
 
-    if ( scene->LoadSceneFromFile( *this, fileName, loadingProgress ) )
+    if ( model->LoadModelFromFile( *this, fileName, loadingProgress ) )
     {
-        return scene;
+        return model;
     }
 
     return nullptr;
 }
 
-std::shared_ptr<Scene> CommandList::LoadSceneFromString( const std::string& sceneString, const std::string& format )
+std::shared_ptr<Model> CommandList::LoadModelFromString( const std::string& sceneString, const std::string& format )
 {
-    auto scene = std::make_shared<Scene>();
+    auto model = std::make_shared<Model>();
 
-    scene->LoadSceneFromString( *this, sceneString, format );
+    model->LoadModelFromString( *this, sceneString, format );
 
-    return scene;
+    return model;
 }
 
-// Helper function to create a Scene from an index and vertex buffer.
-std::shared_ptr<Scene> CommandList::CreateScene( const VertexCollection& vertices, const IndexCollection& indices )
+// Helper function to create a Model from an index and vertex buffer.
+std::shared_ptr<Model> CommandList::CreateModel( const VertexCollection& vertices, const IndexCollection& indices )
 {
     if ( vertices.empty() )
     {
@@ -764,16 +764,16 @@ std::shared_ptr<Scene> CommandList::CreateScene( const VertexCollection& vertice
     mesh->SetIndexBuffer( indexBuffer );
     mesh->SetMaterial( material );
 
-    auto node = std::make_shared<SceneNode>();
+    auto node = std::make_shared<ModelNode>();
     node->AddMesh( mesh );
 
-    auto scene = std::make_shared<Scene>();
-    scene->SetRootNode( node );
+    auto model = std::make_shared<Model>();
+    model->SetRootNode( node );
 
-    return scene;
+    return model;
 }
 
-std::shared_ptr<Scene> CommandList::CreateCube( float size, bool reverseWinding )
+std::shared_ptr<Model> CommandList::CreateCube( float size, bool reverseWinding )
 {
     // Cube is centered at 0,0,0.
     float s = size * 0.5f;
@@ -823,10 +823,10 @@ std::shared_ptr<Scene> CommandList::CreateCube( float size, bool reverseWinding 
         ReverseWinding( indices, vertices );
     }
 
-    return CreateScene( vertices, indices );
+    return CreateModel( vertices, indices );
 }
 
-std::shared_ptr<Scene> CommandList::CreateSphere( float radius, uint32_t tessellation, bool reversWinding )
+std::shared_ptr<Model> CommandList::CreateSphere( float radius, uint32_t tessellation, bool reverseWinding )
 {
 
     if ( tessellation < 3 )
@@ -889,12 +889,12 @@ std::shared_ptr<Scene> CommandList::CreateSphere( float radius, uint32_t tessell
         }
     }
 
-    if ( reversWinding )
+    if ( reverseWinding )
     {
         ReverseWinding( indices, vertices );
     }
 
-    return CreateScene( vertices, indices );
+    return CreateModel( vertices, indices );
 }
 
 void CommandList::CreateCylinderCap( VertexCollection& vertices, IndexCollection& indices, size_t tessellation,
@@ -939,7 +939,7 @@ void CommandList::CreateCylinderCap( VertexCollection& vertices, IndexCollection
     }
 }
 
-std::shared_ptr<Scene> CommandList::CreateCylinder( float radius, float height, uint32_t tessellation,
+std::shared_ptr<Model> CommandList::CreateCylinder( float radius, float height, uint32_t tessellation,
                                                     bool reverseWinding )
 {
     if ( tessellation < 3 )
@@ -988,10 +988,10 @@ std::shared_ptr<Scene> CommandList::CreateCylinder( float radius, float height, 
         ReverseWinding( indices, vertices );
     }
 
-    return CreateScene( vertices, indices );
+    return CreateModel( vertices, indices );
 }
 
-std::shared_ptr<Scene> CommandList::CreateCone( float radius, float height, uint32_t tessellation, bool reverseWinding )
+std::shared_ptr<Model> CommandList::CreateCone( float radius, float height, uint32_t tessellation, bool reverseWinding )
 {
     if ( tessellation < 3 )
         throw std::out_of_range( "tessellation parameter out of range" );
@@ -1039,10 +1039,10 @@ std::shared_ptr<Scene> CommandList::CreateCone( float radius, float height, uint
         ReverseWinding( indices, vertices );
     }
 
-    return CreateScene( vertices, indices );
+    return CreateModel( vertices, indices );
 }
 
-std::shared_ptr<Scene> CommandList::CreateTorus( float radius, float thickness, uint32_t tessellation,
+std::shared_ptr<Model> CommandList::CreateTorus( float radius, float thickness, uint32_t tessellation,
                                                  bool reverseWinding )
 {
     assert( tessellation > 3 );
@@ -1102,10 +1102,10 @@ std::shared_ptr<Scene> CommandList::CreateTorus( float radius, float thickness, 
         ReverseWinding( indices, verticies );
     }
 
-    return CreateScene( verticies, indices );
+    return CreateModel( verticies, indices );
 }
 
-std::shared_ptr<Scene> CommandList::CreatePlane( float width, float height, bool reverseWinding )
+std::shared_ptr<Model> CommandList::CreatePlane( float width, float height, bool reverseWinding )
 {
     using Vertex = VertexPositionNormalTangentBitangentTexture;
 
@@ -1125,7 +1125,7 @@ std::shared_ptr<Scene> CommandList::CreatePlane( float width, float height, bool
         ReverseWinding( indices, vertices );
     }
 
-    return CreateScene( vertices, indices );
+    return CreateModel( vertices, indices );
 }
 
 void CommandList::ClearTexture( const std::shared_ptr<Texture>& texture, const float clearColor[4] )

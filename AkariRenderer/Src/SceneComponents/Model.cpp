@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "Scene.h"
+#include "Model.h"
 
 #include "RHI/CommandList.h"
 #include "RHI/Device.h"
@@ -8,7 +8,7 @@
 #include "RHI/VertexTypes.h"
 #include "Material.h"
 #include "Mesh.h"
-#include "SceneNode.h"
+#include "ModelNode.h"
 #include "Visitor.h"
 
 #include <assimp/Exporter.hpp>
@@ -26,8 +26,8 @@ using namespace DirectX;
 class ProgressHandler : public Assimp::ProgressHandler
 {
 public:
-    ProgressHandler( const Scene& scene, const std::function<bool( float )> progressCallback )
-    : m_Scene( scene )
+    ProgressHandler( const Model& model, const std::function<bool( float )> progressCallback )
+    : m_Model( model )
     , m_ProgressCallback( progressCallback )
     {}
 
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    const Scene&                 m_Scene;
+    const Model&                 m_Model;
     std::function<bool( float )> m_ProgressCallback;
 };
 
@@ -59,7 +59,7 @@ inline DirectX::BoundingBox CreateBoundingBox( const aiAABB& aabb )
     return bb;
 }
 
-bool Scene::LoadSceneFromFile( CommandList& commandList, const std::wstring& fileName,
+bool Model::LoadModelFromFile( CommandList& commandList, const std::wstring& fileName,
                                const std::function<bool( float )>& loadingProgress )
 {
 
@@ -98,7 +98,7 @@ bool Scene::LoadSceneFromFile( CommandList& commandList, const std::wstring& fil
 
         if ( scene )
         {
-            // Export the preprocessed scene file for faster loading next time.
+            // Export the preprocessed model file for faster loading next time.
             Assimp::Exporter exporter;
             exporter.Export( scene, "assbin", exportPath.string(), 0 );
         }
@@ -109,12 +109,12 @@ bool Scene::LoadSceneFromFile( CommandList& commandList, const std::wstring& fil
         return false;
     }
 
-    ImportScene( commandList, *scene, parentPath );
+    ImportModel( commandList, *scene, parentPath );
 
     return true;
 }
 
-bool Scene::LoadSceneFromString( CommandList& commandList, const std::string& sceneStr, const std::string& format )
+bool Model::LoadModelFromString( CommandList& commandList, const std::string& sceneStr, const std::string& format )
 {
     Assimp::Importer importer;
     const aiScene*   scene = nullptr;
@@ -132,12 +132,12 @@ bool Scene::LoadSceneFromString( CommandList& commandList, const std::string& sc
         return false;
     }
 
-    ImportScene( commandList, *scene, std::filesystem::current_path() );
+    ImportModel( commandList, *scene, std::filesystem::current_path() );
 
     return true;
 }
 
-void Scene::ImportScene( CommandList& commandList, const aiScene& scene, std::filesystem::path parentPath )
+void Model::ImportModel( CommandList& commandList, const aiScene& scene, std::filesystem::path parentPath )
 {
 
     if ( m_RootNode )
@@ -149,7 +149,7 @@ void Scene::ImportScene( CommandList& commandList, const aiScene& scene, std::fi
     m_Materials.clear();
     m_Meshes.clear();
 
-    // Import scene materials.
+    // Import model materials.
     for ( unsigned int i = 0; i < scene.mNumMaterials; ++i )
     {
         ImportMaterial( commandList, *( scene.mMaterials[i] ), parentPath );
@@ -164,7 +164,7 @@ void Scene::ImportScene( CommandList& commandList, const aiScene& scene, std::fi
     m_RootNode = ImportSceneNode( commandList, nullptr, scene.mRootNode );
 }
 
-void Scene::ImportMaterial( CommandList& commandList, const aiMaterial& material, std::filesystem::path parentPath )
+void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material, std::filesystem::path parentPath )
 {
     aiString    materialName;
     aiString    aiTexturePath;
@@ -308,7 +308,7 @@ void Scene::ImportMaterial( CommandList& commandList, const aiMaterial& material
     m_Materials.push_back( pMaterial );
 }
 
-void Scene::ImportMesh( CommandList& commandList, const aiMesh& aiMesh )
+void Model::ImportMesh( CommandList& commandList, const aiMesh& aiMesh )
 {
     auto mesh = std::make_shared<Mesh>();
 
@@ -385,7 +385,7 @@ void Scene::ImportMesh( CommandList& commandList, const aiMesh& aiMesh )
     m_Meshes.push_back( mesh );
 }
 
-std::shared_ptr<SceneNode> Scene::ImportSceneNode( CommandList& commandList, std::shared_ptr<SceneNode> parent,
+std::shared_ptr<ModelNode> Model::ImportSceneNode( CommandList& commandList, std::shared_ptr<ModelNode> parent,
                                                    const aiNode* aiNode )
 {
     if ( !aiNode )
@@ -393,14 +393,14 @@ std::shared_ptr<SceneNode> Scene::ImportSceneNode( CommandList& commandList, std
         return nullptr;
     }
 
-    auto node = std::make_shared<SceneNode>( XMMATRIX( &( aiNode->mTransformation.a1 ) ) );
+    auto node = std::make_shared<ModelNode>( XMMATRIX( &( aiNode->mTransformation.a1 ) ) );
     node->SetParent( parent );
 
     if ( aiNode->mName.length > 0 )
     {
         node->SetName( aiNode->mName.C_Str() );
     }
-    // Add meshes to scene node
+    // Add meshes to model node
     for ( unsigned int i = 0; i < aiNode->mNumMeshes; ++i )
     {
         assert( aiNode->mMeshes[i] < m_Meshes.size() );
@@ -419,7 +419,7 @@ std::shared_ptr<SceneNode> Scene::ImportSceneNode( CommandList& commandList, std
     return node;
 }
 
-void Scene::Accept( Visitor& visitor )
+void Model::Accept( Visitor& visitor )
 {
     visitor.Visit( *this );
     if ( m_RootNode )
@@ -428,7 +428,7 @@ void Scene::Accept( Visitor& visitor )
     }
 }
 
-DirectX::BoundingBox Scene::GetAABB() const
+DirectX::BoundingBox Model::GetAABB() const
 {
     DirectX::BoundingBox aabb { { 0, 0, 0 }, { 0, 0, 0 } };
 

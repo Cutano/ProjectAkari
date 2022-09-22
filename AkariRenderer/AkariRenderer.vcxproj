@@ -185,8 +185,8 @@
     <ClCompile Include="Src\SceneComponents\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="Src\SceneComponents\Material.cpp" />
     <ClCompile Include="Src\SceneComponents\Mesh.cpp" />
-    <ClCompile Include="Src\SceneComponents\Scene.cpp" />
-    <ClCompile Include="Src\SceneComponents\SceneNode.cpp" />
+    <ClCompile Include="Src\SceneComponents\Model.cpp" />
+    <ClCompile Include="Src\SceneComponents\ModelNode.cpp" />
     <ClCompile Include="Src\Timing\DeltaTime.cpp" />
     <ClCompile Include="Src\Window\WindowsWindow.cpp" />
   </ItemGroup>
@@ -269,8 +269,8 @@
     <ClInclude Include="Src\SceneComponents\Camera\PerspectiveCamera.h" />
     <ClInclude Include="Src\SceneComponents\Material.h" />
     <ClInclude Include="Src\SceneComponents\Mesh.h" />
-    <ClInclude Include="Src\SceneComponents\Scene.h" />
-    <ClInclude Include="Src\SceneComponents\SceneNode.h" />
+    <ClInclude Include="Src\SceneComponents\Model.h" />
+    <ClInclude Include="Src\SceneComponents\ModelNode.h" />
     <ClInclude Include="Src\SceneComponents\Visitor.h" />
     <ClInclude Include="Src\Timing\DeltaTime.h" />
     <ClInclude Include="Src\Timing\Timer.h" />

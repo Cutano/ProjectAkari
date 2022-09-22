@@ -23,11 +23,11 @@
  */
 
 /**
- *  @file Scene.h
+ *  @file Model.h
  *  @date March 21, 2019
  *  @author Jeremiah van Oosten
  *
- *  @brief Scene file for storing scene data.
+ *  @brief Model file for storing scene data.
  */
 
 #include <DirectXCollision.h> // For DirectX::BoundingBox
@@ -42,23 +42,23 @@ namespace Akari
 {
 class CommandList;
 class Device;
-class SceneNode;
+class ModelNode;
 class Mesh;
 class Material;
 class Visitor;
 
-class Scene
+class Model
 {
 public:
-    Scene()  = default;
-    ~Scene() = default;
+    Model()  = default;
+    ~Model() = default;
 
-    void SetRootNode( std::shared_ptr<SceneNode> node )
+    void SetRootNode( std::shared_ptr<ModelNode> node )
     {
         m_RootNode = node;
     }
 
-    std::shared_ptr<SceneNode> GetRootNode() const
+    std::shared_ptr<ModelNode> GetRootNode() const
     {
         return m_RootNode;
     }
@@ -81,7 +81,7 @@ protected:
     /**
      * Load a scene from a file on disc.
      */
-    bool LoadSceneFromFile( CommandList& commandList, const std::wstring& fileName,
+    bool LoadModelFromFile( CommandList& commandList, const std::wstring& fileName,
                             const std::function<bool( float )>& loadingProgress );
 
     /**
@@ -92,13 +92,13 @@ protected:
      * @param scene The byte encoded scene file.
      * @param format The format of the scene file.
      */
-    bool LoadSceneFromString( CommandList& commandList, const std::string& sceneStr, const std::string& format );
+    bool LoadModelFromString( CommandList& commandList, const std::string& sceneStr, const std::string& format );
 
 private:
-    void ImportScene( CommandList& commandList, const aiScene& scene, std::filesystem::path parentPath );
+    void ImportModel( CommandList& commandList, const aiScene& scene, std::filesystem::path parentPath );
     void ImportMaterial( CommandList& commandList, const aiMaterial& material, std::filesystem::path parentPath );
     void ImportMesh( CommandList& commandList, const aiMesh& mesh );
-    std::shared_ptr<SceneNode> ImportSceneNode( CommandList& commandList, std::shared_ptr<SceneNode> parent,
+    std::shared_ptr<ModelNode> ImportSceneNode( CommandList& commandList, std::shared_ptr<ModelNode> parent,
                                                 const aiNode* aiNode );
 
     using MaterialMap  = std::map<std::string, std::shared_ptr<Material>>;
@@ -109,7 +109,7 @@ private:
     MaterialList m_Materials;
     MeshList     m_Meshes;
 
-    std::shared_ptr<SceneNode> m_RootNode;
+    std::shared_ptr<ModelNode> m_RootNode;
 
     std::wstring m_SceneFile;
 };

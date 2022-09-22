@@ -20,8 +20,8 @@ namespace Akari
     public:
         ForwardOpaqueVisitor(const CommandList& commandList, const RenderContext& context);
 
-        void Visit(Scene& scene) override;
-        void Visit(SceneNode& sceneNode) override;
+        void Visit(Model& model) override;
+        void Visit(ModelNode& modelNode) override;
         void Visit(Mesh& mesh) override;
 
     private:

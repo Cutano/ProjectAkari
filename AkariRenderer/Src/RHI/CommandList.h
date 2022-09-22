@@ -52,7 +52,7 @@ class RenderTarget;
 class Resource;
 class ResourceStateTracker;
 class RootSignature;
-class Scene;
+class Model;
 class ShaderResourceView;
 class StructuredBuffer;
 class Texture;
@@ -217,8 +217,8 @@ public:
      * @param fileName The path to the scene file definition.
      * @param [loadingProgress] An optional callback function that can be used to report loading progress.
      */
-    std::shared_ptr<Scene>
-        LoadSceneFromFile( const std::wstring&                 fileName,
+    std::shared_ptr<Model>
+        LoadModelFromFile( const std::wstring&                 fileName,
                            const std::function<bool( float )>& loadingProgres = std::function<bool( float )>() );
 
     /**
@@ -229,7 +229,7 @@ public:
      *
      * @see https://www.fileformat.info/format/nff/egff.htm
      */
-    std::shared_ptr<Scene> LoadSceneFromString( const std::string& sceneString, const std::string& format );
+    std::shared_ptr<Model> LoadModelFromString( const std::string& sceneString, const std::string& format );
 
     /**
      * Create a cube.
@@ -237,7 +237,7 @@ public:
      * @param size The size of one side of the cube.
      * @param reverseWinding Whether to reverse the winding order of the triangles (useful for skyboxes).
      */
-    std::shared_ptr<Scene> CreateCube( float size = 1.0, bool reverseWinding = false );
+    std::shared_ptr<Model> CreateCube( float size = 1.0, bool reverseWinding = false );
 
     /**
      * Create a sphere.
@@ -246,17 +246,17 @@ public:
      * @param tessellation Determines how smooth the sphere is.
      * @param reverseWinding Whether to reverse the winding order of the triangles (useful for sydomes).
      */
-    std::shared_ptr<Scene> CreateSphere( float radius = 0.5f, uint32_t tessellation = 16, bool reversWinding = false );
+    std::shared_ptr<Model> CreateSphere( float radius = 0.5f, uint32_t tessellation = 16, bool reverseWinding = false );
 
     /**
      * Create a Cylinder
      *
      * @param radius The radius of the primary axis of the cylinder.
-     * @param hight The height of the cylinder.
+     * @param height The height of the cylinder.
      * @param tessellation How smooth the cylinder will be.
      * @param reverseWinding Whether to reverse the winding order of the triangles.
      */
-    std::shared_ptr<Scene> CreateCylinder( float radius = 0.5f, float height = 1.0f, uint32_t tessellation = 32,
+    std::shared_ptr<Model> CreateCylinder( float radius = 0.5f, float height = 1.0f, uint32_t tessellation = 32,
                                            bool reverseWinding = false );
 
     /**
@@ -267,7 +267,7 @@ public:
      * @param tessellation How smooth to make the cone.
      * @param reverseWinding Whether to reverse the winding order of the triangles.
      */
-    std::shared_ptr<Scene> CreateCone( float radius = 0.5f, float height = 1.0f, uint32_t tessellation = 32,
+    std::shared_ptr<Model> CreateCone( float radius = 0.5f, float height = 1.0f, uint32_t tessellation = 32,
                                        bool reverseWinding = false );
 
     /**
@@ -278,7 +278,7 @@ public:
      * @param tessellation The smoothness of the torus.
      * @param reverseWinding Reverse the winding order of the vertices.
      */
-    std::shared_ptr<Scene> CreateTorus( float radius = 0.5f, float thickness = 0.333f, uint32_t tessellation = 32,
+    std::shared_ptr<Model> CreateTorus( float radius = 0.5f, float thickness = 0.333f, uint32_t tessellation = 32,
                                         bool reverseWinding = false );
 
     /**
@@ -288,7 +288,7 @@ public:
      * @param height The height of the plane.
      * @reverseWinding Whether to reverse the winding order of the plane.
      */
-    std::shared_ptr<Scene> CreatePlane( float width = 1.0f, float height = 1.0f, bool reverseWinding = false );
+    std::shared_ptr<Model> CreatePlane( float width = 1.0f, float height = 1.0f, bool reverseWinding = false );
 
     /**
      * Clear a texture.
@@ -563,7 +563,7 @@ private:
     using IndexCollection  = std::vector<size_t>;
 
     // Create a scene that contains a single node with a single mesh.
-    std::shared_ptr<Scene> CreateScene( const VertexCollection& vertices, const IndexCollection& indices );
+    std::shared_ptr<Model> CreateModel( const VertexCollection& vertices, const IndexCollection& indices );
 
     // Helper function for flipping winding of geometric primitives for LH vs. RH coords
     inline void ReverseWinding( IndexCollection& indices, VertexCollection& vertices );

@@ -1,14 +1,14 @@
 #include "pch.h"
 
 #include "Mesh.h"
-#include "SceneNode.h"
+#include "ModelNode.h"
 #include "Visitor.h"
 
 using namespace Akari;
 using namespace DirectX;
 
-SceneNode::SceneNode( const DirectX::XMMATRIX& localTransform )
-: m_Name( "SceneNode" )
+ModelNode::ModelNode( const DirectX::XMMATRIX& localTransform )
+: m_Name( "ModelNode" )
 , m_AABB( { 0, 0, 0 }, {0, 0, 0} )
 {
     m_AlignedData                     = (AlignedData*)_aligned_malloc( sizeof( AlignedData ), 16 );
@@ -16,48 +16,48 @@ SceneNode::SceneNode( const DirectX::XMMATRIX& localTransform )
     m_AlignedData->m_InverseTransform = XMMatrixInverse( nullptr, localTransform );
 }
 
-SceneNode::~SceneNode()
+ModelNode::~ModelNode()
 {
     _aligned_free( m_AlignedData );
 }
 
-const std::string& SceneNode::GetName() const
+const std::string& ModelNode::GetName() const
 {
     return m_Name;
 }
 
-void SceneNode::SetName( const std::string& name )
+void ModelNode::SetName( const std::string& name )
 {
     m_Name = name;
 }
 
-DirectX::XMMATRIX SceneNode::GetLocalTransform() const
+DirectX::XMMATRIX ModelNode::GetLocalTransform() const
 {
     return m_AlignedData->m_LocalTransform;
 }
 
-void SceneNode::SetLocalTransform( const DirectX::XMMATRIX& localTransform )
+void ModelNode::SetLocalTransform( const DirectX::XMMATRIX& localTransform )
 {
     m_AlignedData->m_LocalTransform   = localTransform;
     m_AlignedData->m_InverseTransform = XMMatrixInverse( nullptr, localTransform );
 }
 
-DirectX::XMMATRIX SceneNode::GetInverseLocalTransform() const
+DirectX::XMMATRIX ModelNode::GetInverseLocalTransform() const
 {
     return m_AlignedData->m_InverseTransform;
 }
 
-DirectX::XMMATRIX SceneNode::GetWorldTransform() const
+DirectX::XMMATRIX ModelNode::GetWorldTransform() const
 {
     return m_AlignedData->m_LocalTransform * GetParentWorldTransform();
 }
 
-DirectX::XMMATRIX SceneNode::GetInverseWorldTransform() const
+DirectX::XMMATRIX ModelNode::GetInverseWorldTransform() const
 {
     return XMMatrixInverse( nullptr, GetWorldTransform() );
 }
 
-DirectX::XMMATRIX SceneNode::GetParentWorldTransform() const
+DirectX::XMMATRIX ModelNode::GetParentWorldTransform() const
 {
     XMMATRIX parentTransform = XMMatrixIdentity();
     if ( auto parentNode = m_ParentNode.lock() )
@@ -68,7 +68,7 @@ DirectX::XMMATRIX SceneNode::GetParentWorldTransform() const
     return parentTransform;
 }
 
-void SceneNode::AddChild( std::shared_ptr<SceneNode> childNode )
+void ModelNode::AddChild( std::shared_ptr<ModelNode> childNode )
 {
     if ( childNode )
     {
@@ -88,7 +88,7 @@ void SceneNode::AddChild( std::shared_ptr<SceneNode> childNode )
     }
 }
 
-void SceneNode::RemoveChild( std::shared_ptr<SceneNode> childNode )
+void ModelNode::RemoveChild( std::shared_ptr<ModelNode> childNode )
 {
     if ( childNode )
     {
@@ -107,7 +107,7 @@ void SceneNode::RemoveChild( std::shared_ptr<SceneNode> childNode )
         }
         else
         {
-            // Maybe the child appears deeper in the scene graph.
+            // Maybe the child appears deeper in the model graph.
             for ( auto child: m_Children )
             {
                 child->RemoveChild( childNode );
@@ -116,7 +116,7 @@ void SceneNode::RemoveChild( std::shared_ptr<SceneNode> childNode )
     }
 }
 
-void SceneNode::SetParent( std::shared_ptr<SceneNode> parentNode )
+void ModelNode::SetParent( std::shared_ptr<ModelNode> parentNode )
 {
     // Parents own their children.. If this node is not owned
     // by anyone else, it will cease to exist if we remove it from it's parent.
@@ -124,7 +124,7 @@ void SceneNode::SetParent( std::shared_ptr<SceneNode> parentNode )
     // half-way through this function!
     // Technically self deletion shouldn't occur because the thing invoking this function
     // should have a shared_ptr to it.
-    std::shared_ptr<SceneNode> me = shared_from_this();
+    std::shared_ptr<ModelNode> me = shared_from_this();
     if ( parentNode )
     {
         parentNode->AddChild( me );
@@ -139,7 +139,7 @@ void SceneNode::SetParent( std::shared_ptr<SceneNode> parentNode )
     }
 }
 
-size_t SceneNode::AddMesh( std::shared_ptr<Mesh> mesh )
+size_t ModelNode::AddMesh( std::shared_ptr<Mesh> mesh )
 {
     size_t index = (size_t)-1;
     if ( mesh )
@@ -150,7 +150,7 @@ size_t SceneNode::AddMesh( std::shared_ptr<Mesh> mesh )
             index = m_Meshes.size();
             m_Meshes.push_back( mesh );
 
-            // Merge the mesh's AABB with AABB of the scene node.
+            // Merge the mesh's AABB with AABB of the model node.
             BoundingBox::CreateMerged( m_AABB, m_AABB, mesh->GetAABB() );
         }
         else
@@ -162,7 +162,7 @@ size_t SceneNode::AddMesh( std::shared_ptr<Mesh> mesh )
     return index;
 }
 
-void SceneNode::RemoveMesh( std::shared_ptr<Mesh> mesh )
+void ModelNode::RemoveMesh( std::shared_ptr<Mesh> mesh )
 {
     if ( mesh )
     {
@@ -174,7 +174,7 @@ void SceneNode::RemoveMesh( std::shared_ptr<Mesh> mesh )
     }
 }
 
-std::shared_ptr<Mesh> SceneNode::GetMesh(size_t pos) 
+std::shared_ptr<Mesh> ModelNode::GetMesh(size_t pos) 
 {
     std::shared_ptr<Mesh> mesh = nullptr;
 
@@ -185,12 +185,12 @@ std::shared_ptr<Mesh> SceneNode::GetMesh(size_t pos)
     return mesh;
 }
 
-const DirectX::BoundingBox& SceneNode::GetAABB() const 
+const DirectX::BoundingBox& ModelNode::GetAABB() const 
 {
     return m_AABB;
 }
 
-void SceneNode::Accept( Visitor& visitor )
+void ModelNode::Accept( Visitor& visitor )
 {
     visitor.Visit( *this );
 

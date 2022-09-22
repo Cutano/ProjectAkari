@@ -10,7 +10,7 @@
 
 namespace Akari {
 	class Layer;
-	class Scene;
+	class Model;
 	class RenderPipeline;
 	
 	struct RendererConfig

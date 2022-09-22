@@ -50,7 +50,7 @@ class PipelineStateObject;
 class RenderTarget;
 class Resource;
 class RootSignature;
-class Scene;
+class Model;
 class ShaderResourceView;
 class StructuredBuffer;
 class SwapChain;

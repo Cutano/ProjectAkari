@@ -2,7 +2,7 @@
 #include "ForwardOpaquePass.h"
 #include "RHI/CommandList.h"
 #include "RHI/Renderer.h"
-#include "SceneComponents/Scene.h"
+#include "SceneComponents/Model.h"
 
 namespace Akari
 {
@@ -23,12 +23,12 @@ namespace Akari
         
     }
 
-    void ForwardOpaqueVisitor::Visit(Scene& scene)
+    void ForwardOpaqueVisitor::Visit(Model& model)
     {
         
     }
 
-    void ForwardOpaqueVisitor::Visit(SceneNode& sceneNode)
+    void ForwardOpaqueVisitor::Visit(ModelNode& modelNode)
     {
     }
 

@@ -48,12 +48,12 @@ namespace Akari
         atexit(&Device::ReportLiveObjects);
     }
 
-    void Renderer::LoadScene(std::wstring path)
+    void Renderer::LoadModel(std::wstring path)
     {
         auto& commandQueue = m_Device->GetCommandQueue( D3D12_COMMAND_LIST_TYPE_COPY );
         auto  commandList  = commandQueue.GetCommandList();
 
-        auto scene = commandList->LoadSceneFromFile(path);
+        auto model = commandList->LoadModelFromFile(path);
     }
 
     void Renderer::OnUpdate(DeltaTime dt)
