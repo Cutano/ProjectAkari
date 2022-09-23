@@ -12,6 +12,7 @@ namespace Akari {
 		None = 0,
 		WindowClose, WindowMinimize, WindowResize, WindowFocus, WindowLostFocus, WindowMoved, WindowTitleBarHitTest,
 		AppTick, AppUpdate, AppRender,
+		SceneWindowResizeEvent,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
 		ScenePreStart, ScenePostStart, ScenePreStop, ScenePostStop,

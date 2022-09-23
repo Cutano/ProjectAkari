@@ -27,9 +27,17 @@ namespace Akari {
     private:
         // Ref<RenderCommandBuffer> m_RenderCommandBuffer;
         float m_Time = 0.0f;
+        bool m_ShowDemoWindow = true;
+        bool m_ShowSceneWindow = true;
+        bool m_ShowHierarchyWindow = true;
+        bool m_ShowBrowserWindow = true;
+        bool m_ShowPropertyWindow = true;
 
+        float m_SceneWindowWidth;
+        float m_SceneWindowHeight;
+
+        ImGuiContext*                        m_pImGuiCtx = nullptr;
         HWND                                 m_hWnd;
-        ImGuiContext*                        m_pImGuiCtx;
         std::shared_ptr<Device>              m_Device;
         std::shared_ptr<Texture>             m_FontTexture;
         std::shared_ptr<ShaderResourceView>  m_FontSRV;
@@ -37,6 +45,10 @@ namespace Akari {
         std::shared_ptr<PipelineStateObject> m_PipelineState;
 
         void Draw();
+        void DrawSceneWindow();
+        void DrawHierarchyWindow();
+        void DrawBrowserWindow();
+        void DrawPropertyWindow();
     };
 
 

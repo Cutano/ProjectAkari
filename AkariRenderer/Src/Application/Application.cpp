@@ -54,6 +54,9 @@ namespace Akari {
 
 		m_ImGuiLayer = std::make_shared<ImGuiLayer>();
 		m_LogicLayer = std::make_shared<LogicLayer>();
+
+		m_ImGuiLayer->SetEventCallback([this](Event& e) { OnEvent(e); });
+		m_LogicLayer->SetEventCallback([this](Event& e) { OnEvent(e); });
 	}
 
 	Application::~Application()
@@ -161,6 +164,7 @@ namespace Akari {
 		dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) { return OnWindowResize(e); });
 		dispatcher.Dispatch<WindowMinimizeEvent>([this](WindowMinimizeEvent& e) { return OnWindowMinimize(e); });
 		dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) { return OnWindowClose(e); });
+		dispatcher.Dispatch<SceneWindowResizeEvent>([this](SceneWindowResizeEvent& e) { return OnSceneWindowResize(e); });
 
 		// for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
 		// {
@@ -198,6 +202,21 @@ namespace Akari {
 		//m_Minimized = false;
 		
 		Renderer::GetInstance().OnResize(width, height);
+
+		return false;
+	}
+
+	bool Application::OnSceneWindowResize(SceneWindowResizeEvent& e)
+	{
+		const float width = e.GetWidth(), height = e.GetHeight();
+		if (width == 0 || height == 0)
+		{
+			//m_Minimized = true;
+			return false;
+		}
+		//m_Minimized = false;
+		
+		Renderer::GetInstance().OnSceneResize(width, height);
 
 		return false;
 	}

@@ -4,6 +4,8 @@
 namespace Akari
 {
     class Device;
+    class Texture;
+    class RenderTarget;
     class SwapChain;
     class CommandList;
     
@@ -27,6 +29,7 @@ namespace Akari
         
         void OnUpdate(DeltaTime dt);
         void OnResize(uint32_t width, uint32_t height) const;
+        void OnSceneResize(float width, float height) const;
 
         [[nodiscard]] std::shared_ptr<CommandList> GetCommandListDirect() const;
         [[nodiscard]] std::shared_ptr<CommandList> GetCommandListCopy() const;
@@ -42,6 +45,10 @@ namespace Akari
 
         std::shared_ptr<Device> m_Device = nullptr;
         std::shared_ptr<SwapChain> m_SwapChain = nullptr;
+
+        std::shared_ptr<Texture> m_SceneFrameBuffer = nullptr;
+        std::shared_ptr<Texture> m_SceneDepth = nullptr;
+        std::shared_ptr<RenderTarget> m_SceneRenderTarget = nullptr;
     };
     
 }

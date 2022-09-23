@@ -41,6 +41,9 @@ namespace Akari
     {
         m_Device = Renderer::GetInstance().GetDevice();
         m_hWnd = dynamic_cast<WindowsWindow*>(&Application::Get().GetWindow())->GetHandle();
+
+        m_SceneWindowWidth = static_cast<float>(Renderer::GetInstance().GetSwapChain()->GetRenderTarget().GetWidth());
+        m_SceneWindowHeight = static_cast<float>(Renderer::GetInstance().GetSwapChain()->GetRenderTarget().GetHeight());
     }
 
     ImGuiLayer::~ImGuiLayer()
@@ -61,7 +64,7 @@ namespace Akari
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
-        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
+        // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // Enable Multi-Viewport / Platform Windows
         //io.ConfigViewportsNoDecoration = false;
         //io.ConfigViewportsNoAutoMerge = true;
         //io.ConfigViewportsNoTaskBarIcon = true;
@@ -213,7 +216,7 @@ namespace Akari
     {
         ImGui::EndFrame();
         ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext( m_pImGuiCtx );
+        ImGui::DestroyContext(m_pImGuiCtx);
         m_pImGuiCtx = nullptr;
     }
 
@@ -224,7 +227,7 @@ namespace Akari
         ImGui::NewFrame();
 
         Draw();
-        
+
         ImGui::Render();
 
         ImGuiIO& io = ImGui::GetIO();
@@ -323,8 +326,105 @@ namespace Akari
 
     void ImGuiLayer::Draw()
     {
-        static bool showDemo = true;
-        ImGui::ShowDemoWindow(&showDemo);
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+        const ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->WorkPos);
+        ImGui::SetNextWindowSize(viewport->WorkSize);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        windowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+        ImGui::Begin("DockSpaceWindow", nullptr, windowFlags);
+        ImGui::PopStyleVar(3);
+        const ImGuiID dockSpaceId = ImGui::GetID("DockSpace");
+        ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f));
+
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Window"))
+            {
+                ImGui::MenuItem("Show Demo", nullptr, &m_ShowDemoWindow);
+                ImGui::MenuItem("Show Scene", nullptr, &m_ShowSceneWindow);
+                ImGui::MenuItem("Show Hierarchy", nullptr, &m_ShowHierarchyWindow);
+                ImGui::MenuItem("Show Browser", nullptr, &m_ShowBrowserWindow);
+                ImGui::MenuItem("Show Property", nullptr, &m_ShowPropertyWindow);
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMenuBar();
+        }
+
+        ImGui::End();
+
+        if (m_ShowDemoWindow)
+        {
+            ImGui::ShowDemoWindow(&m_ShowDemoWindow);
+        }
+        if (m_ShowSceneWindow)
+        {
+            DrawSceneWindow();
+        }
+        if (m_ShowHierarchyWindow)
+        {
+            DrawHierarchyWindow();
+        }
+        if (m_ShowBrowserWindow)
+        {
+            DrawBrowserWindow();
+        }
+        if (m_ShowPropertyWindow)
+        {
+            DrawPropertyWindow();
+        }
+    }
+
+    // https://github.com/ocornut/imgui/issues/984
+    void ImGuiLayer::DrawSceneWindow()
+    {
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
+        ImGui::Begin("Scene", &m_ShowDemoWindow, windowFlags);
+
+        ImVec2 view = ImGui::GetContentRegionAvail();
+        if (view.x != m_SceneWindowWidth || view.y != m_SceneWindowHeight)
+        {
+            if ( view.x == 0 || view.y == 0 )
+            {
+                // The window is too small or collapsed.
+                ImGui::End();
+                return;
+            }
+
+            m_SceneWindowWidth = view.x;
+            m_SceneWindowHeight = view.y;
+
+            SceneWindowResizeEvent e(view.x, view.y);
+            m_EventCallBack(e);
+        }
+        
+        ImGui::End();
+    }
+
+    void ImGuiLayer::DrawHierarchyWindow()
+    {
+        ImGuiWindowFlags windowFlags = 0;
+        ImGui::Begin("Hierarchy", &m_ShowDemoWindow, windowFlags);
+        ImGui::End();
+    }
+
+    void ImGuiLayer::DrawBrowserWindow()
+    {
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
+        ImGui::Begin("Browser", &m_ShowDemoWindow, windowFlags);
+        ImGui::End();
+    }
+
+    void ImGuiLayer::DrawPropertyWindow()
+    {
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
+        ImGui::Begin("Property", &m_ShowDemoWindow, windowFlags);
+        ImGui::End();
     }
 }
 

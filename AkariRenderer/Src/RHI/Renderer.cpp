@@ -5,6 +5,7 @@
 #include "Device.h"
 #include "SwapChain.h"
 #include "CommandList.h"
+#include "Texture.h"
 #include "Application/Application.h"
 #include "Window/WindowsWindow.h"
 
@@ -38,10 +39,22 @@ namespace Akari
         m_SwapChain = m_Device->CreateSwapChain(handle);
         m_SwapChain->SetVSync(Application::Get().GetWindow().IsVSync());
         // TODO: Set isFullScreen as well.
+
+        const auto sceneFrameBufferDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R11G11B10_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
+        const auto sceneDepthStencilDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
+        m_SceneFrameBuffer = m_Device->CreateTexture(sceneFrameBufferDesc);
+        m_SceneDepth = m_Device->CreateTexture(sceneDepthStencilDesc);
+
+        m_SceneRenderTarget = std::make_shared<RenderTarget>();
+        m_SceneRenderTarget->AttachTexture(Color0, m_SceneFrameBuffer);
+        m_SceneRenderTarget->AttachTexture(DepthStencil, m_SceneDepth);
     }
 
     void Renderer::ShutDown()
     {
+        m_SceneDepth.reset();
+        m_SceneFrameBuffer.reset();
+        m_SceneRenderTarget.reset();
         m_SwapChain.reset();
         m_Device.reset();
 
@@ -69,6 +82,13 @@ namespace Akari
         m_SwapChain->Resize(width, height);
         
         spdlog::info("Window resized to {0}, {1}.", width, height);
+    }
+
+    void Renderer::OnSceneResize(float width, float height) const
+    {
+        m_SceneRenderTarget->Resize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
+
+        spdlog::info("Scene resized to {0}, {1}.", width, height);
     }
 
     std::shared_ptr<CommandList> Renderer::GetCommandListDirect() const

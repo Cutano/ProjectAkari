@@ -103,6 +103,7 @@ namespace Akari {
 		void ProcessEvents();
 
 		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnSceneWindowResize(SceneWindowResizeEvent& e);
 		bool OnWindowMinimize(WindowMinimizeEvent& e);
 		bool OnWindowClose(WindowCloseEvent& e);
 		
