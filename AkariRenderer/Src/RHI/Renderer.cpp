@@ -40,8 +40,10 @@ namespace Akari
         m_SwapChain->SetVSync(Application::Get().GetWindow().IsVSync());
         // TODO: Set isFullScreen as well.
 
-        const auto sceneFrameBufferDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R11G11B10_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
-        const auto sceneDepthStencilDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
+        auto sceneFrameBufferDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R11G11B10_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
+        auto sceneDepthStencilDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
+        sceneFrameBufferDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+        sceneDepthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
         m_SceneFrameBuffer = m_Device->CreateTexture(sceneFrameBufferDesc);
         m_SceneDepth = m_Device->CreateTexture(sceneDepthStencilDesc);
 
@@ -69,7 +71,7 @@ namespace Akari
         auto model = commandList->LoadModelFromFile(path);
     }
 
-    void Renderer::OnUpdate(DeltaTime dt)
+    void Renderer::OnUpdate(RenderContext& context)
     {
         
     }
@@ -114,6 +116,11 @@ namespace Akari
     std::shared_ptr<SwapChain> Renderer::GetSwapChain() const
     {
         return m_SwapChain;
+    }
+
+    std::shared_ptr<RenderTarget> Renderer::GetSceneRenderTarget() const
+    {
+        return m_SceneRenderTarget;
     }
 
     uint64_t Renderer::ExecuteCommandList(std::shared_ptr<CommandList> commandList) const

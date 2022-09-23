@@ -50,22 +50,26 @@ public:
      * Get the RTV for the texture.
      */
     D3D12_CPU_DESCRIPTOR_HANDLE GetRenderTargetView() const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPURenderTargetView() const;
 
     /**
      * Get the DSV for the texture.
      */
     D3D12_CPU_DESCRIPTOR_HANDLE GetDepthStencilView() const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDepthStencilView() const;
 
     /**
      * Get the default SRV for the texture.
      */
     D3D12_CPU_DESCRIPTOR_HANDLE GetShaderResourceView() const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUShaderResourceView() const;
 
     /**
      * Get the UAV for the texture at a specific mip level.
      * Note: Only only supported for 1D and 2D textures.
      */
     D3D12_CPU_DESCRIPTOR_HANDLE GetUnorderedAccessView( uint32_t mip ) const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUUnorderedAccessView( uint32_t mip ) const;
 
     bool CheckSRVSupport() const
     {

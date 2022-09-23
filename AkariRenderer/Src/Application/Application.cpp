@@ -93,6 +93,7 @@ namespace Akari {
 					SCOPE_PERF("Application Layer::OnUpdate");
 					context.dt = &m_DeltaTime;
 					m_LogicLayer->OnUpdate(m_DeltaTime);
+					// TODO: Tick Renderer
 					m_RenderPipeline->Render(context);
 					// Renderer::GetInstance().OnUpdate(m_DeltaTime);
 				}

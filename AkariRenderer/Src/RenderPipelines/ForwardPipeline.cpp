@@ -17,10 +17,22 @@ namespace Akari
 
     void ForwardPipeline::Render(const RenderContext& context)
     {
-        const auto cmd = Renderer::GetInstance().GetCommandListDirect();
-        constexpr FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
-        cmd->ClearTexture(Renderer::GetInstance().GetSwapChain()->GetRenderTarget().GetTexture(Color0), clearColor);
-        Renderer::GetInstance().ExecuteCommandList(cmd);
+        // TODO: Move this to Renderer
+        {
+            const auto cmd = Renderer::GetInstance().GetCommandListDirect();
+            constexpr FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
+            cmd->SetRenderTarget(Renderer::GetInstance().GetSwapChain()->GetRenderTarget());
+            cmd->ClearTexture(Renderer::GetInstance().GetSwapChain()->GetRenderTarget().GetTexture(Color0), clearColor);
+            Renderer::GetInstance().ExecuteCommandList(cmd);
+        }
+
+        {
+            const auto cmd = Renderer::GetInstance().GetCommandListDirect();
+            constexpr FLOAT clearColor[] = { 0.8f, 0.6f, 0.2f, 1.0f };
+            cmd->SetRenderTarget(*Renderer::GetInstance().GetSceneRenderTarget());
+            cmd->ClearTexture(Renderer::GetInstance().GetSceneRenderTarget()->GetTexture(Color0), clearColor);
+            Renderer::GetInstance().ExecuteCommandList(cmd);
+        }
 
         m_ForwardOpaquePass->Render(context);
 

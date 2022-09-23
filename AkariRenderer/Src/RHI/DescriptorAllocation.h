@@ -45,7 +45,7 @@ public:
     // Creates a NULL descriptor.
     DescriptorAllocation();
 
-    DescriptorAllocation( D3D12_CPU_DESCRIPTOR_HANDLE descriptor, uint32_t numHandles, uint32_t descriptorSize,
+    DescriptorAllocation( D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptor, D3D12_GPU_DESCRIPTOR_HANDLE gpuDescriptor, uint32_t numHandles, uint32_t descriptorSize,
                           std::shared_ptr<DescriptorAllocatorPage> page );
 
     // The destructor will automatically free the allocation.
@@ -68,6 +68,7 @@ public:
 
     // Get a descriptor at a particular offset in the allocation.
     D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorHandle( uint32_t offset = 0 ) const;
+    D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle( uint32_t offset = 0 ) const;
 
     // Get the number of (consecutive) handles for this allocation.
     uint32_t GetNumHandles() const;
@@ -81,7 +82,8 @@ private:
     void Free();
 
     // The base descriptor.
-    D3D12_CPU_DESCRIPTOR_HANDLE m_Descriptor;
+    D3D12_CPU_DESCRIPTOR_HANDLE m_CPUDescriptor;
+    D3D12_GPU_DESCRIPTOR_HANDLE m_GPUDescriptor;
     // The number of descriptors in this allocation.
     uint32_t m_NumHandles;
     // The offset to the next descriptor.
