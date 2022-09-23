@@ -5,12 +5,31 @@ namespace Akari
 {
     enum class LightType
     {
-        None = 0, Directional = 1, Point = 2, Spot = 3
+        None = 0,
+        Directional = 1,
+        Point = 2,
+        Spot = 3
     };
-    
+
     struct IDComponent
     {
         UUID ID = 0;
+    };
+
+    struct NameComponent
+    {
+        std::string Name;
+
+        NameComponent() = default;
+        NameComponent(const NameComponent& other) = default;
+
+        NameComponent(const std::string& name)
+            : Name(name)
+        {
+        }
+
+        operator std::string&() { return Name; }
+        operator const std::string&() const { return Name; }
     };
 
     struct RelationshipComponent
@@ -20,36 +39,40 @@ namespace Akari
 
         RelationshipComponent() = default;
         RelationshipComponent(const RelationshipComponent& other) = default;
+
         RelationshipComponent(UUID parent)
-            : ParentHandle(parent) {}
+            : ParentHandle(parent)
+        {
+        }
     };
 
     struct TransformComponent
     {
-        Math::Vector3 Translation = { 0.0f, 0.0f, 0.0f };
-        Math::Vector3 Rotation = { 0.0f, 0.0f, 0.0f };
-        Math::Vector3 Scale = { 1.0f, 1.0f, 1.0f };
+        Math::Vector3 Translation = {0.0f, 0.0f, 0.0f};
+        Math::Vector3 Rotation = {0.0f, 0.0f, 0.0f};
+        Math::Vector3 Scale = {1.0f, 1.0f, 1.0f};
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent& other) = default;
+
         TransformComponent(const Math::Vector3& translation)
-            : Translation(translation) {}
+            : Translation(translation)
+        {
+        }
 
         [[nodiscard]] Math::AffineTransform GetTransform() const
         {
-            Math::AffineTransform trans;
-            trans.MakeScale(Scale);
-            trans.MakeXRotation(Rotation.GetX());
-            trans.MakeYRotation(Rotation.GetY());
-            trans.MakeZRotation(Rotation.GetZ());
-            trans.MakeTranslation(Translation);
-            return trans;
+            return Math::AffineTransform {
+                Math::Matrix3(Math::Quaternion(Rotation.GetX(), Rotation.GetY(), Rotation.GetZ())) *
+                Math::Matrix3::MakeScale(Scale),
+                Translation
+            };
         }
     };
 
     struct DirectionalLightComponent
     {
-        Math::Vector3 Radiance = { 1.0f, 1.0f, 1.0f };
+        Math::Vector3 Radiance = {1.0f, 1.0f, 1.0f};
         float Intensity = 1.0f;
         bool CastShadows = true;
         bool SoftShadows = true;
@@ -59,7 +82,7 @@ namespace Akari
 
     struct PointLightComponent
     {
-        Math::Vector3 Radiance = { 1.0f, 1.0f, 1.0f };
+        Math::Vector3 Radiance = {1.0f, 1.0f, 1.0f};
         float Intensity = 1.0f;
         float LightSize = 0.5f; // For PCSS
         float MinRadius = 1.f;
@@ -73,5 +96,4 @@ namespace Akari
     {
         UUID ModelID;
     };
-
 }
