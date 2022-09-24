@@ -12,6 +12,7 @@ namespace Akari {
     class RootSignature;
     class ShaderResourceView;
     class Texture;
+    class SceneWindowResizeEvent;
 
     class ImGuiLayer : public Layer
     {

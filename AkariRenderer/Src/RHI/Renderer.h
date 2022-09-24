@@ -8,6 +8,9 @@ namespace Akari
     class RenderTarget;
     class SwapChain;
     class CommandList;
+    class ShaderResourceView;
+    class ImGuiLayer;
+    class RenderPipeline;
     struct RenderContext;
     
     class Renderer
@@ -30,7 +33,6 @@ namespace Akari
         
         void OnUpdate(RenderContext& context);
         void OnResize(uint32_t width, uint32_t height) const;
-        void OnSceneResize(float width, float height) const;
 
         [[nodiscard]] std::shared_ptr<CommandList> GetCommandListDirect() const;
         [[nodiscard]] std::shared_ptr<CommandList> GetCommandListCopy() const;
@@ -38,7 +40,10 @@ namespace Akari
 
         [[nodiscard]] std::shared_ptr<Device> GetDevice() const;
         [[nodiscard]] std::shared_ptr<SwapChain> GetSwapChain() const;
-        [[nodiscard]] std::shared_ptr<RenderTarget> GetSceneRenderTarget() const;
+        [[nodiscard]] std::shared_ptr<ImGuiLayer> GetImGuiLayer() const;
+        [[nodiscard]] std::shared_ptr<RenderPipeline> GetRenderPipeline() const;
+
+        void SetRenderPipeline(const std::shared_ptr<RenderPipeline>& rp);
 
         uint64_t ExecuteCommandList(std::shared_ptr<CommandList> commandList) const;
 
@@ -47,11 +52,8 @@ namespace Akari
 
         std::shared_ptr<Device> m_Device = nullptr;
         std::shared_ptr<SwapChain> m_SwapChain = nullptr;
-
-        // TODO: Move all of this to GUILayer
-        std::shared_ptr<Texture> m_SceneFrameBuffer = nullptr;
-        std::shared_ptr<Texture> m_SceneDepth = nullptr;
-        std::shared_ptr<RenderTarget> m_SceneRenderTarget = nullptr;
+        std::shared_ptr<ImGuiLayer> m_ImGuiLayer = nullptr;
+        std::shared_ptr<RenderPipeline> m_RenderPipeline = nullptr;
     };
     
 }

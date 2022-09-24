@@ -3,20 +3,30 @@
 namespace Akari
 {
     struct RenderContext;
-    class Renderer;
-    class Layer;
-    
+    class SceneWindowResizeEvent;
+    class ShaderResourceView;
+    class RenderTarget;
+    class Texture;
+    class Event;
+
+    // Render pipelines focus on rendering scene window only.
     class RenderPipeline
     {
     public:
         RenderPipeline();
-        explicit RenderPipeline(std::shared_ptr<Layer>& guiLayer);
         virtual ~RenderPipeline();
         
         virtual void Render(const RenderContext& context) = 0;
-        virtual void SetGuiLayer(std::shared_ptr<Layer>& layer) {m_GuiLayer = layer;};
+        virtual void OnEvent(Event& event);
+        virtual bool OnSceneResize(SceneWindowResizeEvent& event) const;
+
+        [[nodiscard]] virtual std::shared_ptr<ShaderResourceView> GetSceneFrameBufferSrv() const;
+        [[nodiscard]] virtual std::shared_ptr<RenderTarget> GetSceneRenderTarget() const;
 
     protected:
-        std::shared_ptr<Layer> m_GuiLayer;
+        std::shared_ptr<Texture> m_SceneFrameBuffer = nullptr;
+        std::shared_ptr<Texture> m_SceneDepth = nullptr;
+        std::shared_ptr<ShaderResourceView> m_SceneFrameBufferSRV = nullptr;
+        std::shared_ptr<RenderTarget> m_SceneRenderTarget = nullptr;
     };
 }

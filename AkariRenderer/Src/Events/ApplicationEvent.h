@@ -29,6 +29,7 @@ namespace Akari {
 		unsigned int m_Width, m_Height;
 	};
 
+	// TODO: Move this to SceneEvents
 	class SceneWindowResizeEvent : public Event
 	{
 	public:

@@ -153,19 +153,9 @@ D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetRenderTargetView() const
     return m_RenderTargetView.GetDescriptorHandle();
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetGPURenderTargetView() const
-{
-    return m_RenderTargetView.GetGPUDescriptorHandle();
-}
-
 D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetDepthStencilView() const
 {
     return m_DepthStencilView.GetDescriptorHandle();
-}
-
-D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetGPUDepthStencilView() const
-{
-    return m_DepthStencilView.GetGPUDescriptorHandle();
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetShaderResourceView() const
@@ -173,19 +163,9 @@ D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetShaderResourceView() const
     return m_ShaderResourceView.GetDescriptorHandle();
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetGPUShaderResourceView() const
-{
-    return m_ShaderResourceView.GetGPUDescriptorHandle();
-}
-
 D3D12_CPU_DESCRIPTOR_HANDLE Texture::GetUnorderedAccessView( uint32_t mip ) const
 {
     return m_UnorderedAccessView.GetDescriptorHandle( mip );
-}
-
-D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetGPUUnorderedAccessView(uint32_t mip) const
-{
-    return m_UnorderedAccessView.GetGPUDescriptorHandle( mip );
 }
 
 bool Texture::HasAlpha() const

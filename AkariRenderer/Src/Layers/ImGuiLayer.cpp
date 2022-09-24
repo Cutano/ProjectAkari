@@ -13,7 +13,9 @@
 #include "RHI/CommandQueue.h"
 #include "RHI/CommandList.h"
 #include "RHI/RootSignature.h"
+#include "RHI/ShaderResourceView.h"
 #include "RHI/SwapChain.h"
+#include "RPI/RenderPipeline.h"
 #include "Window/WindowsWindow.h"
 
 #include "Shaders/Generated/ImGUI_PS.h"
@@ -400,12 +402,11 @@ namespace Akari
             m_SceneWindowHeight = view.y;
 
             SceneWindowResizeEvent e(view.x, view.y);
-            m_EventCallBack(e);
+            Renderer::GetInstance().GetRenderPipeline()->OnEvent(e);
         }
 
         ImDrawList* drawList = ImGui::GetWindowDrawList();
-        const auto& rt = Renderer::GetInstance().GetSceneRenderTarget();
-        ImTextureID textureId = reinterpret_cast<ImTextureID>(rt->GetTexture(Color0)->GetGPURenderTargetView().ptr);
+        ImTextureID textureId = reinterpret_cast<ImTextureID>(Renderer::GetInstance().GetRenderPipeline()->GetSceneFrameBufferSrv()->GetDescriptorHandle().ptr);
         ImVec2 vMin = ImGui::GetWindowContentRegionMin();
         ImVec2 vMax = ImGui::GetWindowContentRegionMax();
         vMin.x += ImGui::GetWindowPos().x;

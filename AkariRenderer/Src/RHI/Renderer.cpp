@@ -7,7 +7,10 @@
 #include "CommandList.h"
 #include "Texture.h"
 #include "Application/Application.h"
+#include "Layers/ImGuiLayer.h"
 #include "Window/WindowsWindow.h"
+#include "RPI/RenderPipeline.h"
+#include "RPI/RenderContext.h"
 
 using namespace Microsoft::WRL;
 
@@ -40,23 +43,13 @@ namespace Akari
         m_SwapChain->SetVSync(Application::Get().GetWindow().IsVSync());
         // TODO: Set isFullScreen as well.
 
-        auto sceneFrameBufferDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R11G11B10_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
-        auto sceneDepthStencilDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, m_SwapChain->GetRenderTarget().GetWidth(), m_SwapChain->GetRenderTarget().GetHeight());
-        sceneFrameBufferDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-        sceneDepthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-        m_SceneFrameBuffer = m_Device->CreateTexture(sceneFrameBufferDesc);
-        m_SceneDepth = m_Device->CreateTexture(sceneDepthStencilDesc);
-
-        m_SceneRenderTarget = std::make_shared<RenderTarget>();
-        m_SceneRenderTarget->AttachTexture(Color0, m_SceneFrameBuffer);
-        m_SceneRenderTarget->AttachTexture(DepthStencil, m_SceneDepth);
+        m_ImGuiLayer = std::make_shared<ImGuiLayer>();
+        m_ImGuiLayer->OnAttach();
     }
 
     void Renderer::ShutDown()
     {
-        m_SceneDepth.reset();
-        m_SceneFrameBuffer.reset();
-        m_SceneRenderTarget.reset();
+        m_ImGuiLayer->OnDetach();
         m_SwapChain.reset();
         m_Device.reset();
 
@@ -73,7 +66,26 @@ namespace Akari
 
     void Renderer::OnUpdate(RenderContext& context)
     {
+        {
+            const auto cmd = GetCommandListDirect();
+            constexpr FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
+            cmd->SetRenderTarget(m_SwapChain->GetRenderTarget());
+            cmd->ClearTexture(m_SwapChain->GetRenderTarget().GetTexture(Color0), clearColor);
+            ExecuteCommandList(cmd);
+        }
         
+        m_RenderPipeline->Render(context);
+
+        if (m_ImGuiLayer != nullptr)
+        {
+            m_ImGuiLayer->OnUpdate(*context.dt);
+        }
+        else
+        {
+            spdlog::warn("No GUI Layer found, rendering without GUI!");
+        }
+
+        m_SwapChain->Present();
     }
 
     void Renderer::OnResize(uint32_t width, uint32_t height) const
@@ -84,13 +96,6 @@ namespace Akari
         m_SwapChain->Resize(width, height);
         
         spdlog::info("Window resized to {0}, {1}.", width, height);
-    }
-
-    void Renderer::OnSceneResize(float width, float height) const
-    {
-        m_SceneRenderTarget->Resize(static_cast<uint32_t>(width), static_cast<uint32_t>(height));
-
-        spdlog::info("Scene resized to {0}, {1}.", width, height);
     }
 
     std::shared_ptr<CommandList> Renderer::GetCommandListDirect() const
@@ -118,9 +123,19 @@ namespace Akari
         return m_SwapChain;
     }
 
-    std::shared_ptr<RenderTarget> Renderer::GetSceneRenderTarget() const
+    std::shared_ptr<ImGuiLayer> Renderer::GetImGuiLayer() const
     {
-        return m_SceneRenderTarget;
+        return m_ImGuiLayer;
+    }
+
+    std::shared_ptr<RenderPipeline> Renderer::GetRenderPipeline() const
+    {
+        return m_RenderPipeline;
+    }
+
+    void Renderer::SetRenderPipeline(const std::shared_ptr<RenderPipeline>& rp)
+    {
+        m_RenderPipeline = rp;
     }
 
     uint64_t Renderer::ExecuteCommandList(std::shared_ptr<CommandList> commandList) const

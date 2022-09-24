@@ -20,8 +20,7 @@ DescriptorAllocatorPage::DescriptorAllocatorPage( Device& device, D3D12_DESCRIPT
 
     ThrowIfFailed( d3d12Device->CreateDescriptorHeap( &heapDesc, IID_PPV_ARGS( &m_d3d12DescriptorHeap ) ) );
 
-    m_BaseCPUDescriptor                = m_d3d12DescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-    m_BaseGPUDescriptor                = m_d3d12DescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+    m_BaseDescriptor                = m_d3d12DescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     m_DescriptorHandleIncrementSize = d3d12Device->GetDescriptorHandleIncrementSize( m_HeapType );
     m_NumFreeHandles                = m_NumDescriptorsInHeap;
 
@@ -98,15 +97,13 @@ Akari::DescriptorAllocation DescriptorAllocatorPage::Allocate( uint32_t numDescr
     m_NumFreeHandles -= numDescriptors;
 
     return DescriptorAllocation(
-        CD3DX12_CPU_DESCRIPTOR_HANDLE( m_BaseCPUDescriptor, offset, m_DescriptorHandleIncrementSize ),
-        CD3DX12_GPU_DESCRIPTOR_HANDLE( m_BaseGPUDescriptor, offset, m_DescriptorHandleIncrementSize ),
-        numDescriptors,
+        CD3DX12_CPU_DESCRIPTOR_HANDLE( m_BaseDescriptor, offset, m_DescriptorHandleIncrementSize ), numDescriptors,
         m_DescriptorHandleIncrementSize, shared_from_this() );
 }
 
 uint32_t DescriptorAllocatorPage::ComputeOffset( D3D12_CPU_DESCRIPTOR_HANDLE handle )
 {
-    return static_cast<uint32_t>( handle.ptr - m_BaseCPUDescriptor.ptr ) / m_DescriptorHandleIncrementSize;
+    return static_cast<uint32_t>( handle.ptr - m_BaseDescriptor.ptr ) / m_DescriptorHandleIncrementSize;
 }
 
 void DescriptorAllocatorPage::Free( DescriptorAllocation&& descriptor )

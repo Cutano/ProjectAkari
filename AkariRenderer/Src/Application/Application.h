@@ -103,7 +103,6 @@ namespace Akari {
 		void ProcessEvents();
 
 		bool OnWindowResize(WindowResizeEvent& e);
-		bool OnSceneWindowResize(SceneWindowResizeEvent& e);
 		bool OnWindowMinimize(WindowMinimizeEvent& e);
 		bool OnWindowClose(WindowCloseEvent& e);
 		
@@ -127,7 +126,6 @@ namespace Akari {
 	protected:
 		ApplicationSpecification m_Specification;
 		
-		std::shared_ptr<Layer> m_ImGuiLayer;
 		std::shared_ptr<Layer> m_LogicLayer;
 		
 		std::shared_ptr<RenderPipeline> m_RenderPipeline;

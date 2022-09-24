@@ -145,8 +145,7 @@ private:
 
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_d3d12DescriptorHeap;
     D3D12_DESCRIPTOR_HEAP_TYPE                   m_HeapType;
-    CD3DX12_CPU_DESCRIPTOR_HANDLE                m_BaseCPUDescriptor;
-    CD3DX12_GPU_DESCRIPTOR_HANDLE                m_BaseGPUDescriptor;
+    CD3DX12_CPU_DESCRIPTOR_HANDLE                m_BaseDescriptor;
     uint32_t                                     m_DescriptorHandleIncrementSize;
     uint32_t                                     m_NumDescriptorsInHeap;
     uint32_t                                     m_NumFreeHandles;

@@ -7,15 +7,14 @@
 using namespace Akari;
 
 DescriptorAllocation::DescriptorAllocation()
-    : m_CPUDescriptor{ 0 }
+    : m_Descriptor{ 0 }
     , m_NumHandles( 0 )
     , m_DescriptorSize( 0 )
     , m_Page( nullptr )
 {}
 
-DescriptorAllocation::DescriptorAllocation( D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptor, D3D12_GPU_DESCRIPTOR_HANDLE gpuDescriptor, uint32_t numHandles, uint32_t descriptorSize, std::shared_ptr<DescriptorAllocatorPage> page )
-    : m_CPUDescriptor( cpuDescriptor )
-    , m_GPUDescriptor( gpuDescriptor )
+DescriptorAllocation::DescriptorAllocation( D3D12_CPU_DESCRIPTOR_HANDLE descriptor, uint32_t numHandles, uint32_t descriptorSize, std::shared_ptr<DescriptorAllocatorPage> page )
+    : m_Descriptor( descriptor )
     , m_NumHandles( numHandles )
     , m_DescriptorSize( descriptorSize )
     , m_Page( page )
@@ -28,12 +27,12 @@ DescriptorAllocation::~DescriptorAllocation()
 }
 
 DescriptorAllocation::DescriptorAllocation( DescriptorAllocation&& allocation ) noexcept
-    : m_CPUDescriptor(allocation.m_CPUDescriptor)
+    : m_Descriptor(allocation.m_Descriptor)
     , m_NumHandles(allocation.m_NumHandles)
     , m_DescriptorSize(allocation.m_DescriptorSize)
     , m_Page(std::move(allocation.m_Page))
 {
-    allocation.m_CPUDescriptor.ptr = 0;
+    allocation.m_Descriptor.ptr = 0;
     allocation.m_NumHandles = 0;
     allocation.m_DescriptorSize = 0;
 }
@@ -43,12 +42,12 @@ DescriptorAllocation& DescriptorAllocation::operator=( DescriptorAllocation&& ot
     // Free this descriptor if it points to anything.
     Free();
 
-    m_CPUDescriptor = other.m_CPUDescriptor;
+    m_Descriptor = other.m_Descriptor;
     m_NumHandles = other.m_NumHandles;
     m_DescriptorSize = other.m_DescriptorSize;
     m_Page = std::move( other.m_Page );
 
-    other.m_CPUDescriptor.ptr = 0;
+    other.m_Descriptor.ptr = 0;
     other.m_NumHandles = 0;
     other.m_DescriptorSize = 0;
 
@@ -61,7 +60,7 @@ void DescriptorAllocation::Free()
     {
         m_Page->Free( std::move( *this ) );
         
-        m_CPUDescriptor.ptr = 0;
+        m_Descriptor.ptr = 0;
         m_NumHandles = 0;
         m_DescriptorSize = 0;
         m_Page.reset();
@@ -71,20 +70,14 @@ void DescriptorAllocation::Free()
 // Check if this a valid descriptor.
 bool DescriptorAllocation::IsNull() const
 {
-    return m_CPUDescriptor.ptr == 0;
+    return m_Descriptor.ptr == 0;
 }
 
 // Get a descriptor at a particular offset in the allocation.
 D3D12_CPU_DESCRIPTOR_HANDLE DescriptorAllocation::GetDescriptorHandle( uint32_t offset ) const
 {
     assert( offset < m_NumHandles );
-    return { m_CPUDescriptor.ptr + ( m_DescriptorSize * offset ) };
-}
-
-D3D12_GPU_DESCRIPTOR_HANDLE DescriptorAllocation::GetGPUDescriptorHandle(uint32_t offset) const
-{
-    assert( offset < m_NumHandles );
-    return { m_GPUDescriptor.ptr + ( m_DescriptorSize * offset ) };
+    return { m_Descriptor.ptr + ( m_DescriptorSize * offset ) };
 }
 
 uint32_t DescriptorAllocation::GetNumHandles() const
