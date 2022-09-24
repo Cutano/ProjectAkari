@@ -21,6 +21,8 @@ namespace Akari
             const auto cmd = Renderer::GetInstance().GetCommandListDirect();
             constexpr FLOAT clearColor[] = { 0.8f, 0.6f, 0.2f, 1.0f };
             cmd->SetRenderTarget(*m_SceneRenderTarget);
+            cmd->SetViewport(m_SceneRenderTarget->GetViewport());
+            cmd->SetScissorRect(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX));
             cmd->ClearTexture(m_SceneRenderTarget->GetTexture(Color0), clearColor);
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }

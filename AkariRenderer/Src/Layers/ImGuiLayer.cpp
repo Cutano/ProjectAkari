@@ -32,10 +32,10 @@ namespace Akari
     // Root parameters for the ImGui root signature.
     enum RootParameters
     {
-        MatrixCB,
         // cbuffer vertexBuffer : register(b0)
-        FontTexture,
+        MatrixCB,
         // Texture2D texture0 : register(t0);
+        Textures,
         NumRootParameters
     };
 
@@ -121,13 +121,12 @@ namespace Akari
             D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
             D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-        CD3DX12_DESCRIPTOR_RANGE1 descriptorRage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+        CD3DX12_DESCRIPTOR_RANGE1 texDescriptorRage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0);
 
-        CD3DX12_ROOT_PARAMETER1 rootParameters[RootParameters::NumRootParameters];
-        rootParameters[RootParameters::MatrixCB].InitAsConstants(
+        CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParameters];
+        rootParameters[MatrixCB].InitAsConstants(
             sizeof(DirectX::XMMATRIX) / 4, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
-        rootParameters[RootParameters::FontTexture].InitAsDescriptorTable(1, &descriptorRage,
-                                                                          D3D12_SHADER_VISIBILITY_PIXEL);
+        rootParameters[Textures].InitAsDescriptorTable(1, &texDescriptorRage, D3D12_SHADER_VISIBILITY_PIXEL);
 
         CD3DX12_STATIC_SAMPLER_DESC linearRepeatSampler(0, D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT);
         linearRepeatSampler.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
@@ -262,9 +261,11 @@ namespace Akari
             {(R + L) / (L - R), (T + B) / (B - T), 0.5f, 1.0f},
         };
 
-        commandList->SetGraphics32BitConstants(RootParameters::MatrixCB, mvp);
-        commandList->SetShaderResourceView(RootParameters::FontTexture, 0, m_FontSRV,
+        const auto& frameBuffer = Renderer::GetInstance().GetRenderPipeline()->GetSceneRenderTarget()->GetTexture(Color0);
+        commandList->SetGraphics32BitConstants(MatrixCB, mvp);
+        commandList->SetShaderResourceView(Textures, 0, m_FontSRV,
                                            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        commandList->SetShaderResourceView(Textures, 1, frameBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
         D3D12_VIEWPORT viewport = {};
         viewport.Width = drawData->DisplaySize.x;
@@ -405,8 +406,10 @@ namespace Akari
             Renderer::GetInstance().GetRenderPipeline()->OnEvent(e);
         }
 
+        const auto& frameBuffer = Renderer::GetInstance().GetRenderPipeline()->GetSceneRenderTarget()->GetTexture(Color0);
+        const auto addr = frameBuffer->GetShaderResourceView().ptr;
         ImDrawList* drawList = ImGui::GetWindowDrawList();
-        ImTextureID textureId = reinterpret_cast<ImTextureID>(Renderer::GetInstance().GetRenderPipeline()->GetSceneFrameBufferSrv()->GetDescriptorHandle().ptr);
+        ImTextureID textureId = reinterpret_cast<ImTextureID>(addr);
         ImVec2 vMin = ImGui::GetWindowContentRegionMin();
         ImVec2 vMax = ImGui::GetWindowContentRegionMax();
         vMin.x += ImGui::GetWindowPos().x;

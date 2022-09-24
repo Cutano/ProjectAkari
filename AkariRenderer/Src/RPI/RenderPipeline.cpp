@@ -19,8 +19,9 @@ namespace Akari
         sceneFrameBufferDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
         sceneDepthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
         m_SceneFrameBuffer = device->CreateTexture(sceneFrameBufferDesc);
+        m_SceneFrameBuffer->SetName(L"SceneFrameBuffer");
         m_SceneDepth = device->CreateTexture(sceneDepthStencilDesc);
-        m_SceneFrameBufferSRV = device->CreateShaderResourceView(m_SceneFrameBuffer);
+        m_SceneDepth->SetName(L"SceneDepth");
 
         m_SceneRenderTarget = std::make_shared<RenderTarget>();
         m_SceneRenderTarget->AttachTexture(Color0, m_SceneFrameBuffer);
@@ -30,7 +31,6 @@ namespace Akari
     RenderPipeline::~RenderPipeline()
     {
         m_SceneRenderTarget.reset();
-        m_SceneFrameBufferSRV.reset();
         m_SceneDepth.reset();
         m_SceneFrameBuffer.reset();
     }
@@ -47,11 +47,6 @@ namespace Akari
 
         spdlog::info("Scene resized to {0}, {1}.", event.GetWidth(), event.GetHeight());
         return true;
-    }
-
-    std::shared_ptr<ShaderResourceView> RenderPipeline::GetSceneFrameBufferSrv() const
-    {
-        return m_SceneFrameBufferSRV;
     }
 
     std::shared_ptr<RenderTarget> RenderPipeline::GetSceneRenderTarget() const

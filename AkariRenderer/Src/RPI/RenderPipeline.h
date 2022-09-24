@@ -19,14 +19,12 @@ namespace Akari
         virtual void Render(const RenderContext& context) = 0;
         virtual void OnEvent(Event& event);
         virtual bool OnSceneResize(SceneWindowResizeEvent& event) const;
-
-        [[nodiscard]] virtual std::shared_ptr<ShaderResourceView> GetSceneFrameBufferSrv() const;
+        
         [[nodiscard]] virtual std::shared_ptr<RenderTarget> GetSceneRenderTarget() const;
 
     protected:
         std::shared_ptr<Texture> m_SceneFrameBuffer = nullptr;
         std::shared_ptr<Texture> m_SceneDepth = nullptr;
-        std::shared_ptr<ShaderResourceView> m_SceneFrameBufferSRV = nullptr;
         std::shared_ptr<RenderTarget> m_SceneRenderTarget = nullptr;
     };
 }
