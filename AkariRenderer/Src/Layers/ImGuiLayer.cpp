@@ -83,7 +83,7 @@ namespace Akari
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
 
-        io.Fonts->AddFontFromFileTTF("Res\\Fonts\\MiSans-Regular.ttf", 16.0f, nullptr,
+        io.Fonts->AddFontFromFileTTF("Res\\Fonts\\MiSans-Medium.ttf", 16.0f, nullptr,
                                      io.Fonts->GetGlyphRangesChineseFull());
 
         // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
