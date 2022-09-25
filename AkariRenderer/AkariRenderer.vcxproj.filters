@@ -159,6 +159,7 @@
     <ClInclude Include="Src\SceneComponents\SceneObject.h" />
     <ClInclude Include="Src\UUID.h" />
     <ClInclude Include="Src\SceneComponents\Components.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -171,5 +172,11 @@
     <FxCompile Include="Src\RHI\PanoToCubemap_CS.hlsl" />
     <FxCompile Include="Src\Shaders\ImGUI_PS.hlsl" />
     <FxCompile Include="Src\Shaders\ImGUI_VS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AkariRenderer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Res\Icon\icon.ico" />
   </ItemGroup>
 </Project>

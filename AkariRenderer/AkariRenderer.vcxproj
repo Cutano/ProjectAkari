@@ -205,6 +205,7 @@
     <ClInclude Include="Lib\imgui\imstb_truetype.h" />
     <ClInclude Include="Lib\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="Lib\imgui\misc\single_file\imgui_single_file.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Src\Application\Application.h" />
     <ClInclude Include="Src\d3dx12.h" />
     <ClInclude Include="Src\Events\ApplicationEvent.h" />
@@ -478,6 +479,12 @@
     <Content Include="Res\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AkariRenderer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Res\Icon\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

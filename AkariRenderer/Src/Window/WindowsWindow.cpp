@@ -8,7 +8,7 @@
 #include "Input/Input.h"
 
 #include <imgui.h>
-// #include "stb_image.h"
+#include "stb_image.h"
 
 namespace Akari {
 
