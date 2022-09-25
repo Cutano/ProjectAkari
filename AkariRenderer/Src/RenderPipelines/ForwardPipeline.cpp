@@ -5,6 +5,7 @@
 #include "Layers/Layer.h"
 #include "RHI/Renderer.h"
 #include "RHI/SwapChain.h"
+#include "RHI/Texture.h"
 #include "RHI/CommandList.h"
 #include "RPI/RenderContext.h"
 
@@ -20,13 +21,20 @@ namespace Akari
         {
             const auto cmd = Renderer::GetInstance().GetCommandListDirect();
             constexpr FLOAT clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-            cmd->SetRenderTarget(*m_SceneRenderTarget);
-            cmd->SetViewport(m_SceneRenderTarget->GetViewport());
+            cmd->SetRenderTarget(*m_SceneMsaaRenderTarget);
+            cmd->SetViewport(m_SceneMsaaRenderTarget->GetViewport());
             cmd->SetScissorRect(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX));
-            cmd->ClearTexture(m_SceneRenderTarget->GetTexture(Color0), clearColor);
+            cmd->ClearTexture(m_SceneMsaaRenderTarget->GetTexture(Color0), clearColor);
+            cmd->ClearDepthStencilTexture(m_SceneMsaaRenderTarget->GetTexture(DepthStencil), D3D12_CLEAR_FLAG_DEPTH, 0);
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
 
         m_ForwardOpaquePass->Render(context);
+
+        {
+            const auto cmd = Renderer::GetInstance().GetCommandListDirect();
+            cmd->ResolveSubresource(m_SceneRenderTarget->GetTexture(Color0), m_SceneMsaaRenderTarget->GetTexture(Color0));
+            Renderer::GetInstance().ExecuteCommandList(cmd);
+        }
     }
 }

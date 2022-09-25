@@ -25,6 +25,8 @@ namespace Akari
     protected:
         std::shared_ptr<Texture> m_SceneFrameBuffer = nullptr;
         std::shared_ptr<Texture> m_SceneDepth = nullptr;
+        std::shared_ptr<Texture> m_SceneMsaaFrameBuffer = nullptr;
+        std::shared_ptr<RenderTarget> m_SceneMsaaRenderTarget = nullptr;
         std::shared_ptr<RenderTarget> m_SceneRenderTarget = nullptr;
     };
 }
