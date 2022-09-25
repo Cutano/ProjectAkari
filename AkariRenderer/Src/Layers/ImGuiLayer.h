@@ -50,6 +50,8 @@ namespace Akari {
         void DrawHierarchyWindow();
         void DrawBrowserWindow();
         void DrawPropertyWindow();
+
+        void SetStyle();
     };
 
 
