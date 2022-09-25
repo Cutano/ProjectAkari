@@ -172,7 +172,4 @@
     <FxCompile Include="Src\Shaders\ImGUI_PS.hlsl" />
     <FxCompile Include="Src\Shaders\ImGUI_VS.hlsl" />
   </ItemGroup>
-  <ItemGroup>
-    <Font Include="Res\Fonts\MiSans-Regular.ttf" />
-  </ItemGroup>
 </Project>
