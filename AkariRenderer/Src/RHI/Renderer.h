@@ -40,6 +40,7 @@ namespace Akari
 
         [[nodiscard]] std::shared_ptr<Device> GetDevice() const;
         [[nodiscard]] std::shared_ptr<SwapChain> GetSwapChain() const;
+        [[nodiscard]] std::shared_ptr<RenderTarget> GetMsaaRenderTarget() const;
         [[nodiscard]] std::shared_ptr<ImGuiLayer> GetImGuiLayer() const;
         [[nodiscard]] std::shared_ptr<RenderPipeline> GetRenderPipeline() const;
 
@@ -54,6 +55,7 @@ namespace Akari
         std::shared_ptr<SwapChain> m_SwapChain = nullptr;
         std::shared_ptr<ImGuiLayer> m_ImGuiLayer = nullptr;
         std::shared_ptr<RenderPipeline> m_RenderPipeline = nullptr;
+        std::shared_ptr<RenderTarget> m_MsaaRenderTarget = nullptr;
     };
     
 }

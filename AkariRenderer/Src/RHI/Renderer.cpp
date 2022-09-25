@@ -43,6 +43,23 @@ namespace Akari
         m_SwapChain->SetVSync(Application::Get().GetWindow().IsVSync());
         // TODO: Set isFullScreen as well.
 
+        // Check the best multisample quality level that can be used for the given back buffer format.
+        DXGI_SAMPLE_DESC sampleDesc = m_Device->GetMultisampleQualityLevels(m_SwapChain->GetRenderTargetFormat());
+        auto colorDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+            m_SwapChain->GetRenderTargetFormat(),
+            m_SwapChain->GetRenderTarget().GetWidth(),
+            m_SwapChain->GetRenderTarget().GetHeight(),
+            1, 1, sampleDesc.Count,
+            sampleDesc.Quality,
+            D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET );
+        D3D12_CLEAR_VALUE colorClearValue {colorDesc.Format, {0, 0, 0, 1.0f}};
+        auto msaaTexture = m_Device->CreateTexture( colorDesc, &colorClearValue );
+        msaaTexture->SetName( L"Main MSAA Render Target" );
+
+        // Attach the texture to the render target.
+        m_MsaaRenderTarget = std::make_shared<RenderTarget>();
+        m_MsaaRenderTarget->AttachTexture(Color0, msaaTexture);
+
         m_ImGuiLayer = std::make_shared<ImGuiLayer>();
         m_ImGuiLayer->OnAttach();
     }
@@ -50,6 +67,7 @@ namespace Akari
     void Renderer::ShutDown()
     {
         m_ImGuiLayer->OnDetach();
+        m_MsaaRenderTarget.reset();
         m_SwapChain.reset();
         m_Device.reset();
 
@@ -68,9 +86,10 @@ namespace Akari
     {
         {
             const auto cmd = GetCommandListDirect();
-            constexpr FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
-            cmd->SetRenderTarget(m_SwapChain->GetRenderTarget());
+            constexpr FLOAT clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
             cmd->ClearTexture(m_SwapChain->GetRenderTarget().GetTexture(Color0), clearColor);
+            cmd->ClearTexture(m_MsaaRenderTarget->GetTexture(Color0), clearColor);
+            cmd->SetRenderTarget(*m_MsaaRenderTarget);
             ExecuteCommandList(cmd);
         }
         
@@ -85,6 +104,14 @@ namespace Akari
             spdlog::warn("No GUI Layer found, rendering without GUI!");
         }
 
+        // Resolve the MSAA render target to the swapchain's backbuffer.
+        {
+            const auto cmd = GetCommandListDirect();
+            auto swapChainBackBuffer = m_SwapChain->GetRenderTarget().GetTexture(Color0);
+            auto msaaRenderTarget = m_MsaaRenderTarget->GetTexture(Color0);
+            cmd->ResolveSubresource(swapChainBackBuffer, msaaRenderTarget);
+            ExecuteCommandList(cmd);
+        }
         m_SwapChain->Present();
     }
 
@@ -94,6 +121,7 @@ namespace Akari
         m_Device->Flush();
         
         m_SwapChain->Resize(width, height);
+        m_MsaaRenderTarget->Resize(width, height);
         
         spdlog::info("Window resized to {0}, {1}.", width, height);
     }
@@ -121,6 +149,11 @@ namespace Akari
     std::shared_ptr<SwapChain> Renderer::GetSwapChain() const
     {
         return m_SwapChain;
+    }
+
+    std::shared_ptr<RenderTarget> Renderer::GetMsaaRenderTarget() const
+    {
+        return m_MsaaRenderTarget;
     }
 
     std::shared_ptr<ImGuiLayer> Renderer::GetImGuiLayer() const

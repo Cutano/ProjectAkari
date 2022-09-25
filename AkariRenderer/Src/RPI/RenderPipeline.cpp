@@ -12,10 +12,10 @@ namespace Akari
 {
     RenderPipeline::RenderPipeline()
     {
-        const auto& mainRt = Renderer::GetInstance().GetSwapChain()->GetRenderTarget();
+        const auto& mainRt = Renderer::GetInstance().GetMsaaRenderTarget();
         const auto& device = Renderer::GetInstance().GetDevice();
-        auto sceneFrameBufferDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R11G11B10_FLOAT, mainRt.GetWidth(), mainRt.GetHeight());
-        auto sceneDepthStencilDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, mainRt.GetWidth(), mainRt.GetHeight());
+        auto sceneFrameBufferDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R11G11B10_FLOAT, mainRt->GetWidth(), mainRt->GetHeight());
+        auto sceneDepthStencilDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, mainRt->GetWidth(), mainRt->GetHeight());
         sceneFrameBufferDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
         sceneDepthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
         D3D12_CLEAR_VALUE sceneClearValue {sceneFrameBufferDesc.Format, {0.2f, 0.2f, 0.2f, 1.0f}};

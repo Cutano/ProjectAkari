@@ -198,7 +198,7 @@ namespace Akari
         depthStencilDesc.DepthEnable = false;
         depthStencilDesc.StencilEnable = false;
 
-        const auto& renderTarget = Renderer::GetInstance().GetSwapChain()->GetRenderTarget();
+        const auto& renderTarget = Renderer::GetInstance().GetMsaaRenderTarget();
 
         // Setup the pipeline state.
         struct PipelineStateStream
@@ -220,8 +220,8 @@ namespace Akari
         pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
         pipelineStateStream.VS = {g_ImGUI_VS, sizeof(g_ImGUI_VS)};
         pipelineStateStream.PS = {g_ImGUI_PS, sizeof(g_ImGUI_PS)};
-        pipelineStateStream.RTVFormats = renderTarget.GetRenderTargetFormats();
-        pipelineStateStream.SampleDesc = renderTarget.GetSampleDesc();
+        pipelineStateStream.RTVFormats = renderTarget->GetRenderTargetFormats();
+        pipelineStateStream.SampleDesc = renderTarget->GetSampleDesc();
         pipelineStateStream.BlendDesc = CD3DX12_BLEND_DESC(blendDesc);
         pipelineStateStream.RasterizerState = CD3DX12_RASTERIZER_DESC(rasterizerDesc);
         pipelineStateStream.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(depthStencilDesc);
@@ -257,11 +257,11 @@ namespace Akari
         ImVec2 displayPos = drawData->DisplayPos;
 
         const auto& commandList = Renderer::GetInstance().GetCommandListDirect();
-        const auto& renderTarget = Renderer::GetInstance().GetSwapChain()->GetRenderTarget();
+        const auto& renderTarget = Renderer::GetInstance().GetMsaaRenderTarget();
 
         commandList->SetPipelineState(m_PipelineState);
         commandList->SetGraphicsRootSignature(m_RootSignature);
-        commandList->SetRenderTarget(renderTarget);
+        commandList->SetRenderTarget(*renderTarget);
 
         // Set root arguments.
         //    DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixOrthographicRH( drawData->DisplaySize.x,
