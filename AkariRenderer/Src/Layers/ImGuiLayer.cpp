@@ -34,6 +34,8 @@ namespace Akari
     {
         // cbuffer vertexBuffer : register(b0)
         MatrixCB,
+        // cbuffer TexIdBuffer : register(b1)
+        TexIdCB,
         // Texture2D texture0 : register(t0);
         Textures,
         NumRootParameters
@@ -88,6 +90,7 @@ namespace Akari
         unsigned char* pixelData = nullptr;
         int width, height;
         io.Fonts->GetTexDataAsRGBA32(&pixelData, &width, &height);
+        io.Fonts->SetTexID(0);
 
         auto& commandQueue = m_Device->GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COPY);
         auto commandList = commandQueue.GetCommandList();
@@ -126,6 +129,7 @@ namespace Akari
         CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParameters];
         rootParameters[MatrixCB].InitAsConstants(
             sizeof(DirectX::XMMATRIX) / 4, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+        rootParameters[TexIdCB].InitAsConstants(1, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
         rootParameters[Textures].InitAsDescriptorTable(1, &texDescriptorRage, D3D12_SHADER_VISIBILITY_PIXEL);
 
         CD3DX12_STATIC_SAMPLER_DESC linearRepeatSampler(0, D3D12_FILTER_COMPARISON_MIN_MAG_MIP_POINT);
@@ -312,6 +316,8 @@ namespace Akari
 
                     if (scissorRect.right - scissorRect.left > 0.0f && scissorRect.bottom - scissorRect.top > 0.0)
                     {
+                        auto texID = static_cast<uint32_t>(reinterpret_cast<uint64_t>(drawCmd.GetTexID()));
+                        commandList->SetGraphics32BitConstants(TexIdCB, 1, &texID);
                         commandList->SetScissorRect(scissorRect);
                         commandList->DrawIndexed(drawCmd.ElemCount, 1, indexOffset);
                     }
@@ -387,7 +393,9 @@ namespace Akari
     void ImGuiLayer::DrawSceneWindow()
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Scene", &m_ShowDemoWindow, windowFlags);
+        ImGui::PopStyleVar();
 
         ImVec2 view = ImGui::GetContentRegionAvail();
         if (view.x != m_SceneWindowWidth || view.y != m_SceneWindowHeight)
@@ -407,9 +415,8 @@ namespace Akari
         }
 
         const auto& frameBuffer = Renderer::GetInstance().GetRenderPipeline()->GetSceneRenderTarget()->GetTexture(Color0);
-        const auto addr = frameBuffer->GetShaderResourceView().ptr;
         ImDrawList* drawList = ImGui::GetWindowDrawList();
-        ImTextureID textureId = reinterpret_cast<ImTextureID>(addr);
+        ImTextureID textureId = reinterpret_cast<ImTextureID>(1);
         ImVec2 vMin = ImGui::GetWindowContentRegionMin();
         ImVec2 vMax = ImGui::GetWindowContentRegionMax();
         vMin.x += ImGui::GetWindowPos().x;

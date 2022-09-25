@@ -18,9 +18,13 @@ namespace Akari
         auto sceneDepthStencilDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, mainRt.GetWidth(), mainRt.GetHeight());
         sceneFrameBufferDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
         sceneDepthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-        m_SceneFrameBuffer = device->CreateTexture(sceneFrameBufferDesc);
+        D3D12_CLEAR_VALUE sceneClearValue {sceneFrameBufferDesc.Format, {0.2f, 0.2f, 0.2f, 1.0f}};
+        D3D12_CLEAR_VALUE depthClearValue;
+        depthClearValue.Format = sceneDepthStencilDesc.Format;
+        depthClearValue.DepthStencil = {0.0f, 0};
+        m_SceneFrameBuffer = device->CreateTexture(sceneFrameBufferDesc, &sceneClearValue);
         m_SceneFrameBuffer->SetName(L"SceneFrameBuffer");
-        m_SceneDepth = device->CreateTexture(sceneDepthStencilDesc);
+        m_SceneDepth = device->CreateTexture(sceneDepthStencilDesc, &depthClearValue);
         m_SceneDepth->SetName(L"SceneDepth");
 
         m_SceneRenderTarget = std::make_shared<RenderTarget>();
