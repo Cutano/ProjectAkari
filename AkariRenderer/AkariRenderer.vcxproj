@@ -62,7 +62,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -84,7 +84,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>

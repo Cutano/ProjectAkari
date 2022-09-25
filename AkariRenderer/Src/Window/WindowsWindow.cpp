@@ -8,7 +8,7 @@
 #include "Input/Input.h"
 
 #include <imgui.h>
-#include "stb_image.h"
+#include <stb_image.h>
 
 namespace Akari {
 
@@ -216,13 +216,13 @@ namespace Akari {
 		}
 
 		// Set icon
-		// {
-		// 	GLFWimage icon;
-		// 	int channels;
-		// 	icon.pixels = stbi_load("Resources/Editor/H_logo_square.png", &icon.width, &icon.height, &channels, 4);
-		// 	glfwSetWindowIcon(m_Window, 1, &icon);
-		// 	stbi_image_free(icon.pixels);
-		// }
+		{
+			GLFWimage icon;
+			int channels;
+			icon.pixels = stbi_load("Res/Icon/icon.png", &icon.width, &icon.height, &channels, 4);
+			glfwSetWindowIcon(m_Window, 1, &icon);
+			stbi_image_free(icon.pixels);
+		}
 	}
 
 	void WindowsWindow::Shutdown()

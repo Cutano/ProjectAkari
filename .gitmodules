@@ -8,3 +8,6 @@
 [submodule "AkariRenderer/Lib/entt"]
 	path = AkariRenderer/Lib/entt
 	url = https://github.com/skypjack/entt.git
+[submodule "AkariRenderer/Lib/stb"]
+	path = AkariRenderer/Lib/stb
+	url = https://github.com/nothings/stb.git
