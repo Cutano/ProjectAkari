@@ -6,16 +6,31 @@
 
 namespace Akari
 {
-    void ForwardOpaquePass::Render(const RenderContext& context)
+    ForwardOpaquePass::ForwardOpaquePass()
     {
-        const auto& cmd = Renderer::GetInstance().GetCommandListDirect();
-        ForwardOpaqueVisitor visitor(*cmd, context);
+        
+    }
+
+    void ForwardOpaquePass::Record(const RenderContext& context)
+    {
+        m_Cmd = Renderer::GetInstance().GetCommandListDirect();
+        ForwardOpaqueVisitor visitor(*m_Cmd, context);
         if (context.scene)
         {
             context.scene->Accept(visitor);
         }
+    }
 
-        Renderer::GetInstance().ExecuteCommandList(cmd);
+    void ForwardOpaquePass::Execute()
+    {
+        if (m_Cmd)
+        {
+            Renderer::GetInstance().ExecuteCommandList(m_Cmd);
+        }
+        else
+        {
+            spdlog::error("Pass executed with null command list!");
+        }
     }
 
     ForwardOpaqueVisitor::ForwardOpaqueVisitor(const CommandList& commandList, const RenderContext& context) : m_Cmd(commandList), m_Camera(*context.camera)

@@ -10,9 +10,10 @@ namespace Akari
     class ForwardOpaquePass : public RenderPass
     {
     public:
-        ForwardOpaquePass() = default;
+        ForwardOpaquePass();
 
-        void Render(const RenderContext& context) override;
+        void Record(const RenderContext& context) override;
+        void Execute() override;
     };
 
     class ForwardOpaqueVisitor : public Visitor

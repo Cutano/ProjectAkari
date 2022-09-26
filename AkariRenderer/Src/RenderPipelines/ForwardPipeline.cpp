@@ -29,7 +29,8 @@ namespace Akari
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
 
-        m_ForwardOpaquePass->Render(context);
+        m_ForwardOpaquePass->Record(context);
+        m_ForwardOpaquePass->Execute();
 
         {
             const auto cmd = Renderer::GetInstance().GetCommandListDirect();
