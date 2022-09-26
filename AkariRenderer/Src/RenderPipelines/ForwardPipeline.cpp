@@ -22,7 +22,7 @@ namespace Akari
     {
         {
             const auto cmd = Renderer::GetInstance().GetCommandListDirect();
-            constexpr FLOAT clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+            constexpr FLOAT clearColor[] = {0.2f, 0.2f, 0.2f, 1.0f};
             cmd->SetRenderTarget(*m_SceneMsaaRenderTarget);
             cmd->SetViewport(m_SceneMsaaRenderTarget->GetViewport());
             cmd->SetScissorRect(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX));
@@ -31,7 +31,7 @@ namespace Akari
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
 
-        
+
         m_GroundGridPass->Record(context);
         m_ForwardOpaquePass->Record(context);
         m_GroundGridPass->Execute();
@@ -39,7 +39,8 @@ namespace Akari
 
         {
             const auto cmd = Renderer::GetInstance().GetCommandListDirect();
-            cmd->ResolveSubresource(m_SceneRenderTarget->GetTexture(Color0), m_SceneMsaaRenderTarget->GetTexture(Color0));
+            cmd->ResolveSubresource(m_SceneRenderTarget->GetTexture(Color0),
+                                    m_SceneMsaaRenderTarget->GetTexture(Color0));
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
     }
