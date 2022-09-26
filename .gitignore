@@ -30,3 +30,6 @@ Build/
 
 # Deps
 /Assimp/*
+
+# Generated files
+Generated/
