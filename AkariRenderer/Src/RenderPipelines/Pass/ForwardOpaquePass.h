@@ -10,7 +10,7 @@ namespace Akari
     class ForwardOpaquePass : public RenderPass
     {
     public:
-        ForwardOpaquePass();
+        ForwardOpaquePass(std::shared_ptr<RenderTarget> renderTarget);
 
         void Record(const RenderContext& context) override;
         void Execute() override;

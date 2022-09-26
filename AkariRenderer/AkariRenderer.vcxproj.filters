@@ -66,6 +66,8 @@
     <ClCompile Include="Src\SceneComponents\Model.cpp" />
     <ClCompile Include="Src\SceneComponents\SceneObject.cpp" />
     <ClCompile Include="Src\UUID.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\GizmoPass.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\GroundGridPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -160,6 +162,8 @@
     <ClInclude Include="Src\UUID.h" />
     <ClInclude Include="Src\SceneComponents\Components.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\GizmoPass.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\GroundGridPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -172,6 +176,8 @@
     <FxCompile Include="Src\RHI\PanoToCubemap_CS.hlsl" />
     <FxCompile Include="Src\Shaders\ImGUI_PS.hlsl" />
     <FxCompile Include="Src\Shaders\ImGUI_VS.hlsl" />
+    <FxCompile Include="Src\Shaders\GroundGrid_VS.hlsl" />
+    <FxCompile Include="Src\Shaders\GroundGrid_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AkariRenderer.rc" />
