@@ -6,7 +6,7 @@
 
 namespace Akari
 {
-    ForwardOpaquePass::ForwardOpaquePass()
+    ForwardOpaquePass::ForwardOpaquePass(std::shared_ptr<RenderTarget> renderTarget) : RenderPass(renderTarget)
     {
         
     }

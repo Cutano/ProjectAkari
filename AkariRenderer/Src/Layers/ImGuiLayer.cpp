@@ -30,7 +30,7 @@ void GetSurfaceInfo(_In_ size_t width, _In_ size_t height, _In_ DXGI_FORMAT fmt,
 namespace Akari
 {
     // Root parameters for the ImGui root signature.
-    enum RootParameters
+    enum ImGuiRootParameters
     {
         // cbuffer vertexBuffer : register(b0)
         MatrixCB,
@@ -149,7 +149,7 @@ namespace Akari
         linearRepeatSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
         CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
-        rootSignatureDescription.Init_1_1(RootParameters::NumRootParameters, rootParameters, 1, &linearRepeatSampler,
+        rootSignatureDescription.Init_1_1(ImGuiRootParameters::NumRootParameters, rootParameters, 1, &linearRepeatSampler,
                                           rootSignatureFlags);
 
         m_RootSignature = m_Device->CreateRootSignature(rootSignatureDescription.Desc_1_1);
@@ -189,8 +189,8 @@ namespace Akari
         rasterizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
         rasterizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
         rasterizerDesc.DepthClipEnable = true;
-        rasterizerDesc.MultisampleEnable = FALSE;
-        rasterizerDesc.AntialiasedLineEnable = FALSE;
+        rasterizerDesc.MultisampleEnable = TRUE;
+        rasterizerDesc.AntialiasedLineEnable = TRUE;
         rasterizerDesc.ForcedSampleCount = 0;
         rasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 

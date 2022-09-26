@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ForwardPipeline.h"
 #include "Pass/ForwardOpaquePass.h"
+#include "Pass/GroundGridPass.h"
 
 #include "Layers/Layer.h"
 #include "RHI/Renderer.h"
@@ -13,7 +14,8 @@ namespace Akari
 {
     ForwardPipeline::ForwardPipeline()
     {
-        m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>();
+        m_GroundGridPass = std::make_unique<GroundGridPass>(m_SceneMsaaRenderTarget);
+        m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>(m_SceneMsaaRenderTarget);
     }
 
     void ForwardPipeline::Render(const RenderContext& context)
@@ -29,7 +31,10 @@ namespace Akari
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
 
+        
+        m_GroundGridPass->Record(context);
         m_ForwardOpaquePass->Record(context);
+        m_GroundGridPass->Execute();
         m_ForwardOpaquePass->Execute();
 
         {
