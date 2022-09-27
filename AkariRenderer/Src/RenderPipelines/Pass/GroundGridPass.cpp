@@ -125,17 +125,12 @@ namespace Akari
         
         const auto cam = context.scene->GetCamera();
         const auto mvp = cam->GetViewProjMatrix();
-
-        D3D12_VIEWPORT viewport = {};
-        viewport.Width = static_cast<FLOAT>(m_RenderTarget->GetWidth());
-        viewport.Height = static_cast<FLOAT>(m_RenderTarget->GetHeight());
-        viewport.MinDepth = 0.0f;
-        viewport.MaxDepth = 1.0f;
         
         m_Cmd->SetPipelineState(m_PipelineState);
         m_Cmd->SetGraphicsRootSignature(m_RootSig);
         m_Cmd->SetRenderTarget(*m_RenderTarget);
-        m_Cmd->SetViewport(viewport);
+        m_Cmd->SetViewport(m_RenderTarget->GetViewport());
+        m_Cmd->SetScissorRect(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX));
         m_Cmd->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
         m_Cmd->SetVertexBuffer(0, m_VertexBuffer);
         m_Cmd->SetGraphics32BitConstants(MatrixCB, mvp);
