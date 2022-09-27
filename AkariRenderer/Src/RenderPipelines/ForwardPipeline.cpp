@@ -3,7 +3,6 @@
 #include "Pass/ForwardOpaquePass.h"
 #include "Pass/GroundGridPass.h"
 
-#include "Layers/Layer.h"
 #include "RHI/Renderer.h"
 #include "RHI/SwapChain.h"
 #include "RHI/Texture.h"
