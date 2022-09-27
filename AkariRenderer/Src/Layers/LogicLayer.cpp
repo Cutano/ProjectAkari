@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "LogicLayer.h"
 
+#include "Input/Input.h"
 #include "RHI/Renderer.h"
 #include "RHI/RenderTarget.h"
 #include "RPI/RenderContext.h"
 #include "RPI/RenderPipeline.h"
 #include "SceneComponents/Scene.h"
+#include "SceneComponents/Camera/CameraController.h"
 #include "SceneComponents/Camera/PerspectiveCamera.h"
 
 namespace Akari
@@ -33,7 +35,8 @@ namespace Akari
         const auto& rt = Renderer::GetInstance().GetRenderPipeline()->GetSceneRenderTarget();
         const float height = static_cast<float>(rt->GetHeight()), width = static_cast<float>(rt->GetWidth());
         cam->SetAspectRatio(height / width);
-        cam->Update();
+
+        context.scene->GetCameraController()->Update(context.dt->GetSeconds());
     }
 
     void LogicLayer::OnEvent(Event& event)

@@ -183,6 +183,8 @@
     <ClCompile Include="Src\RPI\RenderContext.cpp" />
     <ClCompile Include="Src\RPI\RenderPipeline.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\Camera.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\CameraController.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\FlyingFPSCamera.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\OrthogonalCamera.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="Src\SceneComponents\Material.cpp" />
@@ -273,6 +275,8 @@
     <ClInclude Include="Src\RPI\RenderPass.h" />
     <ClInclude Include="Src\RPI\RenderPipeline.h" />
     <ClInclude Include="Src\SceneComponents\Camera\Camera.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\CameraController.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\FlyingFPSCamera.h" />
     <ClInclude Include="Src\SceneComponents\Camera\OrthogonalCamera.h" />
     <ClInclude Include="Src\SceneComponents\Camera\PerspectiveCamera.h" />
     <ClInclude Include="Src\SceneComponents\Components.h" />

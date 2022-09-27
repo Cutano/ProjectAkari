@@ -24,6 +24,8 @@ namespace Akari {
         static bool IsMouseButtonPressed(MouseButton button);
         static float GetMouseX();
         static float GetMouseY();
+        static float GetMouseDeltaX();
+        static float GetMouseDeltaY();
         static std::pair<float, float> GetMousePosition();
 
         static void SetCursorMode(CursorMode mode);
@@ -41,6 +43,7 @@ namespace Akari {
         static const std::map<int, Controller>& GetControllers() { return s_Controllers; }
     private:
         inline static std::map<int, Controller> s_Controllers;
+        inline static float preX = 0, preY = 0;
     };
 
 }

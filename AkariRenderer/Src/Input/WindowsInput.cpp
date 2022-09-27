@@ -65,10 +65,7 @@ namespace Akari {
 		bool pressed = false;
 		for (ImGuiViewport* viewport : context->Viewports)
 		{
-			if (!viewport->PlatformUserData)
-				continue;
-
-			GLFWwindow* windowHandle = *(GLFWwindow**)viewport->PlatformUserData; // First member is GLFWwindow
+			GLFWwindow* windowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()); // First member is GLFWwindow
 			if (!windowHandle)
 				continue;
 			auto state = glfwGetKey(windowHandle, static_cast<int32_t>(keycode));
@@ -95,10 +92,7 @@ namespace Akari {
 		bool pressed = false;
 		for (ImGuiViewport* viewport : context->Viewports)
 		{
-			if (!viewport->PlatformUserData)
-				continue;
-
-			GLFWwindow* windowHandle = *static_cast<GLFWwindow**>(viewport->PlatformUserData); // First member is GLFWwindow
+			GLFWwindow* windowHandle = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()); // First member is GLFWwindow
 			if (!windowHandle)
 				continue;
 
@@ -122,6 +116,22 @@ namespace Akari {
 	{
 		auto [x, y] = GetMousePosition();
 		return (float)y;
+	}
+
+	float Input::GetMouseDeltaX()
+	{
+		float nowX = GetMouseX();
+		float delta = nowX - preX;
+		preX = nowX;
+		return delta / Application::Get().GetWindow().GetWidth();
+	}
+
+	float Input::GetMouseDeltaY()
+	{
+		float nowY = GetMouseY();
+		float delta = nowY - preY;
+		preY = nowY;
+		return delta / Application::Get().GetWindow().GetHeight();
 	}
 
 	std::pair<float, float> Input::GetMousePosition()

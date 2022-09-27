@@ -4,6 +4,7 @@
 #include "RHI/Renderer.h"
 #include "Camera/PerspectiveCamera.h"
 #include "Components.h"
+#include "Camera/FlyingFPSCamera.h"
 #include "RHI/RenderTarget.h"
 
 namespace Akari
@@ -26,6 +27,8 @@ namespace Akari
             m_Camera->SetAspectRatio(camComponent.AspectRatio);
             m_Camera->SetZRange(camComponent.NearClip, camComponent.FarClip);
         }
+
+        m_CameraController = std::make_shared<FlyingFPSCamera>(*m_Camera, Math::Vector3(0.0f, 1.0f, 0.0f));
     }
 
     Scene::~Scene()
@@ -293,6 +296,11 @@ namespace Akari
     std::shared_ptr<PerspectiveCamera> Scene::GetCamera()
     {
         return m_Camera;
+    }
+
+    std::shared_ptr<CameraController> Scene::GetCameraController()
+    {
+        return m_CameraController;
     }
 
     void Scene::SortSceneObjects()
