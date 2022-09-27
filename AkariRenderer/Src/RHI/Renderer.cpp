@@ -123,7 +123,7 @@ namespace Akari
         m_SwapChain->Resize(width, height);
         m_MsaaRenderTarget->Resize(width, height);
         
-        spdlog::info("Window resized to {0}, {1}.", width, height);
+        spdlog::trace("Window resized to {0}, {1}.", width, height);
     }
 
     std::shared_ptr<CommandList> Renderer::GetCommandListDirect() const

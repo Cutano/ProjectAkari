@@ -14,6 +14,7 @@ public:
 
     void OnInit() override
     {
+        spdlog::set_level(spdlog::level::trace);
         spdlog::info("Launching Akari Renderer...");
         
         m_RenderPipeline = std::make_shared<Akari::ForwardPipeline>();

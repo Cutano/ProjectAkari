@@ -73,7 +73,7 @@ namespace Akari
         m_SceneRenderTarget->Resize(static_cast<uint32_t>(event.GetWidth()), static_cast<uint32_t>(event.GetHeight()));
         m_SceneMsaaRenderTarget->Resize(static_cast<uint32_t>(event.GetWidth()), static_cast<uint32_t>(event.GetHeight()));
 
-        spdlog::info("Scene resized to {0}, {1}.", event.GetWidth(), event.GetHeight());
+        spdlog::trace("Scene resized to {0}, {1}.", event.GetWidth(), event.GetHeight());
         return true;
     }
 
