@@ -11,22 +11,13 @@ namespace Akari
 {
     Scene::Scene(const std::string& name)
     {
+        const auto& rt = Renderer::GetInstance().GetMsaaRenderTarget();
         m_Camera = std::make_shared<PerspectiveCamera>();
-        auto camGO = CreateSceneObject("Camera");
-        auto& camComponent = camGO.AddComponent<CameraComponent>();
-        auto& camTrans = camGO.GetComponent<TransformComponent>();
-        camTrans.Translation = Math::Vector3(0.0f, 1.0f, 0.0f);
-        m_Camera->SetPosition(camTrans.Translation);
+        m_Camera->SetPosition(Math::Vector3(0.0f, 1.0f, 0.0f));
         m_Camera->SetLookDirection({0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f});
-
-        if (camComponent.IsPerspective)
-        {
-            const auto& rt = Renderer::GetInstance().GetMsaaRenderTarget();
-            camComponent.AspectRatio = static_cast<float>(rt->GetHeight()) / rt->GetWidth();
-            m_Camera->SetFOV(camComponent.VerticalFOV);
-            m_Camera->SetAspectRatio(camComponent.AspectRatio);
-            m_Camera->SetZRange(camComponent.NearClip, camComponent.FarClip);
-        }
+        m_Camera->SetAspectRatio(static_cast<float>(rt->GetHeight()) / rt->GetWidth());
+        m_Camera->SetFOV(Math::PI / 4.0f);
+        m_Camera->SetZRange(0.1f, 200.0f);
 
         m_CameraController = std::make_shared<FlyingFPSCamera>(*m_Camera, Math::Vector3(0.0f, 1.0f, 0.0f));
     }
