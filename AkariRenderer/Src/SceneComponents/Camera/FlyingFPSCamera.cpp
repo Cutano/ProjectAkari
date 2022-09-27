@@ -17,7 +17,7 @@ namespace Akari
         m_VerticalLookSensitivity = 2.0f;
         m_MoveSpeed = 10.0f;
         m_StrafeSpeed = 10.0f;
-        m_MouseSensitivityX = 1.0f;
+        m_MouseSensitivityX = 1.5f;
         m_MouseSensitivityY = 1.0f;
 
         m_CurrentPitch = Sin(Dot(camera.GetForwardVec(), m_WorldUp));
@@ -75,8 +75,8 @@ namespace Akari
 
             // don't apply momentum to mouse inputs
             float mouseX = Input::GetMouseDeltaX(), mouseY = -Input::GetMouseDeltaY();
-            yaw += 1.2f * mouseX * m_MouseSensitivityX;
-            pitch += 1.2f * mouseY * m_MouseSensitivityY;
+            yaw += 2.0f * mouseX * m_MouseSensitivityX;
+            pitch += 2.0f * mouseY * m_MouseSensitivityY;
 
             m_CurrentPitch += pitch;
             m_CurrentPitch = XMMin(XM_PIDIV2, m_CurrentPitch);
