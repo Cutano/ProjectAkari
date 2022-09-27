@@ -12,7 +12,7 @@ namespace Akari {
         
         void OnAttach() override;
         void OnDetach() override;
-        void OnUpdate(DeltaTime deltaTime) override;
+        void OnUpdate(RenderContext& context) override;
         void OnEvent(Event& event) override;
 
     private:

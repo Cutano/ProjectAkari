@@ -237,7 +237,7 @@ namespace Akari
         m_pImGuiCtx = nullptr;
     }
 
-    void ImGuiLayer::OnUpdate(DeltaTime deltaTime)
+    void ImGuiLayer::OnUpdate(RenderContext& context)
     {
         ImGui::SetCurrentContext(m_pImGuiCtx);
         ImGui_ImplGlfw_NewFrame();

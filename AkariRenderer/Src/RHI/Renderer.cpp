@@ -97,7 +97,7 @@ namespace Akari
 
         if (m_ImGuiLayer != nullptr)
         {
-            m_ImGuiLayer->OnUpdate(*context.dt);
+            m_ImGuiLayer->OnUpdate(context);
         }
         else
         {

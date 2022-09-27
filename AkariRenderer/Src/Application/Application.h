@@ -11,6 +11,7 @@
 namespace Akari {
 	class Layer;
 	class Model;
+	class Scene;
 	class RenderPipeline;
 	
 	struct RendererConfig
@@ -127,7 +128,7 @@ namespace Akari {
 		ApplicationSpecification m_Specification;
 		
 		std::shared_ptr<Layer> m_LogicLayer;
-		
+		std::shared_ptr<Scene> m_Scene;
 		std::shared_ptr<RenderPipeline> m_RenderPipeline;
 	};
 

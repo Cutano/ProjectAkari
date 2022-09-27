@@ -18,6 +18,8 @@ namespace Akari
     private:
         enum RootParams
         {
+            // cbuffer vertexBuffer : register(b0)
+            MatrixCB,
             NumRootParams
         };
 

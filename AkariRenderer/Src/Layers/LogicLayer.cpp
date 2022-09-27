@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "LogicLayer.h"
 
+#include "RPI/RenderContext.h"
+#include "SceneComponents/Scene.h"
+#include "SceneComponents/Camera/PerspectiveCamera.h"
+
 namespace Akari
 {
     LogicLayer::LogicLayer(const std::string& name)
@@ -20,8 +24,9 @@ namespace Akari
     {
     }
 
-    void LogicLayer::OnUpdate(DeltaTime deltaTime)
+    void LogicLayer::OnUpdate(RenderContext& context)
     {
+        context.scene->GetCamera()->Update();
     }
 
     void LogicLayer::OnEvent(Event& event)

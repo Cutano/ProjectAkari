@@ -7,6 +7,8 @@
 #include "RHI/Renderer.h"
 #include "RHI/RenderTarget.h"
 #include "RHI/VertexBuffer.h"
+#include "SceneComponents/Scene.h"
+#include "SceneComponents/Camera/PerspectiveCamera.h"
 #include "Shaders/Generated/GroundGrid_VS.h"
 #include "Shaders/Generated/GroundGrid_PS.h"
 
@@ -48,8 +50,12 @@ namespace Akari
             D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
             D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 
+        CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParams];
+        rootParameters[MatrixCB].InitAsConstants(
+            sizeof(XMMATRIX) / 4, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+
         CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
-        rootSignatureDescription.Init_1_1(NumRootParams, nullptr, 0, nullptr, rootSignatureFlags);
+        rootSignatureDescription.Init_1_1(NumRootParams, rootParameters, 0, nullptr, rootSignatureFlags);
         
         m_RootSig = Renderer::GetInstance().GetDevice()->CreateRootSignature(rootSignatureDescription.Desc_1_1);
 
@@ -115,13 +121,15 @@ namespace Akari
     {
         m_Cmd = Renderer::GetInstance().GetCommandListDirect();
         
-        // const Camera& camera = *context.camera;
+        const auto cam = context.scene->GetCamera();
+        const auto mvp = cam->GetViewProjMatrix();
         
         m_Cmd->SetPipelineState(m_PipelineState);
         m_Cmd->SetGraphicsRootSignature(m_RootSig);
         m_Cmd->SetRenderTarget(*m_RenderTarget);
         m_Cmd->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
         m_Cmd->SetVertexBuffer(0, m_VertexBuffer);
+        m_Cmd->SetGraphics32BitConstants(MatrixCB, mvp);
         
         m_Cmd->Draw(static_cast<uint32_t>(m_VertexBuffer->GetNumVertices()));
     }

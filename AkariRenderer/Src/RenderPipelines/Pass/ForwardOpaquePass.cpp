@@ -3,6 +3,7 @@
 #include "RHI/CommandList.h"
 #include "RHI/Renderer.h"
 #include "SceneComponents/Model.h"
+#include "SceneComponents/Scene.h"
 
 namespace Akari
 {
@@ -14,11 +15,11 @@ namespace Akari
     void ForwardOpaquePass::Record(const RenderContext& context)
     {
         m_Cmd = Renderer::GetInstance().GetCommandListDirect();
-        ForwardOpaqueVisitor visitor(*m_Cmd, context);
-        if (context.scene)
-        {
-            context.scene->Accept(visitor);
-        }
+        // ForwardOpaqueVisitor visitor(*m_Cmd, context);
+        // if (context.scene)
+        // {
+        //     context.scene->Accept(visitor);
+        // }
     }
 
     void ForwardOpaquePass::Execute()
@@ -33,7 +34,7 @@ namespace Akari
         }
     }
 
-    ForwardOpaqueVisitor::ForwardOpaqueVisitor(const CommandList& commandList, const RenderContext& context) : m_Cmd(commandList), m_Camera(*context.camera)
+    ForwardOpaqueVisitor::ForwardOpaqueVisitor(const CommandList& commandList, const RenderContext& context) : m_Cmd(commandList), m_Camera(*context.scene->GetCamera())
     {
         
     }

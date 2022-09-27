@@ -1,11 +1,31 @@
 #include "pch.h"
 #include "Scene.h"
 #include "SceneObject.h"
+#include "RHI/Renderer.h"
+#include "Camera/PerspectiveCamera.h"
+#include "Components.h"
+#include "RHI/RenderTarget.h"
 
 namespace Akari
 {
     Scene::Scene(const std::string& name)
     {
+        m_Camera = std::make_shared<PerspectiveCamera>();
+        auto camGO = CreateSceneObject("Camera");
+        auto& camComponent = camGO.AddComponent<CameraComponent>();
+        auto& camTrans = camGO.GetComponent<TransformComponent>();
+        camTrans.Translation = Math::Vector3(0.0f, 1.0f, 0.0f);
+        m_Camera->SetPosition(camTrans.Translation);
+        m_Camera->SetLookDirection({0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f});
+
+        if (camComponent.IsPerspective)
+        {
+            const auto& rt = Renderer::GetInstance().GetMsaaRenderTarget();
+            camComponent.AspectRatio = static_cast<float>(rt->GetHeight()) / rt->GetWidth();
+            m_Camera->SetFOV(camComponent.VerticalFOV);
+            m_Camera->SetAspectRatio(camComponent.AspectRatio);
+            m_Camera->SetZRange(camComponent.NearClip, camComponent.FarClip);
+        }
     }
 
     Scene::~Scene()
@@ -268,6 +288,11 @@ namespace Akari
             ConvertToWorldSpace(sceneObject);
 
         sceneObject.SetParentUUID(0);
+    }
+
+    std::shared_ptr<PerspectiveCamera> Scene::GetCamera()
+    {
+        return m_Camera;
     }
 
     void Scene::SortSceneObjects()

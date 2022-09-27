@@ -96,4 +96,15 @@ namespace Akari
     {
         UUID ModelID;
     };
+
+    struct CameraComponent
+    {
+        float Exposure = 1.0f;
+
+        bool IsPerspective = true;
+        float VerticalFOV = Math::PI / 4.0f;	// Field of view angle in radians
+        float AspectRatio = 9.0 / 16.0;
+        float NearClip = 0.1f;
+        float FarClip = 400.0f;
+    };
 }

@@ -5,6 +5,8 @@
 
 namespace Akari {
 
+    struct RenderContext;
+    
     class Layer
     {
     public:
@@ -13,7 +15,7 @@ namespace Akari {
 
         virtual void OnAttach() = 0;
         virtual void OnDetach() = 0;
-        virtual void OnUpdate(DeltaTime deltaTime) = 0;
+        virtual void OnUpdate(RenderContext& context) = 0;
         virtual void OnEvent(Event& event) = 0;
 
         void SetEventCallback(const std::function<void(Event&)>& callback) { m_EventCallBack = callback; }

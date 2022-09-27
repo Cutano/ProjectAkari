@@ -14,6 +14,8 @@
 #include "RHI/SwapChain.h"
 #include "RPI/RenderContext.h"
 #include "RPI/RenderPipeline.h"
+#include "SceneComponents/Scene.h"
+#include "SceneComponents/SceneObject.h"
 
 extern ImGuiContext* GImGui;
 namespace Akari {
@@ -51,6 +53,8 @@ namespace Akari {
 		// Init renderer and execute command queue to compile all shaders
 		Renderer::GetInstance().Init();
 		// Renderer::WaitAndRender();
+
+		m_Scene = std::make_shared<Scene>();
 		
 		m_LogicLayer = std::make_shared<LogicLayer>();
 		m_LogicLayer->SetEventCallback([this](Event& e) { OnEvent(e); });
@@ -74,6 +78,7 @@ namespace Akari {
 
 		// TODO: Load resource and prepare first frame
 		RenderContext context{};
+		context.scene = m_Scene;
 		
 		while (m_Running)
 		{
@@ -88,7 +93,7 @@ namespace Akari {
 				{
 					SCOPE_PERF("Application Layer::OnUpdate");
 					context.dt = &m_DeltaTime;
-					m_LogicLayer->OnUpdate(m_DeltaTime);
+					m_LogicLayer->OnUpdate(context);
 					Renderer::GetInstance().OnUpdate(context);
 					// Renderer::GetInstance().OnUpdate(m_DeltaTime);
 				}
@@ -112,7 +117,7 @@ namespace Akari {
 
 			float time = GetTime();
 			m_Frametime = time - m_LastFrameTime;
-			m_DeltaTime = std::min<float>(m_Frametime, 0.0333f);
+			m_DeltaTime = m_Frametime;
 			m_LastFrameTime = time;
 
 			//HZ_CORE_INFO("-- END FRAME {0}", frameCounter);

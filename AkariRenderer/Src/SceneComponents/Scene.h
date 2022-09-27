@@ -8,6 +8,7 @@ namespace Akari
     class Model;
     class Material;
     class SceneObject;
+    class PerspectiveCamera;
     struct TransformComponent;
     
     class Scene
@@ -46,6 +47,7 @@ namespace Akari
         void UnparentSceneObject(SceneObject sceneObject, bool convertToWorldSpace = true);
 
         UUID GetUUID() const { return m_SceneID; }
+        std::shared_ptr<PerspectiveCamera> GetCamera();
         
     private:
         void SortSceneObjects();
@@ -57,6 +59,8 @@ namespace Akari
         std::map<UUID, std::shared_ptr<Model>> m_ModelDic;
         std::map<UUID, std::shared_ptr<Material>> m_MaterialDic;
         std::unordered_map<UUID, SceneObject> m_SceneObjectIDMap;
+
+        std::shared_ptr<PerspectiveCamera> m_Camera;
 
         friend class SceneObject;
     };
