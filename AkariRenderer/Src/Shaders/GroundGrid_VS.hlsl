@@ -3,7 +3,16 @@ cbuffer vertexBuffer : register(b0)
 	float4x4 ProjectionMatrix;
 }
 
-float4 main(float2 pos : POSITION) : SV_POSITION
+struct PS_INPUT
 {
-	return mul(ProjectionMatrix, float4(pos.x, 0.0f, pos.y, 1.0f));
+	float4 pos    : SV_POSITION;
+	float3 posWS  : TEXCOORD0;
+};
+
+PS_INPUT main(float3 pos : POSITION)
+{
+	PS_INPUT o;
+	o.pos = mul(ProjectionMatrix, float4(pos.x, pos.y, pos.z, 1.0f));
+	o.posWS = pos;
+	return o;
 }

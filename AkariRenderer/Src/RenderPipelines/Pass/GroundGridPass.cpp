@@ -23,7 +23,7 @@ namespace Akari
         // clang-format off
         constexpr D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
             {
-                "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0,
+                "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
                 D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
             }
         };
@@ -31,19 +31,19 @@ namespace Akari
         constexpr int lines = 1602;
         constexpr float endpoint = (lines - 2) / 4.0f;
         static_assert((lines & 1) == 0 && (lines / 2 & 1) == 1);
-        XMFLOAT2 vertices[lines * 2];
+        XMFLOAT3 vertices[lines * 2];
         // clang-format on
 
         // Generate grid vertices
         for (int i = 0; i < lines * 2; i += 4)
         {
-            vertices[i + 0] = XMFLOAT2(-endpoint, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
-            vertices[i + 1] = XMFLOAT2(endpoint, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
-            vertices[i + 2] = XMFLOAT2(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), -endpoint);
-            vertices[i + 3] = XMFLOAT2(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), endpoint);
+            vertices[i + 0] = XMFLOAT3(-endpoint, 0, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
+            vertices[i + 1] = XMFLOAT3(endpoint, 0, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
+            vertices[i + 2] = XMFLOAT3(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), 0, -endpoint);
+            vertices[i + 3] = XMFLOAT3(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), 0, endpoint);
         }
 
-        m_VertexBuffer = m_Cmd->CopyVertexBuffer(lines * 2, sizeof(XMFLOAT2), vertices);
+        m_VertexBuffer = m_Cmd->CopyVertexBuffer(lines * 2, sizeof(XMFLOAT3), vertices);
         
         constexpr D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
             D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -52,7 +52,9 @@ namespace Akari
 
         CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParams];
         rootParameters[MatrixCB].InitAsConstants(
-            sizeof(XMMATRIX) / 4, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+            sizeof(XMMATRIX) / 4, MatrixCB, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+        rootParameters[DirCB].InitAsConstants(
+            4, DirCB, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
 
         CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
         rootSignatureDescription.Init_1_1(NumRootParams, rootParameters, 0, nullptr, rootSignatureFlags);
@@ -137,6 +139,7 @@ namespace Akari
         m_Cmd->SetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
         m_Cmd->SetVertexBuffer(0, m_VertexBuffer);
         m_Cmd->SetGraphics32BitConstants(MatrixCB, mvp);
+        m_Cmd->SetGraphics32BitConstants(DirCB, cam->GetPosition());
         
         m_Cmd->Draw(static_cast<uint32_t>(m_VertexBuffer->GetNumVertices()));
     }

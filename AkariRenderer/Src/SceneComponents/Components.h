@@ -105,6 +105,6 @@ namespace Akari
         float VerticalFOV = Math::PI / 4.0f;	// Field of view angle in radians
         float AspectRatio = 9.0 / 16.0;
         float NearClip = 0.1f;
-        float FarClip = 400.0f;
+        float FarClip = 100.0f;
     };
 }

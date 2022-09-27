@@ -20,6 +20,8 @@ namespace Akari
         {
             // cbuffer vertexBuffer : register(b0)
             MatrixCB,
+            // cbuffer dirBuffer : register(b1)
+            DirCB,
             NumRootParams
         };
 
