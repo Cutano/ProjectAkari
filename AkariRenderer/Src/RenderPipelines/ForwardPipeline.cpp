@@ -13,6 +13,7 @@ namespace Akari
 {
     ForwardPipeline::ForwardPipeline()
     {
+        m_SkyboxPass = std::make_unique<SkyboxPass>(m_SceneMsaaRenderTarget);
         m_GroundGridPass = std::make_unique<GroundGridPass>(m_SceneMsaaRenderTarget);
         m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>(m_SceneMsaaRenderTarget);
     }
@@ -30,9 +31,11 @@ namespace Akari
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
 
-
+        m_SkyboxPass->Record(context);
         m_GroundGridPass->Record(context);
         m_ForwardOpaquePass->Record(context);
+        
+        m_SkyboxPass->Execute();
         m_GroundGridPass->Execute();
         m_ForwardOpaquePass->Execute();
 

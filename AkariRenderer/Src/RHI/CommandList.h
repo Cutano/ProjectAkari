@@ -560,7 +560,7 @@ protected:
 private:
     // Used for procedural mesh generation.
     using VertexCollection = std::vector<Akari::VertexPositionNormalTangentBitangentTexture>;
-    using IndexCollection  = std::vector<size_t>;
+    using IndexCollection  = std::vector<int32_t>;
 
     // Create a scene that contains a single node with a single mesh.
     std::shared_ptr<Model> CreateModel( const VertexCollection& vertices, const IndexCollection& indices );

@@ -151,6 +151,7 @@
     <ClCompile Include="Src\RenderPipelines\Pass\GizmoPass.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\GroundGridPass.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\ShadowPass.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\SkyboxPass.cpp" />
     <ClCompile Include="Src\RHI\Adapter.cpp" />
     <ClCompile Include="Src\RHI\Buffer.cpp" />
     <ClCompile Include="Src\RHI\ByteAddressBuffer.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Src\RenderPipelines\Pass\GizmoPass.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\GroundGridPass.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\ShadowPass.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\SkyboxPass.h" />
     <ClInclude Include="Src\RHI\Adapter.h" />
     <ClInclude Include="Src\RHI\Buffer.h" />
     <ClInclude Include="Src\RHI\ByteAddressBuffer.h" />
@@ -498,6 +500,28 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Shaders\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <FxCompile Include="Src\Shaders\Skybox_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Src\Shaders\Generated\%(Filename).h</HeaderFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)Src\Shaders\Generated\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Shaders\%(Filename).cso</ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_Skybox_PS</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_Skybox_PS</VariableName>
+    </FxCompile>
+    <FxCompile Include="Src\Shaders\Skybox_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.1</ShaderModel>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)Src\Shaders\Generated\%(Filename).h</HeaderFileOutput>
+      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)Src\Shaders\Generated\%(Filename).h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Shaders\%(Filename).cso</ObjectFileOutput>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_Skybox_VS</VariableName>
+      <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_Skybox_VS</VariableName>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Assimp\code\assimp.vcxproj">
@@ -517,6 +541,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\Icon\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Res\Textures\HDR" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

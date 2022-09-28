@@ -68,6 +68,9 @@
     <ClCompile Include="Src\UUID.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\GizmoPass.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\GroundGridPass.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\SkyBoxPass.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\CameraController.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\FlyingFPSCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -164,6 +167,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\GizmoPass.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\GroundGridPass.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\SkyBoxPass.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\CameraController.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\FlyingFPSCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -178,6 +184,8 @@
     <FxCompile Include="Src\Shaders\ImGUI_VS.hlsl" />
     <FxCompile Include="Src\Shaders\GroundGrid_VS.hlsl" />
     <FxCompile Include="Src\Shaders\GroundGrid_PS.hlsl" />
+    <FxCompile Include="Src\Shaders\Skybox_VS.hlsl" />
+    <FxCompile Include="Src\Shaders\Skybox_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AkariRenderer.rc" />
