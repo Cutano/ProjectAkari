@@ -75,6 +75,10 @@ namespace Akari
         rootSignatureDescription.Init_1_1( NumRootParams, rootParameters, 1, &linearClampSampler, rootSignatureFlags );
 
         m_RootSig = Renderer::GetInstance().GetDevice()->CreateRootSignature( rootSignatureDescription.Desc_1_1 );
+
+        D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+        depthStencilDesc.DepthEnable = false;
+        depthStencilDesc.StencilEnable = false;
         
         D3D12_RASTERIZER_DESC rasterizerDesc = {};
         rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
@@ -100,6 +104,7 @@ namespace Akari
             CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
             CD3DX12_PIPELINE_STATE_STREAM_SAMPLE_DESC           SampleDesc;
             CD3DX12_PIPELINE_STATE_STREAM_RASTERIZER            RasterizerState;
+            CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL         DepthStencilState;
         } skyboxPipelineStateStream {};
 
         skyboxPipelineStateStream.pRootSignature        = m_RootSig->GetD3D12RootSignature().Get();
@@ -109,7 +114,8 @@ namespace Akari
         skyboxPipelineStateStream.PS                    = {g_Skybox_PS, sizeof g_Skybox_PS};
         skyboxPipelineStateStream.RTVFormats            = m_RenderTarget->GetRenderTargetFormats();
         skyboxPipelineStateStream.SampleDesc            = m_RenderTarget->GetSampleDesc();
-        skyboxPipelineStateStream.RasterizerState       = CD3DX12_RASTERIZER_DESC(rasterizerDesc);;
+        skyboxPipelineStateStream.RasterizerState       = CD3DX12_RASTERIZER_DESC(rasterizerDesc);
+        skyboxPipelineStateStream.DepthStencilState     = CD3DX12_DEPTH_STENCIL_DESC(depthStencilDesc);
 
         m_PipelineState = Renderer::GetInstance().GetDevice()->CreatePipelineStateObject( skyboxPipelineStateStream );
     }
