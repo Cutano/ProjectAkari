@@ -209,12 +209,12 @@ namespace Akari
     {
         if (Input::IsMouseButtonPressed(MouseButton::Right))
         {
-            m_NormalSpeed += e.GetYOffset() * 0.3f * m_NormalSpeed;
+            m_NormalSpeed += static_cast<float>(e.GetYOffset()) * 0.3f * m_NormalSpeed;
             m_NormalSpeed = std::clamp(m_NormalSpeed, MIN_SPEED, MAX_SPEED);
         }
         else
         {
-            MouseZoom(e.GetYOffset() * 0.1f);
+            MouseZoom(static_cast<float>(e.GetYOffset()) * 0.1f);
             UpdateCameraView();
         }
 

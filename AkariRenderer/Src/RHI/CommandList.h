@@ -574,7 +574,7 @@ private:
     // Helper function to compute a tangent vector at a point on a unit sphere aligned to the x,z plane.
     inline DirectX::XMVECTOR GetCircleTangent( size_t i, size_t tessellation ) noexcept;
     // Helper creates a triangle fan to close the end of a cylinder / cone
-    void CreateCylinderCap( VertexCollection& vertices, IndexCollection& indices, size_t tessellation, float height,
+    void CreateCylinderCap( VertexCollection& vertices, IndexCollection& indices, uint32_t tessellation, float height,
                             float radius, bool isTop );
 
     // Add a resource to a list of tracked resources (ensures lifetime while command list is in-flight on a command

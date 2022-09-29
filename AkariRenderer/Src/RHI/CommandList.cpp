@@ -835,11 +835,11 @@ std::shared_ptr<Model> CommandList::CreateSphere( float radius, uint32_t tessell
     VertexCollection vertices;
     IndexCollection  indices;
 
-    size_t verticalSegments   = tessellation;
-    size_t horizontalSegments = tessellation * 2;
+    int32_t verticalSegments   = tessellation;
+    int32_t horizontalSegments = tessellation * 2;
 
     // Create rings of vertices at progressively higher latitudes.
-    for ( size_t i = 0; i <= verticalSegments; i++ )
+    for ( int32_t i = 0; i <= verticalSegments; i++ )
     {
         float v = 1 - (float)i / verticalSegments;
 
@@ -849,7 +849,7 @@ std::shared_ptr<Model> CommandList::CreateSphere( float radius, uint32_t tessell
         XMScalarSinCos( &dy, &dxz, latitude );
 
         // Create a single ring of vertices at this latitude.
-        for ( size_t j = 0; j <= horizontalSegments; j++ )
+        for ( int32_t j = 0; j <= horizontalSegments; j++ )
         {
             float u = (float)j / horizontalSegments;
 
@@ -870,14 +870,14 @@ std::shared_ptr<Model> CommandList::CreateSphere( float radius, uint32_t tessell
     }
 
     // Fill the index buffer with triangles joining each pair of latitude rings.
-    size_t stride = horizontalSegments + 1;
+    int32_t stride = horizontalSegments + 1;
 
-    for ( size_t i = 0; i < verticalSegments; i++ )
+    for ( int32_t i = 0; i < verticalSegments; i++ )
     {
-        for ( size_t j = 0; j <= horizontalSegments; j++ )
+        for ( int32_t j = 0; j <= horizontalSegments; j++ )
         {
-            size_t nextI = i + 1;
-            size_t nextJ = ( j + 1 ) % stride;
+            int32_t nextI = i + 1;
+            int32_t nextJ = ( j + 1 ) % stride;
 
             indices.push_back( i * stride + nextJ );
             indices.push_back( nextI * stride + j );
@@ -897,21 +897,21 @@ std::shared_ptr<Model> CommandList::CreateSphere( float radius, uint32_t tessell
     return CreateModel( vertices, indices );
 }
 
-void CommandList::CreateCylinderCap( VertexCollection& vertices, IndexCollection& indices, size_t tessellation,
+void CommandList::CreateCylinderCap( VertexCollection& vertices, IndexCollection& indices, uint32_t tessellation,
                                      float height, float radius, bool isTop )
 {
     // Create cap indices.
-    for ( size_t i = 0; i < tessellation - 2; i++ )
+    for ( uint32_t i = 0; i < tessellation - 2; i++ )
     {
-        size_t i1 = ( i + 1 ) % tessellation;
-        size_t i2 = ( i + 2 ) % tessellation;
+        uint32_t i1 = ( i + 1 ) % tessellation;
+        uint32_t i2 = ( i + 2 ) % tessellation;
 
         if ( isTop )
         {
             std::swap( i1, i2 );
         }
 
-        size_t vbase = vertices.size();
+        uint32_t vbase = static_cast<uint32_t>(vertices.size());
         indices.push_back( vbase + i2 );
         indices.push_back( vbase + i1 );
         indices.push_back( vbase );
@@ -952,10 +952,10 @@ std::shared_ptr<Model> CommandList::CreateCylinder( float radius, float height, 
 
     XMVECTOR topOffset = XMVectorScale( g_XMIdentityR1, height );
 
-    size_t stride = tessellation + 1;
+    uint32_t stride = tessellation + 1;
 
     // Create a ring of triangles around the outside of the cylinder.
-    for ( size_t i = 0; i <= tessellation; i++ )
+    for ( uint32_t i = 0; i <= tessellation; i++ )
     {
         XMVECTOR normal = GetCircleVector( i, tessellation );
 
@@ -1003,10 +1003,10 @@ std::shared_ptr<Model> CommandList::CreateCone( float radius, float height, uint
 
     XMVECTOR topOffset = XMVectorScale( g_XMIdentityR1, height );
 
-    size_t stride = tessellation + 1;
+    uint32_t stride = tessellation + 1;
 
     // Create a ring of triangles around the outside of the cone.
-    for ( size_t i = 0; i <= tessellation; i++ )
+    for ( uint32_t i = 0; i <= tessellation; i++ )
     {
         XMVECTOR circlevec = GetCircleVector( i, tessellation );
 
@@ -1050,10 +1050,10 @@ std::shared_ptr<Model> CommandList::CreateTorus( float radius, float thickness, 
     VertexCollection verticies;
     IndexCollection  indices;
 
-    size_t stride = tessellation + 1;
+    uint32_t stride = tessellation + 1;
 
     // First we loop around the main ring of the torus.
-    for ( size_t i = 0; i <= tessellation; i++ )
+    for ( uint32_t i = 0; i <= tessellation; i++ )
     {
         float u = (float)i / tessellation;
 
@@ -1064,7 +1064,7 @@ std::shared_ptr<Model> CommandList::CreateTorus( float radius, float thickness, 
         XMMATRIX transform = XMMatrixTranslation( radius, 0, 0 ) * XMMatrixRotationY( outerAngle );
 
         // Now we loop along the other axis, around the side of the tube.
-        for ( size_t j = 0; j <= tessellation; j++ )
+        for ( uint32_t j = 0; j <= tessellation; j++ )
         {
             float v = 1 - (float)j / tessellation;
 
@@ -1084,8 +1084,8 @@ std::shared_ptr<Model> CommandList::CreateTorus( float radius, float thickness, 
             verticies.emplace_back( position, normal, textureCoordinate );
 
             // And create indices for two triangles.
-            size_t nextI = ( i + 1 ) % stride;
-            size_t nextJ = ( j + 1 ) % stride;
+            uint32_t nextI = ( i + 1 ) % stride;
+            uint32_t nextJ = ( j + 1 ) % stride;
 
             indices.push_back( nextI * stride + j );
             indices.push_back( i * stride + nextJ );
