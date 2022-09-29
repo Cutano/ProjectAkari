@@ -759,21 +759,21 @@ void GetSurfaceInfo(_In_ size_t width, _In_ size_t height, _In_ DXGI_FORMAT fmt,
     }
     else if (packed)
     {
-        rowBytes = (width + 1 >> 1) * bpe;
+        rowBytes = ((width + 1) >> 1) * bpe;
         numRows = height;
         numBytes = rowBytes * height;
     }
     else if (fmt == DXGI_FORMAT_NV11)
     {
-        rowBytes = (width + 3 >> 2) * 4;
+        rowBytes = ((width + 3) >> 2) * 4;
         numRows = height * 2; // Direct3D makes this simplifying assumption, although it is larger than the 4:1:1 data
         numBytes = rowBytes * numRows;
     }
     else if (planar)
     {
-        rowBytes = (width + 1 >> 1) * bpe;
-        numBytes = rowBytes * height + (rowBytes * height + 1 >> 1);
-        numRows = height + (height + 1 >> 1);
+        rowBytes = ((width + 1) >> 1) * bpe;
+        numBytes = rowBytes * height + ((rowBytes * height + 1) >> 1);
+        numRows = height + ((height + 1) >> 1);
     }
     else
     {

@@ -32,7 +32,7 @@ namespace Akari
     {
         const auto& cam = context.scene->GetCamera();
         const auto& rt = Renderer::GetInstance().GetRenderPipeline()->GetSceneSDRRenderTarget();
-        const float height = rt->GetHeight(), width = rt->GetWidth();
+        const auto height = rt->GetHeight(), width = rt->GetWidth();
         cam->SetViewportSize(width, height);
         cam->OnUpdate(*context.dt);
     }
