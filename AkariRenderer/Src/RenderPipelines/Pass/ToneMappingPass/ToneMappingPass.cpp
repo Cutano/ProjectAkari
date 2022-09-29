@@ -6,12 +6,13 @@
 #include "RHI/Renderer.h"
 #include "RHI/RenderTarget.h"
 #include "RHI/RootSignature.h"
+#include "RHI/CommandList.h"
 #include "Shaders/Generated/HDRtoSDR_VS.h"
 #include "Shaders/Generated/HDRtoSDR_PS.h"
 
 namespace Akari
 {
-    ToneMappingPass::ToneMappingPass(std::shared_ptr<RenderTarget> renderTarget) : RenderPass(renderTarget)
+    ToneMappingPass::ToneMappingPass(std::shared_ptr<RenderTarget> renderTarget, std::shared_ptr<Texture> hdrTex) : RenderPass(renderTarget), m_HDRTex(hdrTex)
     {
         CD3DX12_DESCRIPTOR_RANGE1 descriptorRange( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0 );
 
@@ -54,6 +55,17 @@ namespace Akari
     void ToneMappingPass::Record(const RenderContext& context)
     {
         m_Cmd = Renderer::GetInstance().GetCommandListDirect();
+
+        // Perform HDR -> SDR tonemapping directly to the SwapChain's render target.
+        m_Cmd->SetRenderTarget( *m_RenderTarget );
+        m_Cmd->SetViewport( m_RenderTarget->GetViewport() );
+        m_Cmd->SetPipelineState( m_PipelineState );
+        m_Cmd->SetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+        m_Cmd->SetGraphicsRootSignature( m_RootSig );
+        m_Cmd->SetGraphics32BitConstants( 0, g_ToneMappingParameters );
+        m_Cmd->SetShaderResourceView( 1, 0, m_HDRTex, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE );
+
+        m_Cmd->Draw( 3 );
     }
 
     void ToneMappingPass::Execute()
