@@ -51,5 +51,5 @@ namespace Akari
         float Gamma;
     };
 
-    static ToneMappingParameters g_ToneMappingParameters;
+    extern ToneMappingParameters g_ToneMappingParameters;
 }

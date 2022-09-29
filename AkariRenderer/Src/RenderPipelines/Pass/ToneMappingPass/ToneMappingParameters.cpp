@@ -3,5 +3,5 @@
 
 namespace Akari
 {
-
+    ToneMappingParameters g_ToneMappingParameters;
 }
