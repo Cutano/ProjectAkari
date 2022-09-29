@@ -20,11 +20,11 @@ namespace Akari
         virtual void OnEvent(Event& event);
         virtual bool OnSceneResize(SceneWindowResizeEvent& event) const;
         
-        [[nodiscard]] virtual std::shared_ptr<RenderTarget> GetSceneRenderTarget() const;
+        [[nodiscard]] virtual std::shared_ptr<RenderTarget> GetSceneSDRRenderTarget() const;
 
     protected:
         std::shared_ptr<Texture> m_SceneHDRFrameBuffer = nullptr;
-        std::shared_ptr<Texture> m_SceneFrameBuffer = nullptr;
+        std::shared_ptr<Texture> m_SceneSDRFrameBuffer = nullptr;
         std::shared_ptr<Texture> m_SceneDepth = nullptr;
         std::shared_ptr<Texture> m_SceneMsaaFrameBuffer = nullptr;
         
@@ -33,6 +33,6 @@ namespace Akari
         // HDR Texture
         std::shared_ptr<RenderTarget> m_SceneHDRRenderTarget = nullptr;
         // SDR Texture
-        std::shared_ptr<RenderTarget> m_SceneRenderTarget = nullptr;
+        std::shared_ptr<RenderTarget> m_SceneSDRRenderTarget = nullptr;
     };
 }

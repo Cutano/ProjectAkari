@@ -284,7 +284,7 @@ namespace Akari
             {(R + L) / (L - R), (T + B) / (B - T), 0.5f, 1.0f},
         };
 
-        const auto& frameBuffer = Renderer::GetInstance().GetRenderPipeline()->GetSceneRenderTarget()->
+        const auto& frameBuffer = Renderer::GetInstance().GetRenderPipeline()->GetSceneSDRRenderTarget()->
                                                           GetTexture(Color0);
         commandList->SetGraphics32BitConstants(MatrixCB, mvp);
         commandList->SetShaderResourceView(UITextures, FontTexture, m_FontSRV,

@@ -31,7 +31,7 @@ namespace Akari
     void LogicLayer::OnUpdate(RenderContext& context)
     {
         const auto& cam = context.scene->GetCamera();
-        const auto& rt = Renderer::GetInstance().GetRenderPipeline()->GetSceneRenderTarget();
+        const auto& rt = Renderer::GetInstance().GetRenderPipeline()->GetSceneSDRRenderTarget();
         const float height = rt->GetHeight(), width = rt->GetWidth();
         cam->SetViewportSize(width, height);
         cam->OnUpdate(*context.dt);

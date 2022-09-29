@@ -16,6 +16,7 @@ namespace Akari
         m_SkyboxPass = std::make_unique<SkyboxPass>(m_SceneMsaaRenderTarget);
         m_GroundGridPass = std::make_unique<GroundGridPass>(m_SceneMsaaRenderTarget);
         m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>(m_SceneMsaaRenderTarget);
+        m_ToneMappingPass = std::make_unique<ToneMappingPass>(m_SceneSDRRenderTarget, m_SceneHDRFrameBuffer);
     }
 
     void ForwardPipeline::Render(const RenderContext& context)
@@ -41,9 +42,12 @@ namespace Akari
 
         {
             const auto cmd = Renderer::GetInstance().GetCommandListDirect();
-            cmd->ResolveSubresource(m_SceneRenderTarget->GetTexture(Color0),
+            cmd->ResolveSubresource(m_SceneHDRRenderTarget->GetTexture(Color0),
                                     m_SceneMsaaRenderTarget->GetTexture(Color0));
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
+
+        m_ToneMappingPass->Record(context);
+        m_ToneMappingPass->Execute();
     }
 }

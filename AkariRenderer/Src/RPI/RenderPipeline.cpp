@@ -41,28 +41,28 @@ namespace Akari
         
         m_SceneHDRFrameBuffer = device->CreateTexture(sceneFrameBufferDesc, &sceneClearValue);
         m_SceneHDRFrameBuffer->SetName(L"SceneHDRFrameBuffer");
-        m_SceneFrameBuffer = device->CreateTexture(sceneFrameBufferDesc, &sceneClearValue);
-        m_SceneFrameBuffer->SetName(L"SceneFrameBuffer");
+        m_SceneSDRFrameBuffer = device->CreateTexture(sceneFrameBufferDesc, &sceneClearValue);
+        m_SceneSDRFrameBuffer->SetName(L"SceneFrameBuffer");
         m_SceneMsaaFrameBuffer = device->CreateTexture(sceneMsaaFrameBufferDesc, &sceneClearValue);
         m_SceneMsaaFrameBuffer->SetName(L"SceneMSAAFrameBuffer");
         m_SceneDepth = device->CreateTexture(sceneDepthStencilDesc, &depthClearValue);
         m_SceneDepth->SetName(L"SceneDepth");
 
-        m_SceneRenderTarget = std::make_shared<RenderTarget>();
+        m_SceneSDRRenderTarget = std::make_shared<RenderTarget>();
         m_SceneHDRRenderTarget = std::make_shared<RenderTarget>();
         m_SceneMsaaRenderTarget = std::make_shared<RenderTarget>();
         m_SceneMsaaRenderTarget->AttachTexture(Color0, m_SceneMsaaFrameBuffer);
         m_SceneMsaaRenderTarget->AttachTexture(DepthStencil, m_SceneDepth);
         m_SceneHDRRenderTarget->AttachTexture(Color0, m_SceneHDRFrameBuffer);
-        m_SceneRenderTarget->AttachTexture(Color0, m_SceneFrameBuffer);
+        m_SceneSDRRenderTarget->AttachTexture(Color0, m_SceneSDRFrameBuffer);
     }
 
     RenderPipeline::~RenderPipeline()
     {
         m_SceneMsaaRenderTarget.reset();
-        m_SceneRenderTarget.reset();
+        m_SceneSDRRenderTarget.reset();
         m_SceneDepth.reset();
-        m_SceneFrameBuffer.reset();
+        m_SceneSDRFrameBuffer.reset();
         m_SceneMsaaFrameBuffer.reset();
     }
 
@@ -74,15 +74,16 @@ namespace Akari
 
     bool RenderPipeline::OnSceneResize(SceneWindowResizeEvent& event) const
     {
-        m_SceneRenderTarget->Resize(static_cast<uint32_t>(event.GetWidth()), static_cast<uint32_t>(event.GetHeight()));
+        m_SceneSDRRenderTarget->Resize(static_cast<uint32_t>(event.GetWidth()), static_cast<uint32_t>(event.GetHeight()));
+        m_SceneHDRRenderTarget->Resize(static_cast<uint32_t>(event.GetWidth()), static_cast<uint32_t>(event.GetHeight()));
         m_SceneMsaaRenderTarget->Resize(static_cast<uint32_t>(event.GetWidth()), static_cast<uint32_t>(event.GetHeight()));
 
         spdlog::trace("Scene resized to {0}, {1}.", event.GetWidth(), event.GetHeight());
         return true;
     }
 
-    std::shared_ptr<RenderTarget> RenderPipeline::GetSceneRenderTarget() const
+    std::shared_ptr<RenderTarget> RenderPipeline::GetSceneSDRRenderTarget() const
     {
-        return m_SceneRenderTarget;
+        return m_SceneSDRRenderTarget;
     }
 }

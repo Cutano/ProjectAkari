@@ -56,9 +56,10 @@ namespace Akari
     {
         m_Cmd = Renderer::GetInstance().GetCommandListDirect();
 
-        // Perform HDR -> SDR tonemapping directly to the SwapChain's render target.
+        // Perform HDR -> SDR tonemapping directly to scene render target.
         m_Cmd->SetRenderTarget( *m_RenderTarget );
         m_Cmd->SetViewport( m_RenderTarget->GetViewport() );
+        m_Cmd->SetScissorRect(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX));
         m_Cmd->SetPipelineState( m_PipelineState );
         m_Cmd->SetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
         m_Cmd->SetGraphicsRootSignature( m_RootSig );
