@@ -39,6 +39,8 @@ namespace Akari
         depthClearValue.Format = sceneDepthStencilDesc.Format;
         depthClearValue.DepthStencil = {0.0f, 0};
         
+        m_SceneHDRFrameBuffer = device->CreateTexture(sceneFrameBufferDesc, &sceneClearValue);
+        m_SceneHDRFrameBuffer->SetName(L"SceneHDRFrameBuffer");
         m_SceneFrameBuffer = device->CreateTexture(sceneFrameBufferDesc, &sceneClearValue);
         m_SceneFrameBuffer->SetName(L"SceneFrameBuffer");
         m_SceneMsaaFrameBuffer = device->CreateTexture(sceneMsaaFrameBufferDesc, &sceneClearValue);
@@ -47,9 +49,11 @@ namespace Akari
         m_SceneDepth->SetName(L"SceneDepth");
 
         m_SceneRenderTarget = std::make_shared<RenderTarget>();
+        m_SceneHDRRenderTarget = std::make_shared<RenderTarget>();
         m_SceneMsaaRenderTarget = std::make_shared<RenderTarget>();
         m_SceneMsaaRenderTarget->AttachTexture(Color0, m_SceneMsaaFrameBuffer);
         m_SceneMsaaRenderTarget->AttachTexture(DepthStencil, m_SceneDepth);
+        m_SceneHDRRenderTarget->AttachTexture(Color0, m_SceneHDRFrameBuffer);
         m_SceneRenderTarget->AttachTexture(Color0, m_SceneFrameBuffer);
     }
 

@@ -3,9 +3,6 @@
   <ItemGroup>
     <ClCompile Include="Src\pch.cpp" />
     <ClCompile Include="Src\AkariRenderer.cpp" />
-    <ClCompile Include="Src\Math\BoundingSphere.cpp" />
-    <ClCompile Include="Src\Math\Frustum.cpp" />
-    <ClCompile Include="Src\Math\Random.cpp" />
     <ClCompile Include="Src\Window\WindowsWindow.cpp" />
     <ClCompile Include="Lib\imgui\backends\imgui_impl_dx12.cpp" />
     <ClCompile Include="Lib\imgui\backends\imgui_impl_glfw.cpp" />
@@ -57,8 +54,6 @@
     <ClCompile Include="Src\RPI\RenderContext.cpp" />
     <ClCompile Include="Src\RPI\RenderPipeline.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\Camera.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\OrthogonalCamera.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="Src\SceneComponents\Material.cpp" />
     <ClCompile Include="Src\SceneComponents\Mesh.cpp" />
     <ClCompile Include="Src\SceneComponents\Scene.cpp" />
@@ -69,26 +64,13 @@
     <ClCompile Include="Src\RenderPipelines\Pass\GizmoPass.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\GroundGridPass.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\SkyBoxPass.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\CameraController.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\FlyingFPSCamera.cpp" />
+    <ClCompile Include="Src\Math\Math.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\ToneMappingPass.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\EditorCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
     <ClInclude Include="Src\d3dx12.h" />
-    <ClInclude Include="Src\Math\BoundingBox.h" />
-    <ClInclude Include="Src\Math\BoundingPlane.h" />
-    <ClInclude Include="Src\Math\BoundingSphere.h" />
-    <ClInclude Include="Src\Math\Common.h" />
-    <ClInclude Include="Src\Math\Frustum.h" />
-    <ClInclude Include="Src\Math\Functions.inl" />
-    <ClInclude Include="Src\Math\Matrix3.h" />
-    <ClInclude Include="Src\Math\Matrix4.h" />
-    <ClInclude Include="Src\Math\Quaternion.h" />
-    <ClInclude Include="Src\Math\Random.h" />
-    <ClInclude Include="Src\Math\Scalar.h" />
-    <ClInclude Include="Src\Math\Transform.h" />
-    <ClInclude Include="Src\Math\Vector.h" />
-    <ClInclude Include="Src\VectorMath.h" />
     <ClInclude Include="Src\Events\ApplicationEvent.h" />
     <ClInclude Include="Src\Events\Event.h" />
     <ClInclude Include="Src\Events\KeyEvent.h" />
@@ -153,8 +135,6 @@
     <ClInclude Include="Src\RPI\RenderPass.h" />
     <ClInclude Include="Src\RPI\RenderPipeline.h" />
     <ClInclude Include="Src\SceneComponents\Camera\Camera.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\OrthogonalCamera.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\PerspectiveCamera.h" />
     <ClInclude Include="Src\SceneComponents\Material.h" />
     <ClInclude Include="Src\SceneComponents\Mesh.h" />
     <ClInclude Include="Src\SceneComponents\Scene.h" />
@@ -168,8 +148,9 @@
     <ClInclude Include="Src\RenderPipelines\Pass\GizmoPass.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\GroundGridPass.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\SkyBoxPass.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\CameraController.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\FlyingFPSCamera.h" />
+    <ClInclude Include="Src\Math\Math.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\ToneMappingPass.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\EditorCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -186,6 +167,8 @@
     <FxCompile Include="Src\Shaders\GroundGrid_PS.hlsl" />
     <FxCompile Include="Src\Shaders\Skybox_VS.hlsl" />
     <FxCompile Include="Src\Shaders\Skybox_PS.hlsl" />
+    <FxCompile Include="Src\Shaders\HDRtoSDR_VS.hlsl" />
+    <FxCompile Include="Src\Shaders\HDRtoSDR_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AkariRenderer.rc" />

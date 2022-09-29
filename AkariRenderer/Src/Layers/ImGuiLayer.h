@@ -33,6 +33,7 @@ namespace Akari {
         bool m_ShowHierarchyWindow = true;
         bool m_ShowBrowserWindow = true;
         bool m_ShowPropertyWindow = true;
+        bool m_ShowToneMappingSettings = false;
 
         float m_SceneWindowWidth;
         float m_SceneWindowHeight;
@@ -50,8 +51,13 @@ namespace Akari {
         void DrawHierarchyWindow();
         void DrawBrowserWindow();
         void DrawPropertyWindow();
+        void DrawToneMappingSettingsWindow();
 
         void SetStyle();
+
+        static void ShowHelpMarker(const char* desc);
+        static float ACESFilmicTonemapping(float x, float A, float B, float C, float D, float E, float F);
+        static float ACESFilmicTonemappingPlot(void*, int index);
     };
 
 

@@ -21,6 +21,8 @@
 #include "Shaders/Generated/ImGUI_PS.h"
 #include "Shaders/Generated/ImGUI_VS.h"
 
+#include "RenderPipelines/Pass/ToneMappingPass/ToneMappingParameters.h"
+
 //--------------------------------------------------------------------------------------
 // Get surface information for a particular format
 //--------------------------------------------------------------------------------------
@@ -29,6 +31,11 @@ void GetSurfaceInfo(_In_ size_t width, _In_ size_t height, _In_ DXGI_FORMAT fmt,
 
 namespace Akari
 {
+    // Number of values to plot in the tonemapping curves.
+    static const int VALUES_COUNT = 256;
+    // Maximum HDR value to normalize the plot samples.
+    static const float HDR_MAX = 12.0f;
+    
     // Root parameters for the ImGui root signature.
     enum ImGuiRootParameters
     {
@@ -377,6 +384,12 @@ namespace Akari
                 ImGui::EndMenu();
             }
 
+            if (ImGui::BeginMenu("Post Processing"))
+            {
+                ImGui::MenuItem("Tone Mapping", nullptr, &m_ShowToneMappingSettings);
+                ImGui::EndMenu();
+            }
+
             ImGui::EndMenuBar();
         }
 
@@ -401,6 +414,10 @@ namespace Akari
         if (m_ShowPropertyWindow)
         {
             DrawPropertyWindow();
+        }
+        if (m_ShowToneMappingSettings)
+        {
+            DrawToneMappingSettingsWindow();
         }
     }
 
@@ -459,6 +476,31 @@ namespace Akari
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
         ImGui::Begin("Property", &m_ShowDemoWindow, windowFlags);
+        ImGui::End();
+    }
+
+    void ImGuiLayer::DrawToneMappingSettingsWindow()
+    {
+        ImGuiWindowFlags windowFlags = 0;
+        ImGui::Begin("Tone Mapping Settings", &m_ShowToneMappingSettings, windowFlags);
+        ImGui::TextWrapped("Use the Exposure slider to adjust the overall exposure of the HDR scene.");
+        ImGui::SliderFloat("Exposure", &g_ToneMappingParameters.Exposure, -10.0f, 10.0f);
+        ImGui::SameLine();
+        ShowHelpMarker("Adjust the overall exposure of the HDR scene.");
+        ImGui::SliderFloat("Gamma", &g_ToneMappingParameters.Gamma, 0.01f, 5.0f);
+        ImGui::SameLine();
+        ShowHelpMarker("Adjust the Gamma of the output image.");
+
+        ImGui::PlotLines("ACES Filmic Tonemapping", &ACESFilmicTonemappingPlot, nullptr, VALUES_COUNT, 0,
+                             nullptr, 0.0f, 1.0f, ImVec2(0, 250));
+        ImGui::SliderFloat("Shoulder Strength", &g_ToneMappingParameters.A, 0.01f, 5.0f);
+        ImGui::SliderFloat("Linear Strength", &g_ToneMappingParameters.B, 0.0f, 100.0f);
+        ImGui::SliderFloat("Linear Angle", &g_ToneMappingParameters.C, 0.0f, 1.0f);
+        ImGui::SliderFloat("Toe Strength", &g_ToneMappingParameters.D, 0.01f, 1.0f);
+        ImGui::SliderFloat("Toe Numerator", &g_ToneMappingParameters.E, 0.0f, 10.0f);
+        ImGui::SliderFloat("Toe Denominator", &g_ToneMappingParameters.F, 1.0f, 10.0f);
+        ImGui::SliderFloat("Linear White", &g_ToneMappingParameters.LinearWhite, 1.0f, 120.0f);
+        
         ImGui::End();
     }
 
@@ -523,6 +565,37 @@ namespace Akari
         colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
         colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
         colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+    }
+
+    // Helper to display a little (?) mark which shows a tooltip when hovered.
+    void ImGuiLayer::ShowHelpMarker( const char* desc )
+    {
+        ImGui::TextDisabled( "(?)" );
+        if ( ImGui::IsItemHovered() )
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos( ImGui::GetFontSize() * 35.0f );
+            ImGui::TextUnformatted( desc );
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
+    }
+
+    // ACES Filmic
+    // See: https://www.slideshare.net/ozlael/hable-john-uncharted2-hdr-lighting/142
+    float ImGuiLayer::ACESFilmicTonemapping( float x, float A, float B, float C, float D, float E, float F )
+    {
+        return ( x * ( A * x + C * B ) + D * E ) / ( x * ( A * x + B ) + D * F ) - E / F;
+    }
+
+    float ImGuiLayer::ACESFilmicTonemappingPlot( void*, int index )
+    {
+        float HDR = index / (float)VALUES_COUNT * HDR_MAX;
+        return ACESFilmicTonemapping( HDR, g_ToneMappingParameters.A, g_ToneMappingParameters.B, g_ToneMappingParameters.C,
+                                      g_ToneMappingParameters.D, g_ToneMappingParameters.E, g_ToneMappingParameters.F ) /
+               ACESFilmicTonemapping( g_ToneMappingParameters.LinearWhite, g_ToneMappingParameters.A, g_ToneMappingParameters.B,
+                                      g_ToneMappingParameters.C, g_ToneMappingParameters.D, g_ToneMappingParameters.E,
+                                      g_ToneMappingParameters.F );
     }
 }
 
