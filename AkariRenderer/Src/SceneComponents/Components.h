@@ -1,4 +1,6 @@
 #pragma once
+#include "Math/Math.h"
+
 #include "UUID.h"
 
 namespace Akari
@@ -48,31 +50,31 @@ namespace Akari
 
     struct TransformComponent
     {
-        Math::Vector3 Translation = {0.0f, 0.0f, 0.0f};
-        Math::Vector3 Rotation = {0.0f, 0.0f, 0.0f};
-        Math::Vector3 Scale = {1.0f, 1.0f, 1.0f};
+        glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
+        glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
+        glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent& other) = default;
+        TransformComponent(const glm::vec3& translation)
+            : Translation(translation) {}
 
-        TransformComponent(const Math::Vector3& translation)
-            : Translation(translation)
+        [[nodiscard]] glm::mat4 GetTransform() const
         {
+            return glm::translate(glm::mat4(1.0f), Translation)
+                * glm::toMat4(glm::quat(Rotation))
+                * glm::scale(glm::mat4(1.0f), Scale);
         }
 
-        [[nodiscard]] Math::AffineTransform GetTransform() const
+        void SetTransform(const glm::mat4& transform)
         {
-            return Math::AffineTransform {
-                Math::Matrix3(Math::Quaternion(Rotation.GetX(), Rotation.GetY(), Rotation.GetZ())) *
-                Math::Matrix3::MakeScale(Scale),
-                Translation
-            };
+            Math::DecomposeTransform(transform, Translation, Rotation, Scale);
         }
     };
 
     struct DirectionalLightComponent
     {
-        Math::Vector3 Radiance = {1.0f, 1.0f, 1.0f};
+        glm::vec3 Radiance = {1.0f, 1.0f, 1.0f};
         float Intensity = 1.0f;
         bool CastShadows = true;
         bool SoftShadows = true;
@@ -82,7 +84,7 @@ namespace Akari
 
     struct PointLightComponent
     {
-        Math::Vector3 Radiance = {1.0f, 1.0f, 1.0f};
+        glm::vec3 Radiance = {1.0f, 1.0f, 1.0f};
         float Intensity = 1.0f;
         float LightSize = 0.5f; // For PCSS
         float MinRadius = 1.f;

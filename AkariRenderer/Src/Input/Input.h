@@ -24,8 +24,6 @@ namespace Akari {
         static bool IsMouseButtonPressed(MouseButton button);
         static float GetMouseX();
         static float GetMouseY();
-        static float GetMouseDeltaX();
-        static float GetMouseDeltaY();
         static std::pair<float, float> GetMousePosition();
 
         static void SetCursorMode(CursorMode mode);

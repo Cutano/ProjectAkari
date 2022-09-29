@@ -7,8 +7,7 @@
 #include "RPI/RenderContext.h"
 #include "RPI/RenderPipeline.h"
 #include "SceneComponents/Scene.h"
-#include "SceneComponents/Camera/CameraController.h"
-#include "SceneComponents/Camera/PerspectiveCamera.h"
+#include "SceneComponents/Camera/EditorCamera.h"
 
 namespace Akari
 {
@@ -33,10 +32,9 @@ namespace Akari
     {
         const auto& cam = context.scene->GetCamera();
         const auto& rt = Renderer::GetInstance().GetRenderPipeline()->GetSceneRenderTarget();
-        const float height = static_cast<float>(rt->GetHeight()), width = static_cast<float>(rt->GetWidth());
-        cam->SetAspectRatio(height / width);
-
-        context.scene->GetCameraController()->Update(context.dt->GetSeconds());
+        const float height = rt->GetHeight(), width = rt->GetWidth();
+        cam->SetViewportSize(width, height);
+        cam->OnUpdate(*context.dt);
     }
 
     void LogicLayer::OnEvent(Event& event)

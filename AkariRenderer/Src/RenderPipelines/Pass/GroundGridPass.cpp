@@ -8,7 +8,7 @@
 #include "RHI/RenderTarget.h"
 #include "RHI/VertexBuffer.h"
 #include "SceneComponents/Scene.h"
-#include "SceneComponents/Camera/PerspectiveCamera.h"
+#include "SceneComponents/Camera/EditorCamera.h"
 #include "Shaders/Generated/GroundGrid_VS.h"
 #include "Shaders/Generated/GroundGrid_PS.h"
 
@@ -31,19 +31,19 @@ namespace Akari
         constexpr int lines = 1602;
         constexpr float endpoint = (lines - 2) / 4.0f;
         static_assert((lines & 1) == 0 && (lines / 2 & 1) == 1);
-        XMFLOAT3 vertices[lines * 2];
+        glm::vec3 vertices[lines * 2];
         // clang-format on
 
         // Generate grid vertices
         for (int i = 0; i < lines * 2; i += 4)
         {
-            vertices[i + 0] = XMFLOAT3(-endpoint, 0, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
-            vertices[i + 1] = XMFLOAT3(endpoint, 0, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
-            vertices[i + 2] = XMFLOAT3(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), 0, -endpoint);
-            vertices[i + 3] = XMFLOAT3(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), 0, endpoint);
+            vertices[i + 0] = glm::vec3(-endpoint, 0, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
+            vertices[i + 1] = glm::vec3(endpoint, 0, static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))));
+            vertices[i + 2] = glm::vec3(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), 0, -endpoint);
+            vertices[i + 3] = glm::vec3(static_cast<float>(static_cast<int>((-lines / 4)) + static_cast<int>((i / 4))), 0, endpoint);
         }
 
-        m_VertexBuffer = m_Cmd->CopyVertexBuffer(lines * 2, sizeof(XMFLOAT3), vertices);
+        m_VertexBuffer = m_Cmd->CopyVertexBuffer(lines * 2, sizeof(glm::vec3), vertices);
         
         constexpr D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
             D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -52,7 +52,7 @@ namespace Akari
 
         CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParams];
         rootParameters[MatrixCB].InitAsConstants(
-            sizeof(XMMATRIX) / 4, MatrixCB, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
+            16, MatrixCB, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX);
         rootParameters[DirCB].InitAsConstants(
             4, DirCB, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL);
 
@@ -124,7 +124,7 @@ namespace Akari
         m_Cmd = Renderer::GetInstance().GetCommandListDirect();
         
         const auto cam = context.scene->GetCamera();
-        const auto mvp = cam->GetViewProjMatrix();
+        const auto mvp = cam->GetViewProjection();
         
         m_Cmd->SetPipelineState(m_PipelineState);
         m_Cmd->SetGraphicsRootSignature(m_RootSig);

@@ -2,9 +2,8 @@
 #include "Scene.h"
 #include "SceneObject.h"
 #include "RHI/Renderer.h"
-#include "Camera/PerspectiveCamera.h"
+#include "Camera/EditorCamera.h"
 #include "Components.h"
-#include "Camera/FlyingFPSCamera.h"
 #include "RHI/RenderTarget.h"
 
 namespace Akari
@@ -12,14 +11,11 @@ namespace Akari
     Scene::Scene(const std::string& name)
     {
         const auto& rt = Renderer::GetInstance().GetMsaaRenderTarget();
-        m_Camera = std::make_shared<PerspectiveCamera>();
-        m_Camera->SetPosition(Math::Vector3(0.0f, 1.0f, 0.0f));
-        m_Camera->SetLookDirection({0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f});
-        m_Camera->SetAspectRatio(static_cast<float>(rt->GetHeight()) / rt->GetWidth());
-        m_Camera->SetFOV(Math::PI / 4.0f);
-        m_Camera->SetZRange(0.1f, 200.0f);
-
-        m_CameraController = std::make_shared<FlyingFPSCamera>(*m_Camera, Math::Vector3(0.0f, 1.0f, 0.0f));
+        m_Camera = std::make_shared<EditorCamera>(45.0f, rt->GetWidth(), rt->GetHeight(), 0.01f, 200.0f);
+        m_Camera->SetActive(true);
+        auto up = m_Camera->GetUpDirection();
+        auto forward = m_Camera->GetForwardDirection();
+        auto right = m_Camera->GetRightDirection();
     }
 
     Scene::~Scene()
@@ -218,13 +214,15 @@ namespace Akari
         transComp.Scale = worldSpaceTransform.Scale;
     }
 
-    Math::AffineTransform Scene::GetWorldSpaceTransformMatrix(SceneObject sceneObject)
+    glm::mat4 Scene::GetWorldSpaceTransformMatrix(SceneObject sceneObject)
     {
+        glm::mat4 transform(1.0f);
+
         SceneObject parent = TryGetSceneObjectWithUUID(sceneObject.GetParentUUID());
         if (parent)
-            return GetWorldSpaceTransformMatrix(parent) * sceneObject.Transform().GetTransform();
+            transform = GetWorldSpaceTransformMatrix(parent);
 
-        return sceneObject.Transform().GetTransform();
+        return transform * sceneObject.Transform().GetTransform();
     }
 
     TransformComponent Scene::GetWorldSpaceTransform(SceneObject sceneObject)
@@ -284,14 +282,9 @@ namespace Akari
         sceneObject.SetParentUUID(0);
     }
 
-    std::shared_ptr<PerspectiveCamera> Scene::GetCamera()
+    std::shared_ptr<EditorCamera> Scene::GetCamera()
     {
         return m_Camera;
-    }
-
-    std::shared_ptr<CameraController> Scene::GetCameraController()
-    {
-        return m_CameraController;
     }
 
     void Scene::SortSceneObjects()

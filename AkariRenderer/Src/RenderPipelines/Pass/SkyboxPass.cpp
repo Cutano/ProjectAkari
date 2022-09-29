@@ -10,7 +10,7 @@
 #include "SceneComponents/Model.h"
 #include "SceneComponents/Mesh.h"
 #include "SceneComponents/Scene.h"
-#include "SceneComponents/Camera/PerspectiveCamera.h"
+#include "SceneComponents/Camera/EditorCamera.h"
 #include "Shaders/Generated/Skybox_VS.h"
 #include "Shaders/Generated/Skybox_PS.h"
 
@@ -126,15 +126,15 @@ namespace Akari
         
         SkyboxVisitor visitor(*m_Cmd);
         const auto cam = context.scene->GetCamera();
-        const auto view = Math::XMMatrixTranspose( Math::XMMatrixRotationQuaternion(cam->GetRotation()));
-        const auto proj = cam->GetProjMatrix();
+        const auto view = lookAt({0, 0, 0}, cam->GetForwardDirection(), cam->GetUpDirection());
+        const auto proj = cam->GetProjectionMatrix();
 
         m_Cmd->SetPipelineState(m_PipelineState);
         m_Cmd->SetGraphicsRootSignature(m_RootSig);
         m_Cmd->SetRenderTarget(*m_RenderTarget);
         m_Cmd->SetViewport(m_RenderTarget->GetViewport());
         m_Cmd->SetScissorRect(CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX));
-        m_Cmd->SetGraphics32BitConstants(0, view * proj);
+        m_Cmd->SetGraphics32BitConstants(0, proj * view);
         m_Cmd->SetShaderResourceView(1, 0, m_SkyboxSRV, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
         m_Skybox->Accept(visitor);

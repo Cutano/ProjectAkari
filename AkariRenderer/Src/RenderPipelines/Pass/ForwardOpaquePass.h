@@ -5,7 +5,7 @@
 namespace Akari
 {
     class CommandList;
-    class PerspectiveCamera;
+    class EditorCamera;
     
     class ForwardOpaquePass : public RenderPass
     {
@@ -27,6 +27,6 @@ namespace Akari
 
     private:
         const CommandList& m_Cmd;
-        PerspectiveCamera& m_Camera;
+        EditorCamera& m_Camera;
     };
 }

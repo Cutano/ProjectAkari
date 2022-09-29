@@ -63,5 +63,12 @@
 #define BIT(x) (1u << (x))
 #define BIND_EVENT_FN(fn) std::bind(&##fn, this, std::placeholders::_1)
 
-#include "VectorMath.h"
+#define GLM_FORCE_LEFT_HANDED
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/detail/type_quat.hpp>
+#include "Math/Math.h"
 #include "Utils.h"

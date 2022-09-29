@@ -11,3 +11,6 @@
 [submodule "AkariRenderer/Lib/stb"]
 	path = AkariRenderer/Lib/stb
 	url = https://github.com/nothings/stb.git
+[submodule "AkariRenderer/Lib/glm"]
+	path = AkariRenderer/Lib/glm
+	url = https://github.com/g-truc/glm.git

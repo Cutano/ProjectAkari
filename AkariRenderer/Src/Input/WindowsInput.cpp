@@ -118,22 +118,6 @@ namespace Akari {
 		return (float)y;
 	}
 
-	float Input::GetMouseDeltaX()
-	{
-		float nowX = GetMouseX();
-		float delta = nowX - preX;
-		preX = nowX;
-		return delta / Application::Get().GetWindow().GetWidth();
-	}
-
-	float Input::GetMouseDeltaY()
-	{
-		float nowY = GetMouseY();
-		float delta = nowY - preY;
-		preY = nowY;
-		return delta / Application::Get().GetWindow().GetHeight();
-	}
-
 	std::pair<float, float> Input::GetMousePosition()
 	{
 		auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());

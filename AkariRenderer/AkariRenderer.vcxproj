@@ -62,7 +62,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;$(ProjectDir)Lib\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -84,7 +84,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;$(ProjectDir)Lib\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -139,9 +139,7 @@
     <ClCompile Include="Src\Layers\ImGuiLayer.cpp" />
     <ClCompile Include="Src\Layers\Layer.cpp" />
     <ClCompile Include="Src\Layers\LogicLayer.cpp" />
-    <ClCompile Include="Src\Math\BoundingSphere.cpp" />
-    <ClCompile Include="Src\Math\Frustum.cpp" />
-    <ClCompile Include="Src\Math\Random.cpp" />
+    <ClCompile Include="Src\Math\Math.cpp" />
     <ClCompile Include="Src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -184,10 +182,7 @@
     <ClCompile Include="Src\RPI\RenderContext.cpp" />
     <ClCompile Include="Src\RPI\RenderPipeline.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\Camera.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\CameraController.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\FlyingFPSCamera.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\OrthogonalCamera.cpp" />
-    <ClCompile Include="Src\SceneComponents\Camera\PerspectiveCamera.cpp" />
+    <ClCompile Include="Src\SceneComponents\Camera\EditorCamera.cpp" />
     <ClCompile Include="Src\SceneComponents\Material.cpp" />
     <ClCompile Include="Src\SceneComponents\Mesh.cpp" />
     <ClCompile Include="Src\SceneComponents\Model.cpp" />
@@ -222,19 +217,7 @@
     <ClInclude Include="Src\Layers\ImGuiLayer.h" />
     <ClInclude Include="Src\Layers\Layer.h" />
     <ClInclude Include="Src\Layers\LogicLayer.h" />
-    <ClInclude Include="Src\Math\BoundingBox.h" />
-    <ClInclude Include="Src\Math\BoundingPlane.h" />
-    <ClInclude Include="Src\Math\BoundingSphere.h" />
-    <ClInclude Include="Src\Math\Common.h" />
-    <ClInclude Include="Src\Math\Frustum.h" />
-    <ClInclude Include="Src\Math\Functions.inl" />
-    <ClInclude Include="Src\Math\Matrix3.h" />
-    <ClInclude Include="Src\Math\Matrix4.h" />
-    <ClInclude Include="Src\Math\Quaternion.h" />
-    <ClInclude Include="Src\Math\Random.h" />
-    <ClInclude Include="Src\Math\Scalar.h" />
-    <ClInclude Include="Src\Math\Transform.h" />
-    <ClInclude Include="Src\Math\Vector.h" />
+    <ClInclude Include="Src\Math\Math.h" />
     <ClInclude Include="Src\pch.h" />
     <ClInclude Include="Src\RenderPipelines\ForwardPipeline.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\ForwardOpaquePass.h" />
@@ -277,10 +260,7 @@
     <ClInclude Include="Src\RPI\RenderPass.h" />
     <ClInclude Include="Src\RPI\RenderPipeline.h" />
     <ClInclude Include="Src\SceneComponents\Camera\Camera.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\CameraController.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\FlyingFPSCamera.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\OrthogonalCamera.h" />
-    <ClInclude Include="Src\SceneComponents\Camera\PerspectiveCamera.h" />
+    <ClInclude Include="Src\SceneComponents\Camera\EditorCamera.h" />
     <ClInclude Include="Src\SceneComponents\Components.h" />
     <ClInclude Include="Src\SceneComponents\Material.h" />
     <ClInclude Include="Src\SceneComponents\Mesh.h" />
@@ -293,7 +273,6 @@
     <ClInclude Include="Src\Timing\Timer.h" />
     <ClInclude Include="Src\Utils.h" />
     <ClInclude Include="Src\UUID.h" />
-    <ClInclude Include="Src\VectorMath.h" />
     <ClInclude Include="Src\Window\Window.h" />
     <ClInclude Include="Src\Window\WindowsWindow.h" />
   </ItemGroup>
