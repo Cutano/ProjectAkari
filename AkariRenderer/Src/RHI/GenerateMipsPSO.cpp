@@ -5,7 +5,7 @@
 #include "Device.h"
 #include "RootSignature.h"
 
-#include "GenerateMips_CS.h"
+#include "Generated/GenerateMips_CS.h"
 
 using namespace Akari;
 

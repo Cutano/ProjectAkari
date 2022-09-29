@@ -6,7 +6,7 @@
 #include "RootSignature.h"
 
 // Compiled shader
-#include "PanoToCubemap_CS.h"
+#include "Generated/PanoToCubemap_CS.h"
 
 using namespace Akari;
 

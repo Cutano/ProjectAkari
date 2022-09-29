@@ -65,8 +65,9 @@
     <ClCompile Include="Src\RenderPipelines\Pass\GroundGridPass.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\SkyBoxPass.cpp" />
     <ClCompile Include="Src\Math\Math.cpp" />
-    <ClCompile Include="Src\RenderPipelines\Pass\ToneMappingPass.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\EditorCamera.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingParameters.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -149,8 +150,9 @@
     <ClInclude Include="Src\RenderPipelines\Pass\GroundGridPass.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\SkyBoxPass.h" />
     <ClInclude Include="Src\Math\Math.h" />
-    <ClInclude Include="Src\RenderPipelines\Pass\ToneMappingPass.h" />
     <ClInclude Include="Src\SceneComponents\Camera\EditorCamera.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingParameters.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
