@@ -56,6 +56,11 @@ namespace Akari {
         void SetStyle();
 
         static void ShowHelpMarker(const char* desc);
+        static float LinearTonemapping(float HDR, float max);
+        static float LinearTonemappingPlot(void*, int index);
+        static float ReinhardTonemapping(float HDR, float k);
+        static float ReinhardTonemappingPlot(void*, int index);
+        static float ReinhardSqrTonemappingPlot(void*, int index);
         static float ACESFilmicTonemapping(float x, float A, float B, float C, float D, float E, float F);
         static float ACESFilmicTonemappingPlot(void*, int index);
     };

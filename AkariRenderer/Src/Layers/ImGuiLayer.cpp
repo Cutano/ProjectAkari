@@ -32,7 +32,7 @@ void GetSurfaceInfo(_In_ size_t width, _In_ size_t height, _In_ DXGI_FORMAT fmt,
 namespace Akari
 {
     // Number of values to plot in the tonemapping curves.
-    static const int VALUES_COUNT = 256;
+    static const int VALUES_COUNT = 512;
     // Maximum HDR value to normalize the plot samples.
     static const float HDR_MAX = 12.0f;
     
@@ -225,8 +225,8 @@ namespace Akari
         pipelineStateStream.pRootSignature = m_RootSignature->GetD3D12RootSignature().Get();
         pipelineStateStream.InputLayout = {inputLayout, 3};
         pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-        pipelineStateStream.VS = {g_ImGUI_VS, sizeof(g_ImGUI_VS)};
-        pipelineStateStream.PS = {g_ImGUI_PS, sizeof(g_ImGUI_PS)};
+        pipelineStateStream.VS = {g_ImGUI_VS, sizeof g_ImGUI_VS};
+        pipelineStateStream.PS = {g_ImGUI_PS, sizeof g_ImGUI_PS};
         pipelineStateStream.RTVFormats = renderTarget->GetRenderTargetFormats();
         pipelineStateStream.SampleDesc = renderTarget->GetSampleDesc();
         pipelineStateStream.BlendDesc = CD3DX12_BLEND_DESC(blendDesc);
@@ -491,16 +491,55 @@ namespace Akari
         ImGui::SameLine();
         ShowHelpMarker("Adjust the Gamma of the output image.");
 
-        ImGui::PlotLines("ACES Filmic Tonemapping", &ACESFilmicTonemappingPlot, nullptr, VALUES_COUNT, 0,
+        const char* toneMappingMethods[] = {"Linear", "Reinhard", "Reinhard Squared", "ACES Filmic"};
+
+        ImGui::Combo("Tonemapping Methods", reinterpret_cast<int*>(&g_ToneMappingParameters.ToneMappingMethod),
+                     toneMappingMethods, 4);
+
+        switch (g_ToneMappingParameters.ToneMappingMethod)
+        {
+        case TM_Linear:
+            ImGui::PlotLines("Linear Tonemapping", &LinearTonemappingPlot, nullptr, VALUES_COUNT, 0, nullptr, 0.0f,
+                             1.0f, ImVec2(0, 250));
+            ImGui::SliderFloat("Max Brightness", &g_ToneMappingParameters.MaxLuminance, 1.0f, HDR_MAX);
+            ImGui::SameLine();
+            ShowHelpMarker("Linearly scale the HDR image by the maximum brightness.");
+            break;
+        case TM_Reinhard:
+            ImGui::PlotLines("Reinhard Tonemapping", &ReinhardTonemappingPlot, nullptr, VALUES_COUNT, 0, nullptr,
+                             0.0f, 1.0f, ImVec2(0, 250));
+            ImGui::SliderFloat("Reinhard Constant", &g_ToneMappingParameters.K, 0.01f, 10.0f);
+            ImGui::SameLine();
+            ShowHelpMarker("The Reinhard constant is used in the denominator.");
+            break;
+        case TM_ReinhardSq:
+            ImGui::PlotLines("Reinhard Squared Tonemapping", &ReinhardSqrTonemappingPlot, nullptr, VALUES_COUNT, 0,
                              nullptr, 0.0f, 1.0f, ImVec2(0, 250));
-        ImGui::SliderFloat("Shoulder Strength", &g_ToneMappingParameters.A, 0.01f, 5.0f);
-        ImGui::SliderFloat("Linear Strength", &g_ToneMappingParameters.B, 0.0f, 100.0f);
-        ImGui::SliderFloat("Linear Angle", &g_ToneMappingParameters.C, 0.0f, 1.0f);
-        ImGui::SliderFloat("Toe Strength", &g_ToneMappingParameters.D, 0.01f, 1.0f);
-        ImGui::SliderFloat("Toe Numerator", &g_ToneMappingParameters.E, 0.0f, 10.0f);
-        ImGui::SliderFloat("Toe Denominator", &g_ToneMappingParameters.F, 1.0f, 10.0f);
-        ImGui::SliderFloat("Linear White", &g_ToneMappingParameters.LinearWhite, 1.0f, 120.0f);
-        
+            ImGui::SliderFloat("Reinhard Constant", &g_ToneMappingParameters.K, 0.01f, 10.0f);
+            ImGui::SameLine();
+            ShowHelpMarker("The Reinhard constant is used in the denominator.");
+            break;
+        case TM_ACESFilmic:
+            ImGui::PlotLines("ACES Filmic Tonemapping", &ACESFilmicTonemappingPlot, nullptr, VALUES_COUNT, 0,
+                             nullptr, 0.0f, 1.0f, ImVec2(0, 250));
+            ImGui::SliderFloat("Shoulder Strength", &g_ToneMappingParameters.A, 0.01f, 5.0f);
+            ImGui::SliderFloat("Linear Strength", &g_ToneMappingParameters.B, 0.0f, 100.0f);
+            ImGui::SliderFloat("Linear Angle", &g_ToneMappingParameters.C, 0.0f, 1.0f);
+            ImGui::SliderFloat("Toe Strength", &g_ToneMappingParameters.D, 0.01f, 1.0f);
+            ImGui::SliderFloat("Toe Numerator", &g_ToneMappingParameters.E, 0.0f, 10.0f);
+            ImGui::SliderFloat("Toe Denominator", &g_ToneMappingParameters.F, 1.0f, 10.0f);
+            ImGui::SliderFloat("Linear White", &g_ToneMappingParameters.LinearWhite, 1.0f, 120.0f);
+            break;
+        default:
+            break;
+        }
+
+        if (ImGui::Button("Reset to Defaults"))
+        {
+            ToneMappingMethod method = g_ToneMappingParameters.ToneMappingMethod;
+            g_ToneMappingParameters = ToneMappingParameters();
+            g_ToneMappingParameters.ToneMappingMethod = method;
+        }
         ImGui::End();
     }
 
@@ -579,6 +618,38 @@ namespace Akari
             ImGui::PopTextWrapPos();
             ImGui::EndTooltip();
         }
+    }
+
+    float ImGuiLayer::LinearTonemapping( float HDR, float max )
+    {
+        if ( max > 0.0f )
+        {
+            return std::clamp( HDR / max, 0.0f, 1.0f );
+        }
+        return HDR;
+    }
+
+    float ImGuiLayer::LinearTonemappingPlot( void*, int index )
+    {
+        return LinearTonemapping( index / (float)VALUES_COUNT * HDR_MAX, g_ToneMappingParameters.MaxLuminance );
+    }
+
+    // Reinhard tone mapping.
+    // See: http://www.cs.utah.edu/~reinhard/cdrom/tonemap.pdf
+    float ImGuiLayer::ReinhardTonemapping( float HDR, float k )
+    {
+        return HDR / ( HDR + k );
+    }
+
+    float ImGuiLayer::ReinhardTonemappingPlot( void*, int index )
+    {
+        return ReinhardTonemapping( index / (float)VALUES_COUNT * HDR_MAX, g_ToneMappingParameters.K );
+    }
+
+    float ImGuiLayer::ReinhardSqrTonemappingPlot( void*, int index )
+    {
+        float reinhard = ReinhardTonemapping( index / (float)VALUES_COUNT * HDR_MAX, g_ToneMappingParameters.K );
+        return reinhard * reinhard;
     }
 
     // ACES Filmic
@@ -688,21 +759,21 @@ void GetSurfaceInfo(_In_ size_t width, _In_ size_t height, _In_ DXGI_FORMAT fmt,
     }
     else if (packed)
     {
-        rowBytes = ((width + 1) >> 1) * bpe;
+        rowBytes = (width + 1 >> 1) * bpe;
         numRows = height;
         numBytes = rowBytes * height;
     }
     else if (fmt == DXGI_FORMAT_NV11)
     {
-        rowBytes = ((width + 3) >> 2) * 4;
+        rowBytes = (width + 3 >> 2) * 4;
         numRows = height * 2; // Direct3D makes this simplifying assumption, although it is larger than the 4:1:1 data
         numBytes = rowBytes * numRows;
     }
     else if (planar)
     {
-        rowBytes = ((width + 1) >> 1) * bpe;
-        numBytes = (rowBytes * height) + ((rowBytes * height + 1) >> 1);
-        numRows = height + ((height + 1) >> 1);
+        rowBytes = (width + 1 >> 1) * bpe;
+        numBytes = rowBytes * height + (rowBytes * height + 1 >> 1);
+        numRows = height + (height + 1 >> 1);
     }
     else
     {
