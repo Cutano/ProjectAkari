@@ -13,7 +13,7 @@ namespace Akari
     struct ToneMappingParameters
     {
         ToneMappingParameters()
-        : ToneMappingMethod( TM_Reinhard )
+        : ToneMappingMethod( TM_ACESFilmic )
         , Exposure( 0.0f )
         , MaxLuminance( 1.0f )
         , K( 1.0f )
