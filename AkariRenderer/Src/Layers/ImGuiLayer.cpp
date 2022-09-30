@@ -17,11 +17,14 @@
 #include "RHI/SwapChain.h"
 #include "RPI/RenderPipeline.h"
 #include "Window/WindowsWindow.h"
+#include "SceneComponents/Scene.h"
+#include "SceneComponents/SceneObject.h"
 
 #include "Shaders/Generated/ImGUI_PS.h"
 #include "Shaders/Generated/ImGUI_VS.h"
 
 #include "RenderPipelines/Pass/ToneMappingPass/ToneMappingParameters.h"
+#include "SceneComponents/Scene.h"
 
 //--------------------------------------------------------------------------------------
 // Get surface information for a particular format
@@ -462,8 +465,26 @@ namespace Akari
 
     void ImGuiLayer::DrawHierarchyWindow()
     {
-        ImGuiWindowFlags windowFlags = 0;
+        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
         ImGui::Begin("Hierarchy", &m_ShowDemoWindow, windowFlags);
+
+        if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("Create"))
+            {
+                auto& scene = Application::Get().GetScene();
+                
+                if (ImGui::MenuItem("Cube"))
+                {
+                    auto cube = scene.CreateSceneObject("Cube");
+                }
+                
+                ImGui::EndMenu();
+            }
+
+            ImGui::EndMenuBar();
+        }
+        
         ImGui::End();
     }
 

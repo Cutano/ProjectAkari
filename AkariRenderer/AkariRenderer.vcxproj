@@ -188,6 +188,7 @@
     <ClCompile Include="Src\SceneComponents\Material.cpp" />
     <ClCompile Include="Src\SceneComponents\Mesh.cpp" />
     <ClCompile Include="Src\SceneComponents\Model.cpp" />
+    <ClCompile Include="Src\SceneComponents\ModelManager.cpp" />
     <ClCompile Include="Src\SceneComponents\ModelNode.cpp" />
     <ClCompile Include="Src\SceneComponents\Scene.cpp" />
     <ClCompile Include="Src\SceneComponents\SceneObject.cpp" />
@@ -269,6 +270,7 @@
     <ClInclude Include="Src\SceneComponents\Material.h" />
     <ClInclude Include="Src\SceneComponents\Mesh.h" />
     <ClInclude Include="Src\SceneComponents\Model.h" />
+    <ClInclude Include="Src\SceneComponents\ModelManager.h" />
     <ClInclude Include="Src\SceneComponents\ModelNode.h" />
     <ClInclude Include="Src\SceneComponents\Scene.h" />
     <ClInclude Include="Src\SceneComponents\SceneObject.h" />
