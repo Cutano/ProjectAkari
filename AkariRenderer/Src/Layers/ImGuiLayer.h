@@ -25,6 +25,8 @@ namespace Akari {
         void OnUpdate(RenderContext& context) override;
         void OnEvent(Event& event) override;
 
+        bool m_IsSceneWindowHovered;
+
     private:
         // Ref<RenderCommandBuffer> m_RenderCommandBuffer;
         float m_Time = 0.0f;

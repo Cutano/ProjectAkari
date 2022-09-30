@@ -428,6 +428,8 @@ namespace Akari
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Scene", &m_ShowDemoWindow, windowFlags);
         ImGui::PopStyleVar();
+        
+        m_IsSceneWindowHovered = ImGui::IsWindowHovered();
 
         ImVec2 view = ImGui::GetContentRegionAvail();
         if (view.x != m_SceneWindowWidth || view.y != m_SceneWindowHeight)

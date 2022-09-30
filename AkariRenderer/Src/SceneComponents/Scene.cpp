@@ -4,6 +4,7 @@
 #include "RHI/Renderer.h"
 #include "Camera/EditorCamera.h"
 #include "Components.h"
+#include "Layers/ImGuiLayer.h"
 #include "RHI/RenderTarget.h"
 
 namespace Akari
@@ -285,6 +286,14 @@ namespace Akari
     std::shared_ptr<EditorCamera> Scene::GetCamera()
     {
         return m_Camera;
+    }
+
+    void Scene::OnEvent(Event& event)
+    {
+        if (Renderer::GetInstance().GetImGuiLayer()->m_IsSceneWindowHovered)
+        {
+            m_Camera->OnEvent(event);
+        }
     }
 
     void Scene::SortSceneObjects()

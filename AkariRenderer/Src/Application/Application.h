@@ -88,6 +88,7 @@ namespace Akari {
 
 
 		Window& GetWindow() { return *m_Window; }
+		Scene& GetScene() { return *m_Scene; }
 		
 		static Application& Get() { return *s_Instance; }
 

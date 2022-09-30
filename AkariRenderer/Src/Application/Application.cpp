@@ -172,8 +172,8 @@ namespace Akari {
 		// 		break;
 		// }
 		
-		// m_RendererLayer->OnEvent(event);
-		// if (event.Handled) return;
+		m_Scene->OnEvent(event);
+		if (event.Handled) return;
 
 		// TODO(Peter): Should these callbacks be called BEFORE the layers recieve events?
 		//				We may actually want that since most of these callbacks will be functions REQUIRED in order for the game

@@ -5,6 +5,7 @@
 
 namespace Akari
 {
+    class Event;
     class Model;
     class Material;
     class SceneObject;
@@ -48,6 +49,8 @@ namespace Akari
 
         UUID GetUUID() const { return m_SceneID; }
         std::shared_ptr<EditorCamera> GetCamera();
+
+        void OnEvent(Event& event);
         
     private:
         void SortSceneObjects();
