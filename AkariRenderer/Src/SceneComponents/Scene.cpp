@@ -14,9 +14,6 @@ namespace Akari
         const auto& rt = Renderer::GetInstance().GetMsaaRenderTarget();
         m_Camera = std::make_shared<EditorCamera>(45.0f, rt->GetWidth(), rt->GetHeight(), 0.01f, 200.0f);
         m_Camera->SetActive(true);
-        auto up = m_Camera->GetUpDirection();
-        auto forward = m_Camera->GetForwardDirection();
-        auto right = m_Camera->GetRightDirection();
     }
 
     Scene::~Scene()
