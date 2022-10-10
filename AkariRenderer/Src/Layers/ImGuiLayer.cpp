@@ -468,12 +468,12 @@ namespace Akari
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
         ImGui::Begin("Hierarchy", &m_ShowHierarchyWindow, windowFlags);
 
+        auto& scene = Application::Get().GetScene();
+
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("Create"))
             {
-                auto& scene = Application::Get().GetScene();
-                
                 if (ImGui::MenuItem("Cube"))
                 {
                     auto cube = scene.CreateSceneObject("Cube");
@@ -483,6 +483,13 @@ namespace Akari
             }
 
             ImGui::EndMenuBar();
+        }
+
+        const auto entities = scene.GetAllSceneObjectsWith<IDComponent, RelationshipComponent>();
+        for (const auto entity : entities)
+        {
+            SceneObject obj(entity, &scene);
+            DrawHierarchyNode(obj);
         }
         
         ImGui::End();
@@ -564,6 +571,40 @@ namespace Akari
             g_ToneMappingParameters.ToneMappingMethod = method;
         }
         ImGui::End();
+    }
+
+    void ImGuiLayer::DrawHierarchyNode(SceneObject& obj)
+    {
+        ImGuiTreeNodeFlags flags =
+            ImGuiTreeNodeFlags_Selected |
+            ImGuiTreeNodeFlags_OpenOnArrow |
+            ImGuiTreeNodeFlags_OpenOnDoubleClick |
+            ImGuiTreeNodeFlags_SpanFullWidth;
+        
+        const auto name = obj.GetComponent<NameComponent>();
+
+        if (obj.Children().empty())
+        {
+            flags |= ImGuiTreeNodeFlags_Leaf;
+            if (ImGui::TreeNodeEx(name.Name.c_str(), flags))
+            {
+                ImGui::TreePop();
+            }
+        }
+        else
+        {
+            if (ImGui::TreeNodeEx(name.Name.c_str(), flags))
+            {
+                const auto& scene = Application::Get().GetScene();
+                const auto children = obj.Children();
+                for (const auto child : children)
+                {
+                    auto childObj = scene.GetSceneObjectWithUUID(child);
+                    DrawHierarchyNode(childObj);
+                }
+                ImGui::TreePop();
+            }
+        }
     }
 
     void ImGuiLayer::SetStyle()

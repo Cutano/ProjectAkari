@@ -13,6 +13,7 @@ namespace Akari {
     class ShaderResourceView;
     class Texture;
     class SceneWindowResizeEvent;
+    class SceneObject;
 
     class ImGuiLayer : public Layer
     {
@@ -55,6 +56,7 @@ namespace Akari {
         void DrawPropertyWindow();
         void DrawToneMappingSettingsWindow();
 
+        void DrawHierarchyNode(SceneObject& obj);
         void SetStyle();
 
         static void ShowHelpMarker(const char* desc);
