@@ -53,7 +53,7 @@ namespace Akari
 
     void ForwardOpaqueVisitor::Visit(SceneObject& model)
     {
-        const auto trans& = model.GetComponent<TransformComponent>();
+        const auto& trans = model.GetComponent<TransformComponent>();
         m_RenderState.SetModelMatrix(trans.GetTransform());
     }
 
