@@ -4,6 +4,7 @@
 #include "RHI/Renderer.h"
 #include "Camera/EditorCamera.h"
 #include "Components.h"
+#include "ModelManager.h"
 #include "Layers/ImGuiLayer.h"
 #include "RHI/RenderTarget.h"
 
@@ -290,6 +291,18 @@ namespace Akari
         if (Renderer::GetInstance().GetImGuiLayer()->m_IsSceneWindowHovered)
         {
             m_Camera->OnEvent(event);
+        }
+    }
+
+    void Scene::Accept(Visitor& visitor)
+    {
+        const auto entities = GetAllSceneObjectsWith<ModelComponent>();
+        for (const auto entity : entities)
+        {
+            SceneObject obj(entity, this);
+            const auto [ModelID] = obj.GetComponent<ModelComponent>();
+            auto model = ModelManager::GetInstance().GetModelByID(ModelID);
+            model.Accept(visitor);
         }
     }
 

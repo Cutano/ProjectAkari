@@ -183,6 +183,7 @@
     <ClCompile Include="Src\RHI\VertexTypes.cpp" />
     <ClCompile Include="Src\RPI\RenderContext.cpp" />
     <ClCompile Include="Src\RPI\RenderPipeline.cpp" />
+    <ClCompile Include="Src\RPI\RenderStateObject.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\Camera.cpp" />
     <ClCompile Include="Src\SceneComponents\Camera\EditorCamera.cpp" />
     <ClCompile Include="Src\SceneComponents\Material.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Src\RPI\RenderContext.h" />
     <ClInclude Include="Src\RPI\RenderPass.h" />
     <ClInclude Include="Src\RPI\RenderPipeline.h" />
+    <ClInclude Include="Src\RPI\RenderStateObject.h" />
     <ClInclude Include="Src\SceneComponents\Camera\Camera.h" />
     <ClInclude Include="Src\SceneComponents\Camera\EditorCamera.h" />
     <ClInclude Include="Src\SceneComponents\Components.h" />

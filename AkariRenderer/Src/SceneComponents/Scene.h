@@ -7,6 +7,7 @@ namespace Akari
 {
     class Event;
     class Model;
+    class Visitor;
     class Material;
     class SceneObject;
     class EditorCamera;
@@ -51,6 +52,8 @@ namespace Akari
         std::shared_ptr<EditorCamera> GetCamera();
 
         void OnEvent(Event& event);
+        
+        void Accept(Visitor& visitor);
         
     private:
         void SortSceneObjects();
