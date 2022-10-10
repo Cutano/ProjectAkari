@@ -14,6 +14,7 @@
 #include "RHI/SwapChain.h"
 #include "RPI/RenderContext.h"
 #include "RPI/RenderPipeline.h"
+#include "SceneComponents/ModelManager.h"
 #include "SceneComponents/Scene.h"
 #include "SceneComponents/SceneObject.h"
 
@@ -55,6 +56,8 @@ namespace Akari {
 		// Renderer::WaitAndRender();
 
 		m_Scene = std::make_shared<Scene>();
+
+		ModelManager::GetInstance().Init();
 		
 		m_LogicLayer = std::make_shared<LogicLayer>();
 		m_LogicLayer->SetEventCallback([this](Event& e) { OnEvent(e); });
@@ -138,6 +141,7 @@ namespace Akari {
 		
 		m_LogicLayer->OnDetach();
 
+		ModelManager::GetInstance().Shutdown();
 		Renderer::GetInstance().ShutDown();
 		
 		m_EventCallbacks.clear();

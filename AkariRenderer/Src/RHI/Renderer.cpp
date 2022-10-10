@@ -74,12 +74,12 @@ namespace Akari
         atexit(&Device::ReportLiveObjects);
     }
 
-    void Renderer::LoadModel(std::wstring path)
+    std::shared_ptr<Model> Renderer::LoadModel(std::wstring path)
     {
         auto& commandQueue = m_Device->GetCommandQueue( D3D12_COMMAND_LIST_TYPE_COPY );
         auto  commandList  = commandQueue.GetCommandList();
 
-        auto model = commandList->LoadModelFromFile(path);
+        return commandList->LoadModelFromFile(path);
     }
 
     void Renderer::OnUpdate(RenderContext& context)

@@ -5,6 +5,7 @@ namespace Akari
 {
     class Device;
     class Texture;
+    class Model;
     class RenderTarget;
     class SwapChain;
     class CommandList;
@@ -29,7 +30,7 @@ namespace Akari
 
         void Init();
         void ShutDown();
-        void LoadModel(std::wstring path);
+        std::shared_ptr<Model> LoadModel(std::wstring path);
         
         void OnUpdate(RenderContext& context);
         void OnResize(uint32_t width, uint32_t height) const;

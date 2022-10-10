@@ -24,6 +24,7 @@
 #include "Shaders/Generated/ImGUI_VS.h"
 
 #include "RenderPipelines/Pass/ToneMappingPass/ToneMappingParameters.h"
+#include "SceneComponents/ModelManager.h"
 #include "SceneComponents/Scene.h"
 
 //--------------------------------------------------------------------------------------
@@ -477,6 +478,8 @@ namespace Akari
                 if (ImGui::MenuItem("Cube"))
                 {
                     auto cube = scene.CreateSceneObject("Cube");
+                    auto & [ModelID]= cube.AddComponent<ModelComponent>();
+                    ModelID = ModelManager::GetInstance().GetCubeID();
                 }
                 
                 ImGui::EndMenu();
