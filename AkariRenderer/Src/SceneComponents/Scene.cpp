@@ -5,6 +5,7 @@
 #include "Camera/EditorCamera.h"
 #include "Components.h"
 #include "ModelManager.h"
+#include "Visitor.h"
 #include "Layers/ImGuiLayer.h"
 #include "RHI/RenderTarget.h"
 
@@ -296,11 +297,13 @@ namespace Akari
 
     void Scene::Accept(Visitor& visitor)
     {
+        visitor.Visit(*this);
         const auto entities = GetAllSceneObjectsWith<ModelComponent>();
         for (const auto entity : entities)
         {
             SceneObject obj(entity, this);
-            const auto [ModelID] = obj.GetComponent<ModelComponent>();
+            visitor.Visit(obj);
+            const auto & [ModelID]= obj.GetComponent<ModelComponent>();
             auto model = ModelManager::GetInstance().GetModelByID(ModelID);
             model.Accept(visitor);
         }

@@ -421,7 +421,7 @@ std::shared_ptr<ModelNode> Model::ImportSceneNode( CommandList& commandList, std
 
 void Model::Accept( Visitor& visitor )
 {
-    visitor.Visit( *this );
+    // visitor.Visit( *this );
     if ( m_RootNode )
     {
         m_RootNode->Accept( visitor );

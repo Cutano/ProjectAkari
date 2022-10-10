@@ -9,7 +9,8 @@ namespace Akari
     class Model;
     class Texture;
     class ShaderResourceView;
-    
+    class SceneObject;
+
     class SkyboxPass : public RenderPass
     {
     public:
@@ -39,7 +40,8 @@ namespace Akari
     public:
         SkyboxVisitor(CommandList& commandList);
 
-        void Visit(Model& model) override;
+        void Visit(Scene& scene) override;
+        void Visit(SceneObject& model) override;
         void Visit(ModelNode& modelNode) override;
         void Visit(Mesh& mesh) override;
 

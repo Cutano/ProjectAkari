@@ -149,7 +149,11 @@ namespace Akari
     {
     }
 
-    void SkyboxVisitor::Visit(Model& model)
+    void SkyboxVisitor::Visit(Scene& scene)
+    {
+    }
+
+    void SkyboxVisitor::Visit(SceneObject& model)
     {
     }
 

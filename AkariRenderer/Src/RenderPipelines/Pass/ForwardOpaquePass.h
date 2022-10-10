@@ -4,10 +4,12 @@
 
 namespace Akari
 {
+    class Scene;
     class CommandList;
     class EditorCamera;
     class RenderStateObject;
-    
+    class SceneObject;
+
     class ForwardOpaquePass : public RenderPass
     {
     public:
@@ -25,7 +27,8 @@ namespace Akari
     public:
         ForwardOpaqueVisitor(const CommandList& commandList, const RenderContext& context, RenderStateObject& state);
 
-        void Visit(Model& model) override;
+        void Visit(Scene& scene) override;
+        void Visit(SceneObject& model) override;
         void Visit(ModelNode& modelNode) override;
         void Visit(Mesh& mesh) override;
 
