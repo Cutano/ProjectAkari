@@ -429,7 +429,7 @@ namespace Akari
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("Scene", &m_ShowDemoWindow, windowFlags);
+        ImGui::Begin("Scene", &m_ShowSceneWindow, windowFlags);
         ImGui::PopStyleVar();
         
         m_IsSceneWindowHovered = ImGui::IsWindowHovered();
@@ -466,7 +466,7 @@ namespace Akari
     void ImGuiLayer::DrawHierarchyWindow()
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
-        ImGui::Begin("Hierarchy", &m_ShowDemoWindow, windowFlags);
+        ImGui::Begin("Hierarchy", &m_ShowHierarchyWindow, windowFlags);
 
         if (ImGui::BeginMenuBar())
         {
@@ -491,14 +491,14 @@ namespace Akari
     void ImGuiLayer::DrawBrowserWindow()
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
-        ImGui::Begin("Browser", &m_ShowDemoWindow, windowFlags);
+        ImGui::Begin("Browser", &m_ShowBrowserWindow, windowFlags);
         ImGui::End();
     }
 
     void ImGuiLayer::DrawPropertyWindow()
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
-        ImGui::Begin("Property", &m_ShowDemoWindow, windowFlags);
+        ImGui::Begin("Property", &m_ShowPropertyWindow, windowFlags);
         ImGui::End();
     }
 
