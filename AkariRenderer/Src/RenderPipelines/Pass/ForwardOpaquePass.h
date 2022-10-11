@@ -25,7 +25,7 @@ namespace Akari
     class ForwardOpaqueVisitor : public Visitor
     {
     public:
-        ForwardOpaqueVisitor(const CommandList& commandList, const RenderContext& context, RenderStateObject& state);
+        ForwardOpaqueVisitor(CommandList& commandList, const RenderContext& context, RenderStateObject& state);
 
         void Visit(Scene& scene) override;
         void Visit(SceneObject& model) override;
@@ -33,7 +33,7 @@ namespace Akari
         void Visit(Mesh& mesh) override;
 
     private:
-        const CommandList& m_Cmd;
+        CommandList& m_Cmd;
         RenderStateObject& m_RenderState;
         EditorCamera& m_Camera;
     };

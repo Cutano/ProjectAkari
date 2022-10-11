@@ -6,6 +6,7 @@ namespace Akari
     class Texture;
     class Material;
     class CommandList;
+    class RenderTarget;
     class RootSignature;
     class PipelineStateObject;
     class ShaderResourceView;
@@ -39,6 +40,14 @@ namespace Akari
                        // Texture2D OpacityTexture : register( t10 );
             NumRootParameters
         };
+
+        // Light properties for the pixel shader.
+        struct LightProperties
+        {
+            uint32_t NumPointLights{0};
+            uint32_t NumSpotLights{0};
+            uint32_t NumDirectionalLights{0};
+        };
         
         RenderStateObject(std::shared_ptr<Device> device);
         ~RenderStateObject();
@@ -48,11 +57,13 @@ namespace Akari
         void SetProjMatrix(glm::mat4 projMat);
 
         void SetMaterial(const std::shared_ptr<Material>& mat);
+        void SetRenderTarget(const std::shared_ptr<RenderTarget>& rt);
+        void SetShader(const unsigned char* VSByteCode, size_t VSLength, const unsigned char* PSByteCode, size_t PSLength);
 
         void Apply(CommandList& cmd);
 
     private:
-        struct MVP
+        struct alignas(16) MVP
         {
             glm::mat4 Model = glm::mat4(1.0);
             glm::mat4 View = glm::mat4(1.0);
@@ -68,6 +79,7 @@ namespace Akari
         
         std::shared_ptr<Device> m_Device;
         std::shared_ptr<Material> m_Material;
+        std::shared_ptr<RenderTarget> m_RenderTarget;
         std::shared_ptr<RootSignature> m_RootSig;
         std::shared_ptr<ShaderResourceView> m_DefaultSRV;
         std::shared_ptr<PipelineStateObject> m_PipelineStateObject;

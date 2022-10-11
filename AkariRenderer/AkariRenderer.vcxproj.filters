@@ -68,6 +68,8 @@
     <ClCompile Include="Src\SceneComponents\Camera\EditorCamera.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingParameters.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingPass.cpp" />
+    <ClCompile Include="Src\RPI\RenderStateObject.cpp" />
+    <ClCompile Include="Src\SceneComponents\ModelManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -153,6 +155,8 @@
     <ClInclude Include="Src\SceneComponents\Camera\EditorCamera.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingParameters.h" />
     <ClInclude Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingPass.h" />
+    <ClInclude Include="Src\RPI\RenderStateObject.h" />
+    <ClInclude Include="Src\SceneComponents\ModelManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -171,6 +175,8 @@
     <FxCompile Include="Src\Shaders\Skybox_PS.hlsl" />
     <FxCompile Include="Src\Shaders\HDRtoSDR_VS.hlsl" />
     <FxCompile Include="Src\Shaders\HDRtoSDR_PS.hlsl" />
+    <FxCompile Include="Src\Shaders\Lit_VS.hlsl" />
+    <FxCompile Include="Src\Shaders\Lit_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AkariRenderer.rc" />
