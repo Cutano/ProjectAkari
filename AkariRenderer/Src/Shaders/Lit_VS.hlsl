@@ -3,6 +3,7 @@ struct Matrices
     matrix ModelMatrix;
     matrix ViewMatrix;
     matrix ProjectionMatrix;
+    matrix MVP;
 };
 
 ConstantBuffer<Matrices> MatCB : register( b0 );
@@ -18,14 +19,14 @@ struct VertexPositionNormalTangentBitangentTexture
 
 struct VertexShaderOutput
 {
-    float4 Position : SV_Position;
+    float4 Position : SV_POSITION;
 };
 
 VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture IN)
 {
     VertexShaderOutput OUT;
 
-    OUT.Position = mul(MatCB.ProjectionMatrix * MatCB.ViewMatrix * MatCB.ModelMatrix, float4(IN.Position, 1.0f));
+    OUT.Position = mul(MatCB.MVP, float4(IN.Position, 1.0f));
 
     return OUT;
 }

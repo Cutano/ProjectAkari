@@ -12,9 +12,10 @@ namespace Akari
             const auto cmd = Renderer::GetInstance().GetCommandListCopy();
 
             const UUID cubeID{};
-            const auto cube = cmd->CreateCube();
             m_CubeID = cubeID;
-            m_ModelRegistry[cubeID] = *cube;
+            m_ModelRegistry[cubeID] = cmd->CreateCube(1.0f, false);
+
+            Renderer::GetInstance().ExecuteCommandList(cmd);
         }
     }
 
@@ -31,11 +32,11 @@ namespace Akari
         }
         
         UUID id{};
-        m_ModelRegistry[id] = *model;
+        m_ModelRegistry[id] = model;
         return id;
     }
 
-    Model& ModelManager::GetModelByID(UUID id)
+    std::shared_ptr<Model> ModelManager::GetModelByID(UUID id)
     {
         return m_ModelRegistry[id];
     }

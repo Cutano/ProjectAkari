@@ -129,6 +129,8 @@ namespace Akari
 
     void RenderStateObject::Apply(CommandList& cmd)
     {
+        m_MVP.Mvp = m_MVP.Proj * m_MVP.View * m_MVP.Model;
+        
         const auto& materialProps = m_Material->GetMaterialProperties();
         cmd.SetPipelineState(m_PipelineStateObject);
         cmd.SetGraphicsRootSignature(m_RootSig);

@@ -108,7 +108,7 @@ namespace Akari
         } skyboxPipelineStateStream {};
 
         skyboxPipelineStateStream.pRootSignature        = m_RootSig->GetD3D12RootSignature().Get();
-        skyboxPipelineStateStream.InputLayout           = { inputLayout, 1 };
+        skyboxPipelineStateStream.InputLayout           = VertexPositionNormalTangentBitangentTexture::InputLayout;
         skyboxPipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
         skyboxPipelineStateStream.VS                    = {g_Skybox_VS, sizeof g_Skybox_VS};
         skyboxPipelineStateStream.PS                    = {g_Skybox_PS, sizeof g_Skybox_PS};
