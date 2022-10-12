@@ -431,8 +431,6 @@ namespace Akari
         {
             DrawToneMappingSettingsWindow();
         }
-
-        DrawGizmo();
     }
 
     // https://github.com/ocornut/imgui/issues/984
@@ -471,6 +469,12 @@ namespace Akari
         vMax.x += ImGui::GetWindowPos().x;
         vMax.y += ImGui::GetWindowPos().y;
         drawList->AddImage(textureId, vMin, vMax);
+
+        m_SceneWindowPosX = vMin.x;
+        m_SceneWindowPosY = vMin.y;
+
+        DrawGizmo();
+        
         ImGui::End();
     }
 
@@ -686,6 +690,20 @@ namespace Akari
 
     void ImGuiLayer::DrawGizmo()
     {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+        ImGuizmo::SetRect(m_SceneWindowPosX, m_SceneWindowPosY, m_SceneWindowWidth, m_SceneWindowHeight);
+
+        bool snap = Input::IsKeyPressed(KeyCode::LeftControl);
+        float snapVal = 0;
+        switch (m_GizmoType)
+        {
+        case ImGuizmo::OPERATION::TRANSLATE: snapVal = 0.5f;
+        case ImGuizmo::OPERATION::ROTATE: snapVal = 45.0f;
+        case ImGuizmo::OPERATION::SCALE: snapVal = 0.5f;
+        }
+        float snapValues[3] = { snapVal, snapVal, snapVal };
+        
         if (m_SelectedSceneObject != 0)
         {
             auto& scene = Application::Get().GetScene();
@@ -698,7 +716,7 @@ namespace Akari
             auto& entityTransform = obj.Transform();
             auto transform = scene.GetWorldSpaceTransformMatrix(obj);
 
-            Manipulate(value_ptr(view), value_ptr(proj), static_cast<ImGuizmo::OPERATION>(m_GizmoType), ImGuizmo::LOCAL, value_ptr(transform), nullptr, nullptr);
+            Manipulate(value_ptr(view), value_ptr(proj), static_cast<ImGuizmo::OPERATION>(m_GizmoType), ImGuizmo::LOCAL, value_ptr(transform), nullptr, snap ? snapValues : nullptr);
 
             if (ImGuizmo::IsUsing())
             {
@@ -835,6 +853,7 @@ namespace Akari
                     auto& scene = Application::Get().GetScene();
                     const auto obj = scene.GetSceneObjectWithUUID(m_SelectedSceneObject);
                     scene.DestroySceneObject(obj);
+                    m_SelectedSceneObject = 0;
                 }
                 break;
             }

@@ -43,6 +43,8 @@ namespace Akari {
 
         float m_SceneWindowWidth;
         float m_SceneWindowHeight;
+        float m_SceneWindowPosX;
+        float m_SceneWindowPosY;
 
         int m_GizmoType = -1; // -1 = no gizmo
         int m_GizmoMode = 0; // 0 = local
