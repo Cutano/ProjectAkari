@@ -70,6 +70,11 @@
     <ClCompile Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingPass.cpp" />
     <ClCompile Include="Src\RPI\RenderStateObject.cpp" />
     <ClCompile Include="Src\SceneComponents\ModelManager.cpp" />
+    <ClCompile Include="Lib\imguizmo\GraphEditor.cpp" />
+    <ClCompile Include="Lib\imguizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="Lib\imguizmo\ImGradient.cpp" />
+    <ClCompile Include="Lib\imguizmo\ImGuizmo.cpp" />
+    <ClCompile Include="Lib\imguizmo\ImSequencer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -157,6 +162,12 @@
     <ClInclude Include="Src\RenderPipelines\Pass\ToneMappingPass\ToneMappingPass.h" />
     <ClInclude Include="Src\RPI\RenderStateObject.h" />
     <ClInclude Include="Src\SceneComponents\ModelManager.h" />
+    <ClInclude Include="Lib\imguizmo\GraphEditor.h" />
+    <ClInclude Include="Lib\imguizmo\ImCurveEdit.h" />
+    <ClInclude Include="Lib\imguizmo\ImGradient.h" />
+    <ClInclude Include="Lib\imguizmo\ImGuizmo.h" />
+    <ClInclude Include="Lib\imguizmo\ImSequencer.h" />
+    <ClInclude Include="Lib\imguizmo\ImZoomSlider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

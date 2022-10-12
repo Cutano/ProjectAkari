@@ -62,7 +62,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;$(ProjectDir)Lib\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imguizmo;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;$(ProjectDir)Lib\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -84,7 +84,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;$(ProjectDir)Lib\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Src;$(ProjectDir)Lib\imguizmo;$(ProjectDir)Lib\imgui;$(ProjectDir)Lib\spdlog\include;$(ProjectDir)Lib\assimp\include;$(SolutionDir)Assimp\include;$(ProjectDir)Lib\entt\single_include;$(ProjectDir)Lib\stb;$(ProjectDir)Lib\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
@@ -97,6 +97,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Lib\imguizmo\GraphEditor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Lib\imguizmo\ImCurveEdit.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Lib\imguizmo\ImGradient.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Lib\imguizmo\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Lib\imguizmo\ImSequencer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Lib\imgui\backends\imgui_impl_dx12.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -198,6 +218,12 @@
     <ClCompile Include="Src\Window\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Lib\imguizmo\GraphEditor.h" />
+    <ClInclude Include="Lib\imguizmo\ImCurveEdit.h" />
+    <ClInclude Include="Lib\imguizmo\ImGradient.h" />
+    <ClInclude Include="Lib\imguizmo\ImGuizmo.h" />
+    <ClInclude Include="Lib\imguizmo\ImSequencer.h" />
+    <ClInclude Include="Lib\imguizmo\ImZoomSlider.h" />
     <ClInclude Include="Lib\imgui\backends\imgui_impl_dx12.h" />
     <ClInclude Include="Lib\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="Lib\imgui\backends\imgui_impl_win32.h" />

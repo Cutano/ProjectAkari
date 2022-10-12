@@ -9,6 +9,10 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_dx12.h>
 
+#include <ImGuizmo.h>
+
+#include "Events/KeyEvent.h"
+#include "Input/Input.h"
 #include "RHI/DynamicDescriptorHeap.h"
 #include "RHI/CommandQueue.h"
 #include "RHI/CommandList.h"
@@ -26,6 +30,7 @@
 #include "RenderPipelines/Pass/ToneMappingPass/ToneMappingParameters.h"
 #include "SceneComponents/ModelManager.h"
 #include "SceneComponents/Scene.h"
+#include "SceneComponents/Camera/EditorCamera.h"
 
 //--------------------------------------------------------------------------------------
 // Get surface information for a particular format
@@ -253,6 +258,7 @@ namespace Akari
         ImGui::SetCurrentContext(m_pImGuiCtx);
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
 
         Draw();
 
@@ -356,6 +362,8 @@ namespace Akari
 
     void ImGuiLayer::OnEvent(Event& event)
     {
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& e) { return OnKeyPressedEvent(e); });
     }
 
     void ImGuiLayer::Draw()
@@ -423,6 +431,8 @@ namespace Akari
         {
             DrawToneMappingSettingsWindow();
         }
+
+        DrawGizmo();
     }
 
     // https://github.com/ocornut/imgui/issues/984
@@ -674,6 +684,52 @@ namespace Akari
         }
     }
 
+    void ImGuiLayer::DrawGizmo()
+    {
+        if (m_SelectedSceneObject != 0)
+        {
+            auto& scene = Application::Get().GetScene();
+
+            auto cam = scene.GetCamera();
+            auto& proj = cam->GetProjectionMatrix();
+            auto& view = cam->GetViewMatrix();
+            
+            const auto& obj = scene.GetSceneObjectWithUUID(m_SelectedSceneObject);
+            auto& entityTransform = obj.Transform();
+            auto transform = scene.GetWorldSpaceTransformMatrix(obj);
+
+            Manipulate(value_ptr(view), value_ptr(proj), static_cast<ImGuizmo::OPERATION>(m_GizmoType), ImGuizmo::LOCAL, value_ptr(transform), nullptr, nullptr);
+
+            if (ImGuizmo::IsUsing())
+            {
+                auto parent = scene.TryGetSceneObjectWithUUID(obj.GetParentUUID());
+                if (parent)
+                {
+                    glm::mat4 parentTransform = scene.GetWorldSpaceTransformMatrix(parent);
+                    transform = inverse(parentTransform) * transform;
+
+                    glm::vec3 translation, rotation, scale;
+                    Math::DecomposeTransform(transform, translation, rotation, scale);
+
+                    glm::vec3 deltaRotation = rotation - entityTransform.Rotation;
+                    entityTransform.Translation = translation;
+                    entityTransform.Rotation += deltaRotation;
+                    entityTransform.Scale = scale;
+                }
+                else
+                {
+                    glm::vec3 translation, rotation, scale;
+                    Math::DecomposeTransform(transform, translation, rotation, scale);
+
+                    glm::vec3 deltaRotation = rotation - entityTransform.Rotation;
+                    entityTransform.Translation = translation;
+                    entityTransform.Rotation += deltaRotation;
+                    entityTransform.Scale = scale;
+                }
+            }
+        }
+    }
+
     void ImGuiLayer::SetStyle()
     {
         ImGuiStyle& style = ImGui::GetStyle();
@@ -735,6 +791,56 @@ namespace Akari
         colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
         colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
         colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+    }
+
+    bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+    {
+        if (m_IsSceneWindowHovered && !Input::IsMouseButtonPressed(MouseButton::Right))
+        {
+            switch (e.GetKeyCode())
+            {
+            case KeyCode::Q:
+                m_GizmoType = -1;
+                break;
+            case KeyCode::W:
+                m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+                break;
+            case KeyCode::E:
+                m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+                break;
+            case KeyCode::R:
+                m_GizmoType = ImGuizmo::OPERATION::SCALE;
+                break;
+            case KeyCode::F:
+                {
+                    if (m_SelectedSceneObject != 0)
+                    {
+                        auto& scene = Application::Get().GetScene();
+                        const auto& cam = scene.GetCamera();
+
+                        const auto obj = scene.GetSceneObjectWithUUID(m_SelectedSceneObject);
+                        cam->Focus(obj.Transform().Translation);
+                    }
+                    break;
+                }
+            }
+        }
+
+        switch (e.GetKeyCode())
+        {
+        case KeyCode::Delete:
+            {
+                if (m_SelectedSceneObject != 0)
+                {
+                    auto& scene = Application::Get().GetScene();
+                    const auto obj = scene.GetSceneObjectWithUUID(m_SelectedSceneObject);
+                    scene.DestroySceneObject(obj);
+                }
+                break;
+            }
+        }
+
+        return false;
     }
 
     // Helper to display a little (?) mark which shows a tooltip when hovered.

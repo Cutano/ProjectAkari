@@ -7,6 +7,7 @@
 #include "UUID.h"
 
 namespace Akari {
+    class KeyPressedEvent;
     class CommandList;
     class Device;
     class PipelineStateObject;
@@ -43,6 +44,9 @@ namespace Akari {
         float m_SceneWindowWidth;
         float m_SceneWindowHeight;
 
+        int m_GizmoType = -1; // -1 = no gizmo
+        int m_GizmoMode = 0; // 0 = local
+
         UUID m_SelectedSceneObject{0};
 
         ImGuiContext*                        m_pImGuiCtx = nullptr;
@@ -61,7 +65,10 @@ namespace Akari {
         void DrawToneMappingSettingsWindow();
 
         void DrawHierarchyNode(SceneObject& obj);
+        void DrawGizmo();
         void SetStyle();
+
+        bool OnKeyPressedEvent(KeyPressedEvent& e);
 
         static void ShowHelpMarker(const char* desc);
         static float LinearTonemapping(float HDR, float max);

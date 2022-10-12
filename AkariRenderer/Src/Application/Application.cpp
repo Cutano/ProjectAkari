@@ -179,6 +179,9 @@ namespace Akari {
 		m_Scene->OnEvent(event);
 		if (event.Handled) return;
 
+		Renderer::GetInstance().GetImGuiLayer()->OnEvent(event);
+		if (event.Handled) return;
+
 		// TODO(Peter): Should these callbacks be called BEFORE the layers recieve events?
 		//				We may actually want that since most of these callbacks will be functions REQUIRED in order for the game
 		//				to work, and if a layer has already handled the event we may end up with problems
