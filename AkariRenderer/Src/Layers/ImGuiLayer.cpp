@@ -527,6 +527,10 @@ namespace Akari
                 originalName = newName;
             }
 
+            ImGui::Separator();
+            ImGui::Spacing();
+            
+            ImGui::Text("Transform");
             auto& transComp = obj.GetComponent<TransformComponent>();
             auto& position = transComp.Translation;
             auto& rotation = transComp.Rotation;
