@@ -4,6 +4,8 @@
 
 #include <imgui.h>
 
+#include "UUID.h"
+
 namespace Akari {
     class CommandList;
     class Device;
@@ -40,6 +42,8 @@ namespace Akari {
 
         float m_SceneWindowWidth;
         float m_SceneWindowHeight;
+
+        UUID m_SelectedSceneObject{0};
 
         ImGuiContext*                        m_pImGuiCtx = nullptr;
         HWND                                 m_hWnd;

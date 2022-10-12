@@ -509,6 +509,33 @@ namespace Akari
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar;
         ImGui::Begin("Property", &m_ShowPropertyWindow, windowFlags);
+        
+        if (m_SelectedSceneObject != 0)
+        {
+            const auto& scene = Application::Get().GetScene();
+            auto obj = scene.GetSceneObjectWithUUID(m_SelectedSceneObject);
+            
+            auto& nameComp = obj.GetComponent<NameComponent>();
+            constexpr size_t nameBufferSize = 256;
+            char nameBuffer[nameBufferSize] = {};
+            strcpy_s(nameBuffer, nameComp.Name.c_str());
+
+            if (ImGui::InputText("Name", nameBuffer, nameBufferSize, ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                std::string& originalName = nameComp.Name;
+                const std::string newName(nameBuffer);
+                originalName = newName;
+            }
+
+            auto& transComp = obj.GetComponent<TransformComponent>();
+            auto& position = transComp.Translation;
+            auto& rotation = transComp.Rotation;
+            auto& scale = transComp.Scale;
+            ImGui::DragFloat3("Position", &position.x, 0.01f);
+            ImGui::DragFloat3("Rotation", &rotation.x, 0.01f);
+            ImGui::DragFloat3("Scale", &scale.x, 0.01f);
+        }
+        
         ImGui::End();
     }
 
@@ -579,24 +606,57 @@ namespace Akari
     void ImGuiLayer::DrawHierarchyNode(SceneObject& obj)
     {
         ImGuiTreeNodeFlags flags =
-            ImGuiTreeNodeFlags_Selected |
             ImGuiTreeNodeFlags_OpenOnArrow |
             ImGuiTreeNodeFlags_OpenOnDoubleClick |
             ImGuiTreeNodeFlags_SpanFullWidth;
         
         const auto name = obj.GetComponent<NameComponent>();
+        const auto id = obj.GetComponent<IDComponent>().ID;
+
+        if (id == m_SelectedSceneObject)
+        {
+            flags |= ImGuiTreeNodeFlags_Selected;
+        }
 
         if (obj.Children().empty())
         {
             flags |= ImGuiTreeNodeFlags_Leaf;
-            if (ImGui::TreeNodeEx(name.Name.c_str(), flags))
+        }
+        
+        const auto isOpen = ImGui::TreeNodeEx(name.Name.c_str(), flags);
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+        {
+            m_SelectedSceneObject = id;
+        }
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoDisableHover))
+        {
+            ImGui::SetDragDropPayload("SceneObjectID", &id, sizeof UUID);
+            ImGui::Text(name.Name.c_str());
+            ImGui::EndDragDropSource();
+        }
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SceneObjectID"))
+            {
+                const auto& scene = Application::Get().GetScene();
+                const UUID sourceID = *static_cast<const UUID*>(payload->Data);
+                if (sourceID != id)
+                {
+                    auto source = scene.GetSceneObjectWithUUID(sourceID);
+
+                    source.SetParent(obj);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        if (isOpen)
+        {
+            if (obj.Children().empty())
             {
                 ImGui::TreePop();
             }
-        }
-        else
-        {
-            if (ImGui::TreeNodeEx(name.Name.c_str(), flags))
+            else
             {
                 const auto& scene = Application::Get().GetScene();
                 const auto children = obj.Children();
