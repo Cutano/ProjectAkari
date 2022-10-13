@@ -4,6 +4,7 @@ struct Matrices
 	matrix ViewMatrix;
 	matrix ProjectionMatrix;
 	matrix MVP;
+	matrix InverseModelMatrix;
 	matrix InverseViewMatrix;
 };
 
@@ -154,6 +155,7 @@ float3 DirectPBRLighting(float3 baseColor, float3 V, float3 L, float3 N, float3 
 
 float4 main(VertexShaderOutput psInput) : SV_TARGET
 {
+	float3 normalWS = normalize(psInput.NormalWS);
 	float3 viewPosWS = MatCB.InverseViewMatrix._14_24_34;
 	float3 viewDir = normalize(viewPosWS - psInput.PositionWS.xyz);
 	float3 mainLightDir = 0;
@@ -172,6 +174,6 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 		mainLightDir = normalize(float3(x, y, z));
 	}
 	
-	float3 col = DirectPBRLighting(MaterialCB.BaseColor.xyz, viewDir, mainLightDir, psInput.NormalWS, 0.04f, MaterialCB.Roughness, MaterialCB.Metallic);
-	return float4(col, 1);
+	float3 col = DirectPBRLighting(MaterialCB.BaseColor.xyz, viewDir, mainLightDir, normalWS, 0.04f, MaterialCB.Roughness, MaterialCB.Metallic);
+	return float4(col, 1.0f);
 }

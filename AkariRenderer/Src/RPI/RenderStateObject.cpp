@@ -137,6 +137,7 @@ namespace Akari
     void RenderStateObject::Apply(CommandList& cmd)
     {
         m_MVP.Mvp = m_MVP.Proj * m_MVP.View * m_MVP.Model;
+        m_MVP.InvModel = inverse(m_MVP.Model);
         m_MVP.InvView = inverse(m_MVP.View);
         
         const auto& materialProps = m_Material->GetMaterialProperties();

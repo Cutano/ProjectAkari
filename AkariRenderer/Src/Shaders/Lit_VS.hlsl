@@ -4,6 +4,7 @@ struct Matrices
     matrix ViewMatrix;
     matrix ProjectionMatrix;
     matrix MVP;
+    matrix InverseModelMatrix;
     matrix InverseViewMatrix;
 };
 
@@ -34,9 +35,9 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture IN)
     
     OUT.Position    = mul(MatCB.MVP, float4(IN.Position, 1.0f));
     OUT.PositionWS  = mul(MatCB.ModelMatrix, float4(IN.Position, 1.0f));
-    OUT.NormalWS    = mul((float3x3)MatCB.ModelMatrix, IN.Normal);
-    OUT.TangentWS   = mul((float3x3)MatCB.ModelMatrix, IN.Tangent);
-    OUT.BitangentWS = mul((float3x3)MatCB.ModelMatrix, IN.Bitangent);
+    OUT.NormalWS    = mul((float3x3)transpose(MatCB.InverseModelMatrix), IN.Normal);
+    OUT.TangentWS   = mul((float3x3)transpose(MatCB.InverseModelMatrix), IN.Tangent);
+    OUT.BitangentWS = mul((float3x3)transpose(MatCB.InverseModelMatrix), IN.Bitangent);
     OUT.TexCoord    = IN.TexCoord.xy;
 
     return OUT;

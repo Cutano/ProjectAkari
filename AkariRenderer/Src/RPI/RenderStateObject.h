@@ -73,6 +73,7 @@ namespace Akari
             glm::mat4 View = glm::mat4(1.0);
             glm::mat4 Proj = glm::mat4(1.0);
             glm::mat4 Mvp = glm::mat4(1.0);
+            glm::mat4 InvModel = glm::mat4(1.0);
             glm::mat4 InvView = glm::mat4(1.0);
 
             glm::mat4 operator() () const {return Proj * View * Model;}
