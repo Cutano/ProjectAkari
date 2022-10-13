@@ -20,12 +20,13 @@ struct DirectionalLight
 	float3 Translation;
 	float3 Rotation;
 	float3 Scale;
-	bool CastShadows;
-	bool SoftShadows;
+	float  Padding[3];
 	float3 Radiance;
 	float Intensity;
 	float LightSize; // For PCSS
 	float ShadowAmount;
+	int CastShadows;
+	int SoftShadows;
 };
 
 struct MaterialProperties
@@ -158,12 +159,12 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 	float3 normalWS = normalize(psInput.NormalWS);
 	float3 viewPosWS = MatCB.InverseViewMatrix._14_24_34;
 	float3 viewDir = normalize(viewPosWS - psInput.PositionWS.xyz);
-	float3 mainLightDir = 0;
-	if (LightPropertiesCB.NumDirectionalLights > 0)
+	float3 col = 0;
+	for (uint i = 0; i < LightPropertiesCB.NumDirectionalLights; ++i)
 	{
-		float pitch = DirectionalLights[0].Rotation.x;
-		float roll  = DirectionalLights[0].Rotation.y;
-		float yaw   = DirectionalLights[0].Rotation.z;
+		float pitch = DirectionalLights[i].Rotation.x;
+		float roll  = DirectionalLights[i].Rotation.y;
+		float yaw   = DirectionalLights[i].Rotation.z;
 		// float x = -cos(roll) * sin(yaw) - sin(roll) * sin(pitch) * cos(yaw);
 		// float y = cos(pitch) * cos(yaw);
 		// float z = -sin(roll) * sin(yaw) + cos(roll) * sin(pitch) * cos(yaw);
@@ -171,9 +172,11 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 		float y = cos(pitch) * cos(yaw);
 		float z = sin(pitch) * cos(yaw);
 
-		mainLightDir = normalize(float3(x, y, z));
+		float3 lightDir = normalize(float3(x, y, z));
+		col += DirectPBRLighting(MaterialCB.BaseColor.rgb,
+			viewDir, lightDir, normalWS, 0.04f,
+			MaterialCB.Roughness, MaterialCB.Metallic) * DirectionalLights[i].Radiance * DirectionalLights[i].Intensity;
 	}
-	
-	float3 col = DirectPBRLighting(MaterialCB.BaseColor.xyz, viewDir, mainLightDir, normalWS, 0.04f, MaterialCB.Roughness, MaterialCB.Metallic);
+
 	return float4(col, 1.0f);
 }

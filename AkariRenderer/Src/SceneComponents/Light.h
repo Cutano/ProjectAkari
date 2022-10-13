@@ -3,13 +3,13 @@
 
 namespace Akari
 {
-    struct DirectionalLight
+    struct alignas(16) DirectionalLight
     {
         TransformComponent Trans;
         DirectionalLightComponent Props;
     };
 
-    struct PointLight
+    struct alignas(16) PointLight
     {
         TransformComponent Trans;
         PointLightComponent Props;

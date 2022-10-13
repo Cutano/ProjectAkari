@@ -48,11 +48,14 @@ namespace Akari
         }
     };
 
-    struct TransformComponent
+    struct alignas(16) TransformComponent
     {
         glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
         glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
         glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
+        // ----36byte
+        char padding[12] = {0};
+        // ----48byte
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent& other) = default;
@@ -72,26 +75,34 @@ namespace Akari
         }
     };
 
-    struct DirectionalLightComponent
+    struct alignas(16) DirectionalLightComponent
     {
-        bool CastShadows = true;
-        bool SoftShadows = true;
         glm::vec3 Radiance = {1.0f, 1.0f, 1.0f};
+        // ----12byte
         float Intensity = 1.0f;
         float LightSize = 0.5f; // For PCSS
         float ShadowAmount = 1.0f;
+        // ----24byte
+        int CastShadows = true;
+        int SoftShadows = true;
+        // ----32byte
     };
 
-    struct PointLightComponent
+    struct alignas(16) PointLightComponent
     {
         glm::vec3 Radiance = {1.0f, 1.0f, 1.0f};
+        // ----12byte
         float Intensity = 1.0f;
         float LightSize = 0.5f; // For PCSS
         float MinRadius = 1.f;
         float Radius = 10.f;
-        bool CastsShadows = true;
-        bool SoftShadows = true;
         float Falloff = 1.f;
+        // ----32byte
+        int CastsShadows = true;
+        int SoftShadows = true;
+        // ----40byte
+        char padding[8] = {0};
+        // ----48byte
     };
 
     struct ModelComponent

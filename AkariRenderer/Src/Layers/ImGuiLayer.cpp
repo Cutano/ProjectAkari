@@ -587,8 +587,8 @@ namespace Akari
                 ImGui::Spacing();
                 
                 auto& dirLightComp = obj.GetComponent<DirectionalLightComponent>();
-                ImGui::Checkbox("Cast Shadows", &dirLightComp.CastShadows);
-                ImGui::Checkbox("Soft Shadows", &dirLightComp.SoftShadows);
+                ImGui::Checkbox("Cast Shadows", reinterpret_cast<bool*>(&dirLightComp.CastShadows));
+                ImGui::Checkbox("Soft Shadows", reinterpret_cast<bool*>(&dirLightComp.SoftShadows));
                 ImGui::ColorEdit3("Radiance", value_ptr(dirLightComp.Radiance));
                 ImGui::DragFloat("Intensity", &dirLightComp.Intensity, 0.1f);
                 ImGui::DragFloat("Light Size", &dirLightComp.LightSize, 0.1f); // For PCSS
