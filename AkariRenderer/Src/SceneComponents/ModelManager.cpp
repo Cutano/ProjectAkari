@@ -17,7 +17,7 @@ namespace Akari
 
             const UUID sphereID{};
             m_SphereID = sphereID;
-            m_ModelRegistry[sphereID] = cmd->CreateSphere(0.5f, 32, false);
+            m_ModelRegistry[sphereID] = cmd->CreateSphere(0.5f, 16, false);
 
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
