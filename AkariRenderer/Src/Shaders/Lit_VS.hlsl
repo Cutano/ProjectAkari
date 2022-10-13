@@ -4,9 +4,10 @@ struct Matrices
     matrix ViewMatrix;
     matrix ProjectionMatrix;
     matrix MVP;
+    matrix InverseViewMatrix;
 };
 
-ConstantBuffer<Matrices> MatCB : register( b0 );
+ConstantBuffer<Matrices> MatCB : register(b0, space0);
 
 struct VertexPositionNormalTangentBitangentTexture
 {

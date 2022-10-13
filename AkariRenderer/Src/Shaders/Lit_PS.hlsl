@@ -1,3 +1,12 @@
+struct Matrices
+{
+	matrix ModelMatrix;
+	matrix ViewMatrix;
+	matrix ProjectionMatrix;
+	matrix MVP;
+	matrix InverseViewMatrix;
+};
+
 struct LightProperties
 {
 	uint NumPointLights;
@@ -53,13 +62,46 @@ struct VertexShaderOutput
 	float4 Position    : SV_POSITION;
 };
 
+ConstantBuffer<Matrices> MatCB : register(b0, space0);
 ConstantBuffer<MaterialProperties> MaterialCB : register(b0, space1);
 ConstantBuffer<LightProperties> LightPropertiesCB : register(b1);
 
 StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
 
+static const float PI = 3.141592653589793;
+
+float3 Fresnel(float3 f0, float3 viewDir, float3 halfWay)
+{
+	return f0 + (1.0f - f0) * (1.0f - dot(viewDir, halfWay));
+}
+
+float GGX(float3 m, float3 normalWS, float alpha)
+{
+	return alpha * alpha / (PI * pow(dot(normalWS, m) * dot(normalWS, m) * (alpha * alpha - 1) + 1, 2));
+}
+
+float G1(float3 v, float3 normalWS, float k)
+{
+	return dot(normalWS, v) / (dot(normalWS, v) * (1.0f - k) + k);
+}
+
+float SchlickGGX(float alpha, float3 normalWS, float3 viewDir, float3 lightDir)
+{
+	float k = alpha * 0.5f;
+	return G1(lightDir, normalWS, k) * G1(viewDir, normalWS, k);
+}
+
+float3 CookTorranceBRDF(float3 viewDir, float3 lightDir, float3 normalWS, float3 f0, float roughness)
+{
+	float alpha = (roughness + 1.0f) * (roughness + 1.0f) * 0.25f;
+	float3 h = (lightDir + viewDir) * 0.5f;
+	return GGX(h, normalWS, alpha) * Fresnel(f0, viewDir, h) * SchlickGGX(alpha, normalWS, viewDir, lightDir);
+}
+
 float4 main(VertexShaderOutput psInput) : SV_TARGET
 {
+	float3 viewPosWS = MatCB.InverseViewMatrix._14_24_34;
+	float3 viewDir = normalize(viewPosWS - psInput.PositionWS.xyz);
 	float3 mainLightDir = 0;
 	if (LightPropertiesCB.NumDirectionalLights > 0)
 	{
@@ -77,5 +119,6 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 	}
 
 	float NoL = saturate(dot(mainLightDir, psInput.NormalWS));
-	return float4(MaterialCB.BaseColor * NoL);
+	float3 col = CookTorranceBRDF(viewDir, mainLightDir, psInput.NormalWS, float3(0.4f,0.4f,0.4f), MaterialCB.Roughness);
+	return float4(col, 1);
 }

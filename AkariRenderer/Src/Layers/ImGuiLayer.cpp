@@ -994,9 +994,9 @@ namespace Akari
         ImGui::Text("Material");
         ImGui::ColorEdit4("Base Color", value_ptr(props.BaseColor));
         ImGui::ColorEdit4("Emissive", value_ptr(props.Emissive));
-        ImGui::DragFloat("Opacity", &props.Opacity);
-        ImGui::DragFloat("Roughness", &props.Roughness);
-        ImGui::DragFloat("Metallic", &props.Metallic);
+        ImGui::DragFloat("Opacity", &props.Opacity, 0.01f, 0, 1.0f);
+        ImGui::DragFloat("Roughness", &props.Roughness, 0.01f, 0, 1.0f);
+        ImGui::DragFloat("Metallic", &props.Metallic, 0.01f, 0, 1.0f);
         ImGui::DragFloat("NormalScale", &props.NormalScale);
         ImGui::Spacing();
     }

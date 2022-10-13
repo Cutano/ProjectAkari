@@ -22,7 +22,7 @@ namespace Akari
         const CD3DX12_DESCRIPTOR_RANGE1 descriptorRage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, static_cast<UINT>(Material::TextureType::NumTypes), 3);
 
         CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParameters];
-        rootParameters[MatricesCB].InitAsConstantBufferView( 0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_VERTEX );
+        rootParameters[MatricesCB].InitAsConstantBufferView( 0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL );
         rootParameters[MaterialCB].InitAsConstantBufferView( 0, 1, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL );
         rootParameters[LightPropertiesCB].InitAsConstants( sizeof( LightProperties ) / 4, 1, 0, D3D12_SHADER_VISIBILITY_PIXEL );
         rootParameters[PointLights].InitAsShaderResourceView( 0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL );
@@ -137,6 +137,7 @@ namespace Akari
     void RenderStateObject::Apply(CommandList& cmd)
     {
         m_MVP.Mvp = m_MVP.Proj * m_MVP.View * m_MVP.Model;
+        m_MVP.InvView = inverse(m_MVP.View);
         
         const auto& materialProps = m_Material->GetMaterialProperties();
         LightProperties lightProps;
