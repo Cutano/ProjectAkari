@@ -18,6 +18,31 @@ struct DirectionalLight
 	float ShadowAmount;
 };
 
+struct MaterialProperties
+{
+	float4 BaseColor;
+	//------------------------------------ ( 16 bytes )
+	float4 Emissive;
+	//------------------------------------ ( 16 bytes )
+	float Opacity;                       // If Opacity < 1, then the material is transparent.
+	float Roughness;
+	float Metallic;             
+	float NormalScale;
+
+	//------------------------------------ ( 16 bytes )
+	uint HasBaseColorTexture;
+	uint HasMetallicTexture;
+	uint HasRoughnessTexture;
+	uint HasEmissiveTexture;
+	//------------------------------------ ( 16 bytes )
+	uint HasOcclusionTexture;
+	uint HasNormalTexture;
+	uint HasBumpTexture;
+	uint HasOpacityTexture;
+	//------------------------------------ ( 16 bytes )
+	// Total:                              ( 16 * 8 = 128 bytes )
+};
+
 struct VertexShaderOutput
 {
 	float4 PositionWS  : POSITION;
@@ -28,9 +53,10 @@ struct VertexShaderOutput
 	float4 Position    : SV_POSITION;
 };
 
-ConstantBuffer<LightProperties> LightPropertiesCB : register( b1 );
+ConstantBuffer<MaterialProperties> MaterialCB : register(b0, space1);
+ConstantBuffer<LightProperties> LightPropertiesCB : register(b1);
 
-StructuredBuffer<DirectionalLight> DirectionalLights : register( t2 );
+StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
 
 float4 main(VertexShaderOutput psInput) : SV_TARGET
 {
@@ -47,9 +73,9 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 		float y = cos(pitch) * cos(yaw);
 		float z = sin(pitch) * cos(yaw);
 
-		mainLightDir = float3(x, y, z);
+		mainLightDir = normalize(float3(x, y, z));
 	}
 
 	float NoL = saturate(dot(mainLightDir, psInput.NormalWS));
-	return float4(NoL, NoL, NoL, 1.0f);
+	return float4(MaterialCB.BaseColor * NoL);
 }

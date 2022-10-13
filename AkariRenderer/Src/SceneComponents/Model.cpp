@@ -182,15 +182,15 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
 
     if ( material.Get( AI_MATKEY_COLOR_AMBIENT, ambientColor ) == aiReturn_SUCCESS )
     {
-        pMaterial->SetBaseColor( XMFLOAT4( ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a ) );
+        pMaterial->SetBaseColor( glm::vec4( ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a ) );
     }
     if ( material.Get( AI_MATKEY_COLOR_EMISSIVE, emissiveColor ) == aiReturn_SUCCESS )
     {
-        pMaterial->SetEmissiveColor( XMFLOAT4( emissiveColor.r, emissiveColor.g, emissiveColor.b, emissiveColor.a ) );
+        pMaterial->SetEmissiveColor( glm::vec4( emissiveColor.r, emissiveColor.g, emissiveColor.b, emissiveColor.a ) );
     }
     if ( material.Get( AI_MATKEY_COLOR_DIFFUSE, diffuseColor ) == aiReturn_SUCCESS )
     {
-        pMaterial->SetBaseColor( XMFLOAT4( diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a ) );
+        pMaterial->SetBaseColor( glm::vec4( diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a ) );
     }
     if ( material.Get( AI_MATKEY_SHININESS, shininess ) == aiReturn_SUCCESS )
     {

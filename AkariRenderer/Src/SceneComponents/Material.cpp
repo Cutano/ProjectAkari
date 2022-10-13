@@ -30,22 +30,22 @@ Material::Material( const Material& copy )
 , m_Textures( copy.m_Textures )
 {}
 
-const DirectX::XMFLOAT4& Material::GetBaseColor() const
+const glm::vec4& Material::GetBaseColor() const
 {
     return m_MaterialProperties->BaseColor;
 }
 
-void Material::SetBaseColor( const DirectX::XMFLOAT4& baseColor )
+void Material::SetBaseColor( const glm::vec4& baseColor )
 {
     m_MaterialProperties->BaseColor = baseColor;
 }
 
-const DirectX::XMFLOAT4& Material::GetEmissiveColor() const
+const glm::vec4& Material::GetEmissiveColor() const
 {
     return m_MaterialProperties->Emissive;
 }
 
-void Material::SetEmissiveColor( const DirectX::XMFLOAT4& emissive )
+void Material::SetEmissiveColor( const glm::vec4& emissive )
 {
     m_MaterialProperties->Emissive = emissive;
 }
@@ -155,7 +155,7 @@ bool Material::IsTransparent() const
     return ( m_MaterialProperties->Opacity < 1.0f || m_MaterialProperties->HasOpacityTexture );
 }
 
-const MaterialProperties& Material::GetMaterialProperties() const
+MaterialProperties& Material::GetMaterialProperties() const
 {
     return *m_MaterialProperties;
 }

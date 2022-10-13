@@ -28,7 +28,11 @@
 #include "Shaders/Generated/ImGUI_VS.h"
 
 #include "RenderPipelines/Pass/ToneMappingPass/ToneMappingParameters.h"
+#include "SceneComponents/Material.h"
+#include "SceneComponents/Mesh.h"
+#include "SceneComponents/Model.h"
 #include "SceneComponents/ModelManager.h"
+#include "SceneComponents/ModelNode.h"
 #include "SceneComponents/Scene.h"
 #include "SceneComponents/Camera/EditorCamera.h"
 
@@ -584,7 +588,20 @@ namespace Akari
                 ImGui::DragFloat("Light Size", &dirLightComp.LightSize, 0.1f); // For PCSS
                 ImGui::DragFloat("Shadow Amount", &dirLightComp.ShadowAmount, 0.1f);
             }
-            
+
+            if (obj.HasComponent<ModelComponent>())
+            {
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+                ImGui::Text("Model");
+                ImGui::Spacing();
+
+                const auto& modelComp = obj.GetComponent<ModelComponent>();
+                auto model = ModelManager::GetInstance().GetModelByID(modelComp.ModelID);
+                ModelVisitor visitor;
+                model->Accept(visitor);
+            }
         }
         
         ImGui::End();
@@ -956,6 +973,32 @@ namespace Akari
                ACESFilmicTonemapping( g_ToneMappingParameters.LinearWhite, g_ToneMappingParameters.A, g_ToneMappingParameters.B,
                                       g_ToneMappingParameters.C, g_ToneMappingParameters.D, g_ToneMappingParameters.E,
                                       g_ToneMappingParameters.F );
+    }
+
+    void ModelVisitor::Visit(Scene& scene)
+    {
+    }
+
+    void ModelVisitor::Visit(SceneObject& model)
+    {
+    }
+
+    void ModelVisitor::Visit(ModelNode& modelNode)
+    {
+    }
+
+    void ModelVisitor::Visit(Mesh& mesh)
+    {
+        auto mat = mesh.GetMaterial();
+        auto& props = mat->GetMaterialProperties();
+        ImGui::Text("Material");
+        ImGui::ColorEdit4("Base Color", value_ptr(props.BaseColor));
+        ImGui::ColorEdit4("Emissive", value_ptr(props.Emissive));
+        ImGui::DragFloat("Opacity", &props.Opacity);
+        ImGui::DragFloat("Roughness", &props.Roughness);
+        ImGui::DragFloat("Metallic", &props.Metallic);
+        ImGui::DragFloat("NormalScale", &props.NormalScale);
+        ImGui::Spacing();
     }
 }
 

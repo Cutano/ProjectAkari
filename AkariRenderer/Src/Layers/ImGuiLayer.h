@@ -5,6 +5,7 @@
 #include <imgui.h>
 
 #include "UUID.h"
+#include "SceneComponents/Visitor.h"
 
 namespace Akari {
     class KeyPressedEvent;
@@ -82,6 +83,12 @@ namespace Akari {
         static float ACESFilmicTonemappingPlot(void*, int index);
     };
 
-
+    class ModelVisitor final : public Visitor
+    {
+        void Visit(Scene& scene) override;
+        void Visit(SceneObject& model) override;
+        void Visit(ModelNode& modelNode) override;
+        void Visit(Mesh& mesh) override;
+    };
 
 }

@@ -43,9 +43,9 @@ struct alignas( 16 ) MaterialProperties
     // The Material properties must be aligned to a 16-byte boundary.
     // To guarantee alignment, the MaterialProperties structure will be allocated in aligned memory.
     MaterialProperties( 
-        const DirectX::XMFLOAT4 baseColor  = { 1, 1, 1, 1 },
+        const glm::vec4 baseColor  = { 1, 1, 1, 1 },
         const float roughness = 0.5f,
-        const DirectX::XMFLOAT4 emissive = { 0, 0, 0, 1 }, const float opacity = 1.0f,
+        const glm::vec4 emissive = { 0, 0, 0, 1 }, const float opacity = 1.0f,
         const float metallic = 0.0f, const float normalScale = 1.0f
     )
     : BaseColor( baseColor )
@@ -64,9 +64,9 @@ struct alignas( 16 ) MaterialProperties
     , HasOpacityTexture( false )
     {}
 
-    DirectX::XMFLOAT4 BaseColor;
+    glm::vec4 BaseColor;
     //------------------------------------ ( 16 bytes )
-    DirectX::XMFLOAT4 Emissive;
+    glm::vec4 Emissive;
     //------------------------------------ ( 16 bytes )
     float Opacity;                       // If Opacity < 1, then the material is transparent.
     float Roughness;
@@ -110,11 +110,11 @@ public:
 
     ~Material() = default;
 
-    const DirectX::XMFLOAT4& GetBaseColor() const;
-    void                     SetBaseColor( const DirectX::XMFLOAT4& baseColor );
+    const glm::vec4& GetBaseColor() const;
+    void                     SetBaseColor( const glm::vec4& baseColor );
 
-    const DirectX::XMFLOAT4& GetEmissiveColor() const;
-    void                     SetEmissiveColor( const DirectX::XMFLOAT4& emissive );
+    const glm::vec4& GetEmissiveColor() const;
+    void                     SetEmissiveColor( const glm::vec4& emissive );
 
     float GetRoughness() const;
     void  SetRoughness( float specularPower );
@@ -138,7 +138,7 @@ public:
     // if the opacity value is < 1, or there is an opacity map, or the diffuse texture has an alpha channel.
     bool IsTransparent() const;
 
-    const MaterialProperties& GetMaterialProperties() const;
+    MaterialProperties& GetMaterialProperties() const;
     void                      SetMaterialProperties( const MaterialProperties& materialProperties );
 
     // Define some interesting materials.
