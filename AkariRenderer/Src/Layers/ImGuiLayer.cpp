@@ -495,6 +495,12 @@ namespace Akari
                     auto & [ModelID]= cube.AddComponent<ModelComponent>();
                     ModelID = ModelManager::GetInstance().GetCubeID();
                 }
+
+                if (ImGui::MenuItem("Directional Light"))
+                {
+                    auto dirLight = scene.CreateSceneObject("Directional Light");
+                    dirLight.AddComponent<DirectionalLightComponent>();
+                }
                 
                 ImGui::EndMenu();
             }
@@ -549,9 +555,25 @@ namespace Akari
             auto& position = transComp.Translation;
             auto& rotation = transComp.Rotation;
             auto& scale = transComp.Scale;
-            ImGui::DragFloat3("Position", &position.x, 0.01f);
-            ImGui::DragFloat3("Rotation", &rotation.x, 0.01f);
-            ImGui::DragFloat3("Scale", &scale.x, 0.01f);
+            ImGui::DragFloat3("Position", value_ptr(position), 0.01f);
+            ImGui::DragFloat3("Rotation", value_ptr(rotation), 0.01f);
+            ImGui::DragFloat3("Scale", value_ptr(scale), 0.01f);
+
+            if (obj.HasComponent<DirectionalLightComponent>())
+            {
+                ImGui::Separator();
+                ImGui::Spacing();
+                ImGui::Text("Directional Light");
+                
+                auto& dirLightComp = obj.GetComponent<DirectionalLightComponent>();
+                ImGui::DragFloat3("Radiance", value_ptr(dirLightComp.Radiance), 0.1f);
+                ImGui::DragFloat("Intensity", &dirLightComp.Intensity, 0.1f);
+                ImGui::Checkbox("Cast Shadows", &dirLightComp.CastShadows);
+                ImGui::Checkbox("Soft Shadows", &dirLightComp.SoftShadows);
+                ImGui::DragFloat("Light Size", &dirLightComp.LightSize, 0.1f); // For PCSS
+                ImGui::DragFloat("Shadow Amount", &dirLightComp.ShadowAmount, 0.1f);
+            }
+            
         }
         
         ImGui::End();
