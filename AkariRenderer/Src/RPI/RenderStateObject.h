@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SceneComponents/Light.h"
+
 namespace Akari
 {
     class Device;
@@ -56,6 +58,8 @@ namespace Akari
         void SetViewMatrix(glm::mat4 viewMat);
         void SetProjMatrix(glm::mat4 projMat);
 
+        void SetDirectionalLights(const std::vector<DirectionalLight>& dirLights);
+
         void SetMaterial(const std::shared_ptr<Material>& mat);
         void SetRenderTarget(const std::shared_ptr<RenderTarget>& rt);
         void SetShader(const unsigned char* VSByteCode, size_t VSLength, const unsigned char* PSByteCode, size_t PSLength);
@@ -84,6 +88,8 @@ namespace Akari
         std::shared_ptr<RootSignature> m_RootSig;
         std::shared_ptr<ShaderResourceView> m_DefaultSRV;
         std::shared_ptr<PipelineStateObject> m_PipelineStateObject;
+
+        std::vector<DirectionalLight> m_DirLights;
     };
     
 }

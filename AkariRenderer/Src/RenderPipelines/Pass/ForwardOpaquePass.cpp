@@ -5,7 +5,7 @@
 #include "RHI/RenderTarget.h"
 #include "RPI/RenderStateObject.h"
 #include "SceneComponents/Mesh.h"
-#include "SceneComponents/Model.h"
+#include "SceneComponents/Light.h"
 #include "SceneComponents/ModelNode.h"
 #include "SceneComponents/Scene.h"
 #include "SceneComponents/SceneObject.h"
@@ -58,6 +58,17 @@ namespace Akari
 
     void ForwardOpaqueVisitor::Visit(Scene& scene)
     {
+        const auto& dirLights = scene.GetAllSceneObjectsWith<DirectionalLightComponent>();
+        std::vector<DirectionalLight> dirLightComps;
+
+        for (const auto& dirLight : dirLights)
+        {
+            SceneObject obj(dirLight, &scene);
+            DirectionalLight light{obj.GetComponent<TransformComponent>(), obj.GetComponent<DirectionalLightComponent>()};
+            dirLightComps.push_back(light);
+        }
+
+        m_RenderState.SetDirectionalLights(dirLightComps);
         m_RenderState.SetViewMatrix(m_Camera.GetViewMatrix());
         m_RenderState.SetProjMatrix(m_Camera.GetProjectionMatrix());
     }

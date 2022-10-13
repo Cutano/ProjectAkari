@@ -69,6 +69,11 @@ namespace Akari
         m_MVP.Proj = projMat;
     }
 
+    void RenderStateObject::SetDirectionalLights(const std::vector<DirectionalLight>& dirLights)
+    {
+        m_DirLights = dirLights;
+    }
+
     void RenderStateObject::SetMaterial(const std::shared_ptr<Material>& mat)
     {
         m_Material = mat;
@@ -132,10 +137,15 @@ namespace Akari
         m_MVP.Mvp = m_MVP.Proj * m_MVP.View * m_MVP.Model;
         
         const auto& materialProps = m_Material->GetMaterialProperties();
+        LightProperties lightProps;
+        lightProps.NumDirectionalLights = static_cast<uint32_t>(m_DirLights.size());
+        
         cmd.SetPipelineState(m_PipelineStateObject);
         cmd.SetGraphicsRootSignature(m_RootSig);
         cmd.SetGraphicsDynamicConstantBuffer(MatricesCB, m_MVP);
         cmd.SetGraphicsDynamicConstantBuffer(MaterialCB, materialProps);
+        cmd.SetGraphics32BitConstants(LightPropertiesCB, lightProps);
+        cmd.SetGraphicsDynamicStructuredBuffer(DirectionalLights, m_DirLights);
 
         using TextureType = Material::TextureType;
 

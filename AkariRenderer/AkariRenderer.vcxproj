@@ -295,6 +295,7 @@
     <ClInclude Include="Src\SceneComponents\Camera\Camera.h" />
     <ClInclude Include="Src\SceneComponents\Camera\EditorCamera.h" />
     <ClInclude Include="Src\SceneComponents\Components.h" />
+    <ClInclude Include="Src\SceneComponents\Light.h" />
     <ClInclude Include="Src\SceneComponents\Material.h" />
     <ClInclude Include="Src\SceneComponents\Mesh.h" />
     <ClInclude Include="Src\SceneComponents\Model.h" />

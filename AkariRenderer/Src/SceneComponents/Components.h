@@ -74,10 +74,10 @@ namespace Akari
 
     struct DirectionalLightComponent
     {
-        glm::vec3 Radiance = {1.0f, 1.0f, 1.0f};
-        float Intensity = 1.0f;
         bool CastShadows = true;
         bool SoftShadows = true;
+        glm::vec3 Radiance = {1.0f, 1.0f, 1.0f};
+        float Intensity = 1.0f;
         float LightSize = 0.5f; // For PCSS
         float ShadowAmount = 1.0f;
     };
