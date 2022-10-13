@@ -77,9 +77,17 @@ float3 fresnelSchlick(float cosTheta, float3 F0)
 	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float DistributionGGX(float3 N, float3 H, float roughness)
+float AntiAliasingDistributionGGX(float3 N, float3 H, float roughness)
 {
 	float a      = roughness * roughness;
+	float sigma = 0.50; //- screen space variance
+	float Kappa = 0.18;	//- clamping threshold
+
+	float2 footprint_bounding_box = fwidth(H.xy);
+	float2 variance = sigma * sigma * footprint_bounding_box * footprint_bounding_box;
+	float2 kernel_roughness = min(float2(Kappa, Kappa), 2.0 * variance);
+	a = sqrt(a * a + kernel_roughness.x);
+	
 	float a2     = a * a;
 	float NdotH  = max(dot(N, H), 0.0);
 	float NdotH2 = NdotH * NdotH;
@@ -137,7 +145,7 @@ float3 DirectPBRLighting(float3 baseColor, float3 V, float3 L, float3 N, float3 
 	// Cook-Torrance BRDF
 	float3 H = normalize(V + L);
 	
-	float NDF = DistributionGGX(N, H, roughness);        
+	float NDF = AntiAliasingDistributionGGX(N, H, roughness);        
 	float G   = GeometrySmith(N, V, L, roughness);      
 	float3 F  = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
