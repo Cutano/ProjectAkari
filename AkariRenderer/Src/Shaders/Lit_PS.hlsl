@@ -70,32 +70,86 @@ StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
 
 static const float PI = 3.141592653589793;
 
-float3 Fresnel(float3 f0, float3 viewDir, float3 halfWay)
+float3 fresnelSchlick(float cosTheta, float3 F0)
 {
-	return f0 + (1.0f - f0) * (1.0f - dot(viewDir, halfWay));
+	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float GGX(float3 m, float3 normalWS, float alpha)
+float DistributionGGX(float3 N, float3 H, float roughness)
 {
-	return alpha * alpha / (PI * pow(dot(normalWS, m) * dot(normalWS, m) * (alpha * alpha - 1) + 1, 2));
+	float a      = roughness * roughness;
+	float a2     = a * a;
+	float NdotH  = max(dot(N, H), 0.0);
+	float NdotH2 = NdotH * NdotH;
+
+	float nom   = a2;
+	float denom = NdotH2 * (a2 - 1.0) + 1.0;
+	denom = PI * denom * denom;
+
+	return nom / denom;
 }
 
-float G1(float3 v, float3 normalWS, float k)
+float GeometrySchlickGGX(float NdotV, float roughness)
 {
-	return dot(normalWS, v) / (dot(normalWS, v) * (1.0f - k) + k);
+	float r = roughness + 1.0;
+	float k = r * r / 8.0;
+
+	float nom   = NdotV;
+	float denom = NdotV * (1.0 - k) + k;
+
+	return nom / denom;
 }
 
-float SchlickGGX(float alpha, float3 normalWS, float3 viewDir, float3 lightDir)
+float IBLGeometrySchlickGGX(float NdotV, float roughness)
 {
-	float k = alpha * 0.5f;
-	return G1(lightDir, normalWS, k) * G1(viewDir, normalWS, k);
+	float k = roughness * roughness / 2.0;
+
+	float nom   = NdotV;
+	float denom = NdotV * (1.0 - k) + k;
+
+	return nom / denom;
 }
 
-float3 CookTorranceBRDF(float3 viewDir, float3 lightDir, float3 normalWS, float3 f0, float roughness)
+float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
 {
-	float alpha = (roughness + 1.0f) * (roughness + 1.0f) * 0.25f;
-	float3 h = (lightDir + viewDir) * 0.5f;
-	return GGX(h, normalWS, alpha) * Fresnel(f0, viewDir, h) * SchlickGGX(alpha, normalWS, viewDir, lightDir);
+	float NdotV = max(dot(N, V), 0.0);
+	float NdotL = max(dot(N, L), 0.0);
+	float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+	float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+
+	return ggx1 * ggx2;
+}
+
+float IBLGeometrySmith(float3 N, float3 V, float3 L, float roughness)
+{
+	float NdotV = max(dot(N, V), 0.0);
+	float NdotL = max(dot(N, L), 0.0);
+	float ggx2 = IBLGeometrySchlickGGX(NdotV, roughness);
+	float ggx1 = IBLGeometrySchlickGGX(NdotL, roughness);
+
+	return ggx1 * ggx2;
+}
+
+float3 DirectPBRLighting(float3 baseColor, float3 V, float3 L, float3 N, float3 F0, float roughness, float metallic)
+{
+	// Cook-Torrance BRDF
+	float3 H = normalize(V + L);
+	
+	float NDF = DistributionGGX(N, H, roughness);        
+	float G   = GeometrySmith(N, V, L, roughness);      
+	float3 F  = fresnelSchlick(max(dot(H, V), 0.0), F0);
+
+	float3 nominator    = NDF * G * F;
+	float  denominator  = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+	float3 specular = saturate(nominator / denominator);
+
+	float3 kS = F;
+	float3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;
+
+	float NoL = saturate(dot(N, L));
+
+	return (kD * baseColor / PI + specular) * NoL;
 }
 
 float4 main(VertexShaderOutput psInput) : SV_TARGET
@@ -117,8 +171,7 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 
 		mainLightDir = normalize(float3(x, y, z));
 	}
-
-	float NoL = saturate(dot(mainLightDir, psInput.NormalWS));
-	float3 col = CookTorranceBRDF(viewDir, mainLightDir, psInput.NormalWS, float3(0.4f,0.4f,0.4f), MaterialCB.Roughness);
+	
+	float3 col = DirectPBRLighting(MaterialCB.BaseColor.xyz, viewDir, mainLightDir, psInput.NormalWS, 0.04f, MaterialCB.Roughness, MaterialCB.Metallic);
 	return float4(col, 1);
 }
