@@ -547,10 +547,12 @@ namespace Akari
                 originalName = newName;
             }
 
+            ImGui::Spacing();
             ImGui::Separator();
             ImGui::Spacing();
             
             ImGui::Text("Transform");
+            ImGui::Spacing();
             auto& transComp = obj.GetComponent<TransformComponent>();
             auto& position = transComp.Translation;
             auto& rotation = transComp.Rotation;
@@ -561,15 +563,17 @@ namespace Akari
 
             if (obj.HasComponent<DirectionalLightComponent>())
             {
+                ImGui::Spacing();
                 ImGui::Separator();
                 ImGui::Spacing();
                 ImGui::Text("Directional Light");
+                ImGui::Spacing();
                 
                 auto& dirLightComp = obj.GetComponent<DirectionalLightComponent>();
-                ImGui::DragFloat3("Radiance", value_ptr(dirLightComp.Radiance), 0.1f);
-                ImGui::DragFloat("Intensity", &dirLightComp.Intensity, 0.1f);
                 ImGui::Checkbox("Cast Shadows", &dirLightComp.CastShadows);
                 ImGui::Checkbox("Soft Shadows", &dirLightComp.SoftShadows);
+                ImGui::ColorEdit3("Radiance", value_ptr(dirLightComp.Radiance));
+                ImGui::DragFloat("Intensity", &dirLightComp.Intensity, 0.1f);
                 ImGui::DragFloat("Light Size", &dirLightComp.LightSize, 0.1f); // For PCSS
                 ImGui::DragFloat("Shadow Amount", &dirLightComp.ShadowAmount, 0.1f);
             }
