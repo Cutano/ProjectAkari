@@ -171,12 +171,10 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     aiTextureOp aiBlendOperation;
     float       blendFactor;
     aiColor4D   diffuseColor;
-    aiColor4D   specularColor;
     aiColor4D   ambientColor;
     aiColor4D   emissiveColor;
     float       opacity;
     float       indexOfRefraction;
-    float       reflectivity;
     float       shininess;
     float       bumpIntensity;
 
@@ -184,7 +182,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
 
     if ( material.Get( AI_MATKEY_COLOR_AMBIENT, ambientColor ) == aiReturn_SUCCESS )
     {
-        pMaterial->SetAmbientColor( XMFLOAT4( ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a ) );
+        pMaterial->SetBaseColor( XMFLOAT4( ambientColor.r, ambientColor.g, ambientColor.b, ambientColor.a ) );
     }
     if ( material.Get( AI_MATKEY_COLOR_EMISSIVE, emissiveColor ) == aiReturn_SUCCESS )
     {
@@ -192,15 +190,11 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     }
     if ( material.Get( AI_MATKEY_COLOR_DIFFUSE, diffuseColor ) == aiReturn_SUCCESS )
     {
-        pMaterial->SetDiffuseColor( XMFLOAT4( diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a ) );
-    }
-    if ( material.Get( AI_MATKEY_COLOR_SPECULAR, specularColor ) == aiReturn_SUCCESS )
-    {
-        pMaterial->SetSpecularColor( XMFLOAT4( specularColor.r, specularColor.g, specularColor.b, specularColor.a ) );
+        pMaterial->SetBaseColor( XMFLOAT4( diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a ) );
     }
     if ( material.Get( AI_MATKEY_SHININESS, shininess ) == aiReturn_SUCCESS )
     {
-        pMaterial->SetSpecularPower( shininess );
+        pMaterial->SetRoughness( shininess );
     }
     if ( material.Get( AI_MATKEY_OPACITY, opacity ) == aiReturn_SUCCESS )
     {
@@ -208,15 +202,11 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     }
     if ( material.Get( AI_MATKEY_REFRACTI, indexOfRefraction ) )
     {
-        pMaterial->SetIndexOfRefraction( indexOfRefraction );
-    }
-    if ( material.Get( AI_MATKEY_REFLECTIVITY, reflectivity ) == aiReturn_SUCCESS )
-    {
-        pMaterial->SetReflectance( XMFLOAT4( reflectivity, reflectivity, reflectivity, reflectivity ) );
+        pMaterial->SetMetallic( indexOfRefraction );
     }
     if ( material.Get( AI_MATKEY_BUMPSCALING, bumpIntensity ) == aiReturn_SUCCESS )
     {
-        pMaterial->SetBumpIntensity( bumpIntensity );
+        pMaterial->SetNormalScale( bumpIntensity );
     }
 
     // Load ambient textures.
@@ -226,7 +216,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
-        pMaterial->SetTexture( Material::TextureType::Ambient, texture );
+        pMaterial->SetTexture( Material::TextureType::BaseColor, texture );
     }
 
     // Load emissive textures.
@@ -236,7 +226,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
-        pMaterial->SetTexture( Material::TextureType::Emissive, texture );
+        pMaterial->SetTexture( Material::TextureType::Metallic, texture );
     }
 
     // Load diffuse textures.
@@ -246,7 +236,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
-        pMaterial->SetTexture( Material::TextureType::Diffuse, texture );
+        pMaterial->SetTexture( Material::TextureType::Roughness, texture );
     }
 
     // Load specular texture.
@@ -256,7 +246,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
-        pMaterial->SetTexture( Material::TextureType::Specular, texture );
+        pMaterial->SetTexture( Material::TextureType::Emissive, texture );
     }
 
     // Load specular power texture.
@@ -266,7 +256,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false );
-        pMaterial->SetTexture( Material::TextureType::SpecularPower, texture );
+        pMaterial->SetTexture( Material::TextureType::Occlusion, texture );
     }
 
     if ( material.GetTextureCount( aiTextureType_OPACITY ) > 0 &&

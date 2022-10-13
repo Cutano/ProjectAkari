@@ -43,56 +43,43 @@ struct alignas( 16 ) MaterialProperties
     // The Material properties must be aligned to a 16-byte boundary.
     // To guarantee alignment, the MaterialProperties structure will be allocated in aligned memory.
     MaterialProperties( 
-        const DirectX::XMFLOAT4 diffuse  = { 1, 1, 1, 1 },
-        const DirectX::XMFLOAT4 specular = { 1, 1, 1, 1 }, 
-        const float specularPower = 128.0f,
-        const DirectX::XMFLOAT4 ambient  = { 0, 0, 0, 1 },
-        const DirectX::XMFLOAT4 emissive = { 0, 0, 0, 1 },
-        const DirectX::XMFLOAT4 reflectance = { 0, 0, 0, 0 }, const float opacity = 1.0f,
-        const float indexOfRefraction = 0.0f, const float bumpIntensity = 1.0f,
-        const float alphaThreshold = 0.1f 
+        const DirectX::XMFLOAT4 baseColor  = { 1, 1, 1, 1 },
+        const float roughness = 0.5f,
+        const DirectX::XMFLOAT4 emissive = { 0, 0, 0, 1 }, const float opacity = 1.0f,
+        const float metallic = 0.0f, const float normalScale = 1.0f
     )
-    : Diffuse( diffuse )
-    , Specular( specular )
+    : BaseColor( baseColor )
     , Emissive( emissive )
-    , Ambient( ambient )
-    , Reflectance( reflectance )
     , Opacity( opacity )
-    , SpecularPower( specularPower )
-    , IndexOfRefraction( indexOfRefraction )
-    , BumpIntensity( bumpIntensity )
-    , HasAmbientTexture( false )
+    , Roughness( roughness )
+    , Metallic( metallic )
+    , NormalScale( normalScale )
+    , HasBaseColorTexture( false )
+    , HasMetallicTexture( false )
+    , HasRoughnessTexture( false )
     , HasEmissiveTexture( false )
-    , HasDiffuseTexture( false )
-    , HasSpecularTexture( false )
-    , HasSpecularPowerTexture( false )
+    , HasOcclusionTexture( false )
     , HasNormalTexture( false )
     , HasBumpTexture( false )
     , HasOpacityTexture( false )
     {}
 
-    DirectX::XMFLOAT4 Diffuse;
-    //------------------------------------ ( 16 bytes )
-    DirectX::XMFLOAT4 Specular;
+    DirectX::XMFLOAT4 BaseColor;
     //------------------------------------ ( 16 bytes )
     DirectX::XMFLOAT4 Emissive;
     //------------------------------------ ( 16 bytes )
-    DirectX::XMFLOAT4 Ambient;
-    //------------------------------------ ( 16 bytes )
-    DirectX::XMFLOAT4 Reflectance;
-    //------------------------------------ ( 16 bytes )
     float Opacity;                       // If Opacity < 1, then the material is transparent.
-    float SpecularPower;
-    float IndexOfRefraction;             // For transparent materials, IOR > 0.
-    float BumpIntensity;                 // When using bump textures (height maps) we need
-                                         // to scale the height values so the normals are visible.
+    float Roughness;
+    float Metallic;             
+    float NormalScale;
+
     //------------------------------------ ( 16 bytes )
-    uint32_t HasAmbientTexture;
+    uint32_t HasBaseColorTexture;
+    uint32_t HasMetallicTexture;
+    uint32_t HasRoughnessTexture;
     uint32_t HasEmissiveTexture;
-    uint32_t HasDiffuseTexture;
-    uint32_t HasSpecularTexture;
     //------------------------------------ ( 16 bytes )
-    uint32_t HasSpecularPowerTexture;
+    uint32_t HasOcclusionTexture;
     uint32_t HasNormalTexture;
     uint32_t HasBumpTexture;
     uint32_t HasOpacityTexture;
@@ -107,11 +94,11 @@ public:
     // These are the texture slots that can be bound to the material.
     enum class TextureType
     {
-        Ambient,
+        BaseColor,
+        Metallic,
+        Roughness,
         Emissive,
-        Diffuse,
-        Specular,
-        SpecularPower,
+        Occlusion,
         Normal,
         Bump,
         Opacity,
@@ -123,35 +110,26 @@ public:
 
     ~Material() = default;
 
-    const DirectX::XMFLOAT4& GetAmbientColor() const;
-    void                     SetAmbientColor( const DirectX::XMFLOAT4& ambient );
-
-    const DirectX::XMFLOAT4& GetDiffuseColor() const;
-    void                     SetDiffuseColor( const DirectX::XMFLOAT4& diffuse );
+    const DirectX::XMFLOAT4& GetBaseColor() const;
+    void                     SetBaseColor( const DirectX::XMFLOAT4& baseColor );
 
     const DirectX::XMFLOAT4& GetEmissiveColor() const;
     void                     SetEmissiveColor( const DirectX::XMFLOAT4& emissive );
 
-    const DirectX::XMFLOAT4& GetSpecularColor() const;
-    void                     SetSpecularColor( const DirectX::XMFLOAT4& specular );
-
-    float GetSpecularPower() const;
-    void  SetSpecularPower( float specularPower );
-
-    const DirectX::XMFLOAT4& GetReflectance() const;
-    void                     SetReflectance( const DirectX::XMFLOAT4& reflectance );
+    float GetRoughness() const;
+    void  SetRoughness( float specularPower );
 
     const float GetOpacity() const;
     void        SetOpacity( float opacity );
 
-    float GetIndexOfRefraction() const;
-    void  SetIndexOfRefraction( float indexOfRefraction );
+    float GetMetallic() const;
+    void  SetMetallic( float metallic );
 
     // When using bump maps, we can adjust the "intensity" of the normals generated
     // from the bump maps. We can even inverse the normals by using a negative intensity.
     // Default bump intensity is 1.0 and a value of 0 will remove the bump effect altogether.
-    float GetBumpIntensity() const;
-    void  SetBumpIntensity( float bumpIntensity );
+    float GetNormalScale() const;
+    void  SetNormalScale( float normalScale );
 
     std::shared_ptr<Texture> GetTexture( TextureType ID ) const;
     void                     SetTexture( TextureType type, std::shared_ptr<Texture> texture );

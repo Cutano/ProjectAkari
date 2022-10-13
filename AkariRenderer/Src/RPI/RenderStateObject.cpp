@@ -139,11 +139,11 @@ namespace Akari
 
         using TextureType = Material::TextureType;
 
-        BindTexture(cmd, static_cast<uint32_t>(TextureType::Ambient), m_Material->GetTexture(TextureType::Ambient));
+        BindTexture(cmd, static_cast<uint32_t>(TextureType::BaseColor), m_Material->GetTexture(TextureType::BaseColor));
+        BindTexture(cmd, static_cast<uint32_t>(TextureType::Metallic), m_Material->GetTexture(TextureType::Metallic));
+        BindTexture(cmd, static_cast<uint32_t>(TextureType::Roughness), m_Material->GetTexture(TextureType::Roughness));
         BindTexture(cmd, static_cast<uint32_t>(TextureType::Emissive), m_Material->GetTexture(TextureType::Emissive));
-        BindTexture(cmd, static_cast<uint32_t>(TextureType::Diffuse), m_Material->GetTexture(TextureType::Diffuse));
-        BindTexture(cmd, static_cast<uint32_t>(TextureType::Specular), m_Material->GetTexture(TextureType::Specular));
-        BindTexture(cmd, static_cast<uint32_t>(TextureType::SpecularPower), m_Material->GetTexture(TextureType::SpecularPower));
+        BindTexture(cmd, static_cast<uint32_t>(TextureType::Occlusion), m_Material->GetTexture(TextureType::Occlusion));
         BindTexture(cmd, static_cast<uint32_t>(TextureType::Normal), m_Material->GetTexture(TextureType::Normal));
         BindTexture(cmd, static_cast<uint32_t>(TextureType::Bump), m_Material->GetTexture(TextureType::Bump));
         BindTexture(cmd, static_cast<uint32_t>(TextureType::Opacity), m_Material->GetTexture(TextureType::Opacity));
