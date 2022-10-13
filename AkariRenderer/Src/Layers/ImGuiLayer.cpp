@@ -496,6 +496,13 @@ namespace Akari
                     ModelID = ModelManager::GetInstance().GetCubeID();
                 }
 
+                if (ImGui::MenuItem("Sphere"))
+                {
+                    auto cube = scene.CreateSceneObject("Sphere");
+                    auto & [ModelID]= cube.AddComponent<ModelComponent>();
+                    ModelID = ModelManager::GetInstance().GetSphereID();
+                }
+
                 if (ImGui::MenuItem("Directional Light"))
                 {
                     auto dirLight = scene.CreateSceneObject("Directional Light");

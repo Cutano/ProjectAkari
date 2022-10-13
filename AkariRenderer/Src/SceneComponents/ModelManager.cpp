@@ -15,6 +15,10 @@ namespace Akari
             m_CubeID = cubeID;
             m_ModelRegistry[cubeID] = cmd->CreateCube(1.0f, false);
 
+            const UUID sphereID{};
+            m_SphereID = sphereID;
+            m_ModelRegistry[sphereID] = cmd->CreateSphere(0.5f, 32, false);
+
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
     }
@@ -44,5 +48,10 @@ namespace Akari
     UUID ModelManager::GetCubeID()
     {
         return m_CubeID;
+    }
+
+    UUID ModelManager::GetSphereID()
+    {
+        return m_SphereID;
     }
 }

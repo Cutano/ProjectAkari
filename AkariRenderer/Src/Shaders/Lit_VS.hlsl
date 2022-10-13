@@ -33,9 +33,9 @@ VertexShaderOutput main(VertexPositionNormalTangentBitangentTexture IN)
     
     OUT.Position    = mul(MatCB.MVP, float4(IN.Position, 1.0f));
     OUT.PositionWS  = mul(MatCB.ModelMatrix, float4(IN.Position, 1.0f));
-    OUT.NormalWS    = mul((float3x3)transpose(MatCB.ModelMatrix), IN.Normal);
-    OUT.TangentWS   = mul((float3x3)transpose(MatCB.ModelMatrix), IN.Tangent);
-    OUT.BitangentWS = mul((float3x3)transpose(MatCB.ModelMatrix), IN.Bitangent);
+    OUT.NormalWS    = mul((float3x3)MatCB.ModelMatrix, IN.Normal);
+    OUT.TangentWS   = mul((float3x3)MatCB.ModelMatrix, IN.Tangent);
+    OUT.BitangentWS = mul((float3x3)MatCB.ModelMatrix, IN.Bitangent);
     OUT.TexCoord    = IN.TexCoord.xy;
 
     return OUT;

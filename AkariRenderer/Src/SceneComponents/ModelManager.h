@@ -30,6 +30,7 @@ namespace Akari
         std::shared_ptr<Model> GetModelByID(UUID id);
 
         UUID GetCubeID();
+        UUID GetSphereID();
 
     private:
         ModelManager() = default;
@@ -38,6 +39,7 @@ namespace Akari
 
         // Default Geometries
         UUID m_CubeID{0};
+        UUID m_SphereID{0};
     };
     
 }
