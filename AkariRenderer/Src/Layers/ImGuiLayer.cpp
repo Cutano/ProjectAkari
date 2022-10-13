@@ -498,19 +498,25 @@ namespace Akari
                     auto cube = scene.CreateSceneObject("Cube");
                     auto & [ModelID]= cube.AddComponent<ModelComponent>();
                     ModelID = ModelManager::GetInstance().GetCubeID();
+
+                    m_SelectedSceneObject = cube.GetUUID();
                 }
 
                 if (ImGui::MenuItem("Sphere"))
                 {
-                    auto cube = scene.CreateSceneObject("Sphere");
-                    auto & [ModelID]= cube.AddComponent<ModelComponent>();
+                    auto sphere = scene.CreateSceneObject("Sphere");
+                    auto & [ModelID]= sphere.AddComponent<ModelComponent>();
                     ModelID = ModelManager::GetInstance().GetSphereID();
+
+                    m_SelectedSceneObject = sphere.GetUUID();
                 }
 
                 if (ImGui::MenuItem("Directional Light"))
                 {
                     auto dirLight = scene.CreateSceneObject("Directional Light");
                     dirLight.AddComponent<DirectionalLightComponent>();
+
+                    m_SelectedSceneObject = dirLight.GetUUID();
                 }
                 
                 ImGui::EndMenu();
