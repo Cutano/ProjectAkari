@@ -18,11 +18,21 @@ struct DirectionalLight
 	float ShadowAmount;
 };
 
+struct VertexShaderOutput
+{
+	float4 PositionWS  : POSITION;
+	float3 NormalWS    : NORMAL;
+	float3 TangentWS   : TANGENT;
+	float3 BitangentWS : BITANGENT;
+	float2 TexCoord    : TEXCOORD;
+	float4 Position    : SV_POSITION;
+};
+
 ConstantBuffer<LightProperties> LightPropertiesCB : register( b1 );
 
 StructuredBuffer<DirectionalLight> DirectionalLights : register( t2 );
 
-float4 main() : SV_TARGET
+float4 main(VertexShaderOutput psInput) : SV_TARGET
 {
 	float3 mainLightDir = 0;
 	if (LightPropertiesCB.NumDirectionalLights > 0)
@@ -35,5 +45,7 @@ float4 main() : SV_TARGET
 
 		mainLightDir = float3(x, y, z);
 	}
-	return float4(mainLightDir, 1.0f);
+
+	float NoL = dot(mainLightDir, psInput.NormalWS);
+	return float4(float3(1, 1, 1) * NoL, 1.0f);
 }

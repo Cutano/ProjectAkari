@@ -115,7 +115,9 @@ namespace Akari
         rasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 
         D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-        depthStencilDesc.DepthEnable = false;
+        depthStencilDesc.DepthEnable = true;
+        depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+        depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
         depthStencilDesc.StencilEnable = false;
 
         pipelineStateStream.pRootSignature        = m_RootSig->GetD3D12RootSignature().Get();
