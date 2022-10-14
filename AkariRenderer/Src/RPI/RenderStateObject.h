@@ -40,6 +40,8 @@ namespace Akari
                        // Texture2D NormalTexture : register( t8 );
                        // Texture2D BumpTexture : register( t9 );
                        // Texture2D OpacityTexture : register( t10 );
+            CubeMaps,  // Texture2D Skybox : register( t11 );
+                       // Texture2D SkyboxIrr : register( t12 );
             NumRootParameters
         };
 
@@ -59,7 +61,7 @@ namespace Akari
         void SetProjMatrix(glm::mat4 projMat);
 
         void SetDirectionalLights(const std::vector<DirectionalLight>& dirLights);
-
+        void SetCubeMaps(const std::shared_ptr<ShaderResourceView>& skyboxSRV, std::shared_ptr<ShaderResourceView> skyboxIrrSRV);
         void SetMaterial(const std::shared_ptr<Material>& mat);
         void SetRenderTarget(const std::shared_ptr<RenderTarget>& rt);
         void SetShader(const unsigned char* VSByteCode, size_t VSLength, const unsigned char* PSByteCode, size_t PSLength);
@@ -92,6 +94,9 @@ namespace Akari
         std::shared_ptr<PipelineStateObject> m_PipelineStateObject;
 
         std::vector<DirectionalLight> m_DirLights;
+
+        std::shared_ptr<ShaderResourceView> m_SkyboxSRV;
+        std::shared_ptr<ShaderResourceView> m_SkyboxIrrSRV;
     };
     
 }

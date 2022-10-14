@@ -20,6 +20,7 @@ namespace Akari
 
         // Descriptor range for the textures.
         const CD3DX12_DESCRIPTOR_RANGE1 descriptorRage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, static_cast<UINT>(Material::TextureType::NumTypes), 3);
+        const CD3DX12_DESCRIPTOR_RANGE1 cubeMapRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 3 + static_cast<UINT>(Material::TextureType::NumTypes));
 
         CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParameters];
         rootParameters[MatricesCB].InitAsConstantBufferView( 0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL );
@@ -29,6 +30,7 @@ namespace Akari
         rootParameters[SpotLights].InitAsShaderResourceView( 1, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL );
         rootParameters[DirectionalLights].InitAsShaderResourceView( 2, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL );
         rootParameters[Textures].InitAsDescriptorTable( 1, &descriptorRage, D3D12_SHADER_VISIBILITY_PIXEL );
+        rootParameters[CubeMaps].InitAsDescriptorTable( 1, &cubeMapRange, D3D12_SHADER_VISIBILITY_PIXEL );
 
         const CD3DX12_STATIC_SAMPLER_DESC anisotropicSampler( 0, D3D12_FILTER_ANISOTROPIC );
 
@@ -72,6 +74,13 @@ namespace Akari
     void RenderStateObject::SetDirectionalLights(const std::vector<DirectionalLight>& dirLights)
     {
         m_DirLights = dirLights;
+    }
+
+    void RenderStateObject::SetCubeMaps(const std::shared_ptr<ShaderResourceView>& skyboxSRV,
+        std::shared_ptr<ShaderResourceView> skyboxIrrSRV)
+    {
+        m_SkyboxSRV = skyboxSRV;
+        m_SkyboxIrrSRV = skyboxIrrSRV;
     }
 
     void RenderStateObject::SetMaterial(const std::shared_ptr<Material>& mat)
@@ -150,6 +159,8 @@ namespace Akari
         cmd.SetGraphicsDynamicConstantBuffer(MaterialCB, materialProps);
         cmd.SetGraphics32BitConstants(LightPropertiesCB, lightProps);
         cmd.SetGraphicsDynamicStructuredBuffer(DirectionalLights, m_DirLights);
+        cmd.SetShaderResourceView(CubeMaps, 0, m_SkyboxSRV, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        cmd.SetShaderResourceView(CubeMaps, 1, m_SkyboxIrrSRV, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
         using TextureType = Material::TextureType;
 

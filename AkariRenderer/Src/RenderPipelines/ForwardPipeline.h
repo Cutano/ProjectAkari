@@ -25,5 +25,9 @@ namespace Akari
         std::shared_ptr<Texture> m_SkyboxPano;
         std::shared_ptr<Texture> m_SkyboxCubemap;
         std::shared_ptr<ShaderResourceView> m_SkyboxSRV;
+
+        std::shared_ptr<Texture> m_SkyboxIrrPano;
+        std::shared_ptr<Texture> m_SkyboxIrrCubemap;
+        std::shared_ptr<ShaderResourceView> m_SkyboxIrrSRV;
     };
 }

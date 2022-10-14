@@ -9,17 +9,24 @@ namespace Akari
     class EditorCamera;
     class RenderStateObject;
     class SceneObject;
+    class ShaderResourceView;
 
     class ForwardOpaquePass : public RenderPass
     {
     public:
-        ForwardOpaquePass(std::shared_ptr<RenderTarget> renderTarget);
+        ForwardOpaquePass(
+            std::shared_ptr<RenderTarget> renderTarget,
+            std::shared_ptr<ShaderResourceView> skyboxSRV,
+            std::shared_ptr<ShaderResourceView> skyboxIrrSRV);
 
         void Record(const RenderContext& context) override;
         void Execute() override;
 
     private:
         std::shared_ptr<RenderStateObject> m_RenderState;
+        
+        std::shared_ptr<ShaderResourceView> m_SkyboxSRV;
+        std::shared_ptr<ShaderResourceView> m_SkyboxIrrSRV;
     };
 
     class ForwardOpaqueVisitor : public Visitor

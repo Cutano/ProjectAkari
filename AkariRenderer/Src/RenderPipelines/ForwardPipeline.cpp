@@ -17,6 +17,7 @@ namespace Akari
         {
             const auto cmdCopy = Renderer::GetInstance().GetCommandListCopy();
             m_SkyboxPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_3k.hdr", true);
+            m_SkyboxIrrPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_Env.hdr", true);
             Renderer::GetInstance().ExecuteCommandList(cmdCopy);
         }
         
@@ -25,13 +26,23 @@ namespace Akari
         cubemapDesc.DepthOrArraySize           = 6;
         cubemapDesc.MipLevels                  = 0;
 
+        auto cubemapIrrDesc  = m_SkyboxIrrPano->GetD3D12ResourceDesc();
+        cubemapIrrDesc.Width = cubemapIrrDesc.Height = 128;
+        cubemapIrrDesc.DepthOrArraySize              = 6;
+        cubemapIrrDesc.MipLevels                     = 0;
+
         {
             const auto cmdCompute = Renderer::GetInstance().GetCommandListCompute();
 
             m_SkyboxCubemap = Renderer::GetInstance().GetDevice()->CreateTexture(cubemapDesc);
             m_SkyboxCubemap->SetName(L"Skybox Cubemap");
 
+            m_SkyboxIrrCubemap = Renderer::GetInstance().GetDevice()->CreateTexture(cubemapIrrDesc);
+            m_SkyboxIrrCubemap->SetName(L"Skybox Irradiance Cubemap");
+
             cmdCompute->PanoToCubemap(m_SkyboxCubemap, m_SkyboxPano);
+            cmdCompute->PanoToCubemap(m_SkyboxIrrCubemap, m_SkyboxIrrPano);
+            
             Renderer::GetInstance().ExecuteCommandList(cmdCompute);
         }
 
@@ -42,11 +53,12 @@ namespace Akari
         cubeMapSRVDesc.TextureCube.MipLevels           = static_cast<UINT>(-1);  // Use all mips.
 
         m_SkyboxSRV = Renderer::GetInstance().GetDevice()->CreateShaderResourceView(m_SkyboxCubemap, &cubeMapSRVDesc);
+        m_SkyboxIrrSRV = Renderer::GetInstance().GetDevice()->CreateShaderResourceView(m_SkyboxIrrCubemap, &cubeMapSRVDesc);
 
         
         m_SkyboxPass = std::make_unique<SkyboxPass>(m_SceneMsaaRenderTarget, m_SkyboxSRV);
         m_GroundGridPass = std::make_unique<GroundGridPass>(m_SceneMsaaRenderTarget);
-        m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>(m_SceneMsaaRenderTarget);
+        m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>(m_SceneMsaaRenderTarget, m_SkyboxSRV, m_SkyboxIrrSRV);
         m_ToneMappingPass = std::make_unique<ToneMappingPass>(m_SceneSDRRenderTarget, m_SceneHDRFrameBuffer);
     }
 
