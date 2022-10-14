@@ -1,10 +1,10 @@
 TextureCube<float4> Skybox : register(t0);
 
 // Write up to 4 mip map levels.
-RWTexture2D<float4> OutMip1 : register(u0);
-RWTexture2D<float4> OutMip2 : register(u1);
-RWTexture2D<float4> OutMip3 : register(u2);
-RWTexture2D<float4> OutMip4 : register(u3);
+RWTexture2DArray<float4> OutMip1 : register(u0);
+RWTexture2DArray<float4> OutMip2 : register(u1);
+RWTexture2DArray<float4> OutMip3 : register(u2);
+RWTexture2DArray<float4> OutMip4 : register(u3);
 
 SamplerState LinearClampSampler : register(s0);
 
@@ -118,8 +118,8 @@ void main(uint3 DTid : SV_DispatchThreadID)
     float texelSize0 = 1.0 / 1024.0;
     float2 uv = texelSize0 * (DTid.xy + 0.5) - 0.5;
     float3 sampleNormal[6];
-    sampleNormal[0] = float3(0.5, uv.y, -uv.x);
-    sampleNormal[1] = float3(-0.5, uv.y, uv.x);
+    sampleNormal[0] = float3(0.5, -uv.y, -uv.x);
+    sampleNormal[1] = float3(-0.5, -uv.y, uv.x);
     sampleNormal[2] = float3(uv.x, 0.5, uv.y);
     sampleNormal[3] = float3(uv.x, -0.5, -uv.y);
     sampleNormal[4] = float3(uv.x, -uv.y, 0.5);
@@ -130,8 +130,8 @@ void main(uint3 DTid : SV_DispatchThreadID)
     float3 R = N;
     float3 V = R;
 
-    OutMip1[DTid.xy / 2] = float4(Calculate(1, N, V), 1.0);
-    OutMip2[DTid.xy / 4] = float4(Calculate(2, N, V), 1.0);
-    OutMip3[DTid.xy / 8] = float4(Calculate(3, N, V), 1.0);
-    OutMip4[DTid.xy / 16] = float4(Calculate(4, N, V), 1.0);
+    OutMip1[uint3(DTid.xy / 2, DTid.z)] = float4(Calculate(1, N, V), 1.0);
+    OutMip2[uint3(DTid.xy / 4, DTid.z)] = float4(Calculate(2, N, V), 1.0);
+    OutMip3[uint3(DTid.xy / 8, DTid.z)] = float4(Calculate(3, N, V), 1.0);
+    OutMip4[uint3(DTid.xy / 16, DTid.z)] = float4(Calculate(4, N, V), 1.0);
 }

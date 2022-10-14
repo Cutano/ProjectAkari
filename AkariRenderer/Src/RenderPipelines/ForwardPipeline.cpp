@@ -45,6 +45,8 @@ namespace Akari
 
             cmdCompute->PanoToCubemap(m_SkyboxCubemap, m_SkyboxPano);
             cmdCompute->PanoToCubemap(m_SkyboxIrrCubemap, m_SkyboxIrrPano);
+
+            cmdCompute->PrefilterCubeMap(m_SkyboxCubemap);
             
             Renderer::GetInstance().ExecuteCommandList(cmdCompute);
         }

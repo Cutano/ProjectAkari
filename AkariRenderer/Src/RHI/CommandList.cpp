@@ -26,6 +26,7 @@
 #include "UnorderedAccessView.h"
 #include "UploadBuffer.h"
 #include "VertexBuffer.h"
+#include "Shaders/Generated/PrefilterEnvMap_CS.h"
 
 using namespace Akari;
 using namespace DirectX;
@@ -522,6 +523,8 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
 {
     assert(texture);
 
+    auto d3d12Device = m_Device.GetD3D12Device();
+
     CD3DX12_DESCRIPTOR_RANGE1 srcCubeMap( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0,
                                       D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
     CD3DX12_DESCRIPTOR_RANGE1 outMip( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 4, 0, 0,
@@ -529,14 +532,14 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
 
     CD3DX12_ROOT_PARAMETER1 rootParameters[2];
     // rootParameters[GenerateMips::GenerateMipsCB].InitAsConstants( sizeof( GenerateMipsCB ) / 4, 0 );
-    rootParameters[1].InitAsDescriptorTable( 1, &srcCubeMap );
-    rootParameters[2].InitAsDescriptorTable( 1, &outMip );
+    rootParameters[0].InitAsDescriptorTable( 1, &srcCubeMap );
+    rootParameters[1].InitAsDescriptorTable( 1, &outMip );
 
     CD3DX12_STATIC_SAMPLER_DESC linearClampSampler( 0, D3D12_FILTER_MIN_MAG_MIP_LINEAR,
                                                     D3D12_TEXTURE_ADDRESS_MODE_CLAMP, D3D12_TEXTURE_ADDRESS_MODE_CLAMP,
                                                     D3D12_TEXTURE_ADDRESS_MODE_CLAMP );
 
-    CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc( GenerateMips::NumRootParameters, rootParameters, 1,
+    CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc( 2, rootParameters, 1,
                                                              &linearClampSampler );
 
     auto rootSig = m_Device.CreateRootSignature( rootSignatureDesc.Desc_1_1 );
@@ -548,9 +551,122 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
     } pipelineStateStream;
 
     pipelineStateStream.pRootSignature = rootSig->GetD3D12RootSignature().Get();
-    // pipelineStateStream.CS             = { g_PrefilterEnvMap_CS, sizeof( g_PrefilterEnvMap_CS ) };
+    pipelineStateStream.CS             = { g_PrefilterEnvMap_CS, sizeof( g_PrefilterEnvMap_CS ) };
 
     auto pso = m_Device.CreatePipelineStateObject( pipelineStateStream );
+
+    SetPipelineState(pso);
+    SetComputeRootSignature(rootSig);
+
+    auto resource     = texture->GetD3D12Resource();
+    auto resourceDesc = resource->GetDesc();
+
+    ComPtr<ID3D12Resource> uavResource = resource;
+    ComPtr<ID3D12Resource> aliasResource;
+
+    if ( !texture->CheckUAVSupport() || ( resourceDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS ) == 0 )
+    {
+        // Describe an alias resource that is used to copy the original texture.
+        auto aliasDesc = resourceDesc;
+        // Placed resources can't be render targets or depth-stencil views.
+        aliasDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+        aliasDesc.Flags &= ~( D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL );
+
+        // Describe a UAV compatible resource that is used to perform
+        // mipmapping of the original texture.
+        auto uavDesc   = aliasDesc;  // The flags for the UAV description must match that of the alias description.
+        uavDesc.Format = Texture::GetUAVCompatableFormat( resourceDesc.Format );
+
+        D3D12_RESOURCE_DESC resourceDescs[] = { aliasDesc, uavDesc };
+
+        // Create a heap that is large enough to store a copy of the original resource.
+        auto allocationInfo = d3d12Device->GetResourceAllocationInfo( 0, _countof( resourceDescs ), resourceDescs );
+
+        D3D12_HEAP_DESC heapDesc                 = {};
+        heapDesc.SizeInBytes                     = allocationInfo.SizeInBytes;
+        heapDesc.Alignment                       = allocationInfo.Alignment;
+        heapDesc.Flags                           = D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES;
+        heapDesc.Properties.CPUPageProperty      = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+        heapDesc.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+        heapDesc.Properties.Type                 = D3D12_HEAP_TYPE_DEFAULT;
+
+        ComPtr<ID3D12Heap> heap;
+        ThrowIfFailed( d3d12Device->CreateHeap( &heapDesc, IID_PPV_ARGS( &heap ) ) );
+
+        // Make sure the heap does not go out of scope until the command list
+        // is finished executing on the command queue.
+        TrackResource( heap );
+
+        // Create a placed resource that matches the description of the
+        // original resource. This resource is used to copy the original
+        // texture to the UAV compatible resource.
+        ThrowIfFailed( d3d12Device->CreatePlacedResource( heap.Get(), 0, &aliasDesc, D3D12_RESOURCE_STATE_COMMON,
+                                                          nullptr, IID_PPV_ARGS( &aliasResource ) ) );
+
+        ResourceStateTracker::AddGlobalResourceState( aliasResource.Get(), D3D12_RESOURCE_STATE_COMMON );
+        // Ensure the scope of the alias resource.
+        TrackResource( aliasResource );
+
+        // Create a UAV compatible resource in the same heap as the alias
+        // resource.
+        ThrowIfFailed( d3d12Device->CreatePlacedResource( heap.Get(), 0, &uavDesc, D3D12_RESOURCE_STATE_COMMON, nullptr,
+                                                          IID_PPV_ARGS( &uavResource ) ) );
+
+        ResourceStateTracker::AddGlobalResourceState( uavResource.Get(), D3D12_RESOURCE_STATE_COMMON );
+
+        // Ensure the scope of the UAV compatible resource.
+        TrackResource( uavResource );
+
+        // Add an aliasing barrier for the alias resource.
+        AliasingBarrier( nullptr, aliasResource );
+
+        // Copy the original resource to the alias resource.
+        // This ensures GPU validation.
+        CopyResource( aliasResource, resource );
+
+        // Add an aliasing barrier for the UAV compatible resource.
+        AliasingBarrier( aliasResource, uavResource );
+    }
+    
+    auto uavTexture = m_Device.CreateTexture( uavResource );
+    uavTexture->SetName(L"UAV Texture");
+
+    // Create an SRV that uses the format of the original texture.
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format                  = resourceDesc.Format;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    srvDesc.ViewDimension           = D3D12_SRV_DIMENSION_TEXTURECUBE;
+    srvDesc.TextureCube.MipLevels   = resourceDesc.MipLevels;
+
+    auto srv = m_Device.CreateShaderResourceView( texture, &srvDesc );
+
+    SetShaderResourceView(0, 0, srv, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+
+    TransitionBarrier(uavTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
+    for ( uint32_t mip = 0; mip < 4; ++mip )
+    {
+        D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+        uavDesc.Format                           = resourceDesc.Format;
+        uavDesc.ViewDimension                    = D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
+        uavDesc.Texture2DArray.MipSlice          = mip + 1;
+        uavDesc.Texture2DArray.FirstArraySlice   = 0;
+        uavDesc.Texture2DArray.ArraySize         = 6;
+
+        auto uav = m_Device.CreateUnorderedAccessView( uavTexture, nullptr, &uavDesc );
+        SetUnorderedAccessView(1, mip, uav, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, mip + 1, 1 );
+    }
+
+    Dispatch(32, 32, 6);
+
+    UAVBarrier(uavTexture);
+    
+    if ( aliasResource )
+    {
+        AliasingBarrier( uavResource, aliasResource );
+        // Copy the alias resource back to the original resource.
+        CopyResource( resource, aliasResource );
+    }
 }
 
 void CommandList::GenerateMips_UAV( const std::shared_ptr<Texture>& texture, bool isSRGB )
