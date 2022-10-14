@@ -308,6 +308,8 @@ public:
      */
     void GenerateMips( const std::shared_ptr<Texture>& texture );
 
+    void PrefilterCubeMap(const std::shared_ptr<Texture>& texture);
+
     /**
      * Generate a cubemap texture from a panoramic (equirectangular) texture.
      */

@@ -168,6 +168,7 @@
     <ClInclude Include="Lib\imguizmo\ImGuizmo.h" />
     <ClInclude Include="Lib\imguizmo\ImSequencer.h" />
     <ClInclude Include="Lib\imguizmo\ImZoomSlider.h" />
+    <ClInclude Include="Src\SceneComponents\Light.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -188,6 +189,7 @@
     <FxCompile Include="Src\Shaders\HDRtoSDR_PS.hlsl" />
     <FxCompile Include="Src\Shaders\Lit_VS.hlsl" />
     <FxCompile Include="Src\Shaders\Lit_PS.hlsl" />
+    <FxCompile Include="Src\Shaders\PrefilterEnvMap_CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AkariRenderer.rc" />
