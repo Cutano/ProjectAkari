@@ -86,9 +86,8 @@ float AntiAliasingDistributionGGX(float3 N, float3 H, float roughness)
 	float2 footprint_bounding_box = fwidth(H.xy);
 	float2 variance = sigma * sigma * footprint_bounding_box * footprint_bounding_box;
 	float2 kernel_roughness = min(float2(Kappa, Kappa), 2.0 * variance);
-	a = sqrt(a * a + kernel_roughness.x);
 	
-	float a2     = a * a;
+	float a2     = a * a + kernel_roughness.x;
 	float NdotH  = max(dot(N, H), 0.0);
 	float NdotH2 = NdotH * NdotH;
 
