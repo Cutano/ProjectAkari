@@ -14,7 +14,7 @@ namespace Akari
     class SkyboxPass : public RenderPass
     {
     public:
-        SkyboxPass(std::shared_ptr<RenderTarget> renderTarget);
+        SkyboxPass(std::shared_ptr<RenderTarget> renderTarget, std::shared_ptr<ShaderResourceView> skyboxSRV);
 
         void Record(const RenderContext& context) override;
         void Execute() override;
@@ -30,8 +30,6 @@ namespace Akari
         };
         
         std::shared_ptr<Model> m_Skybox;
-        std::shared_ptr<Texture> m_SkyboxPano;
-        std::shared_ptr<Texture> m_SkyboxCubemap;
         std::shared_ptr<ShaderResourceView> m_SkyboxSRV;
     };
 

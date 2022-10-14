@@ -21,5 +21,9 @@ namespace Akari
         std::unique_ptr<GroundGridPass> m_GroundGridPass = nullptr;
         std::unique_ptr<ForwardOpaquePass> m_ForwardOpaquePass = nullptr;
         std::unique_ptr<ToneMappingPass> m_ToneMappingPass = nullptr;
+
+        std::shared_ptr<Texture> m_SkyboxPano;
+        std::shared_ptr<Texture> m_SkyboxCubemap;
+        std::shared_ptr<ShaderResourceView> m_SkyboxSRV;
     };
 }

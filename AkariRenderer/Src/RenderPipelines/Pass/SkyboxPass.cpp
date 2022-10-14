@@ -16,39 +16,14 @@
 
 namespace Akari
 {
-    SkyboxPass::SkyboxPass(std::shared_ptr<RenderTarget> renderTarget) : RenderPass(renderTarget)
+    SkyboxPass::SkyboxPass(std::shared_ptr<RenderTarget> renderTarget, std::shared_ptr<ShaderResourceView> skyboxSRV) : RenderPass(renderTarget), m_SkyboxSRV(skyboxSRV)
     {
-               
         {
             const auto cmdCopy = Renderer::GetInstance().GetCommandListCopy();
             m_Skybox = cmdCopy->CreateCube(1.0f, true);
-            m_SkyboxPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_3k.hdr", true);
             Renderer::GetInstance().ExecuteCommandList(cmdCopy);
         }
         
-        auto cubemapDesc  = m_SkyboxPano->GetD3D12ResourceDesc();
-        cubemapDesc.Width = cubemapDesc.Height = 1024;
-        cubemapDesc.DepthOrArraySize           = 6;
-        cubemapDesc.MipLevels                  = 0;
-
-        {
-            const auto cmdCompute = Renderer::GetInstance().GetCommandListCompute();
-
-            m_SkyboxCubemap = Renderer::GetInstance().GetDevice()->CreateTexture(cubemapDesc);
-            m_SkyboxCubemap->SetName(L"Skybox Cubemap");
-
-            cmdCompute->PanoToCubemap(m_SkyboxCubemap, m_SkyboxPano);
-            Renderer::GetInstance().ExecuteCommandList(cmdCompute);
-        }
-
-        D3D12_SHADER_RESOURCE_VIEW_DESC cubeMapSRVDesc = {};
-        cubeMapSRVDesc.Format                          = cubemapDesc.Format;
-        cubeMapSRVDesc.Shader4ComponentMapping         = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-        cubeMapSRVDesc.ViewDimension                   = D3D12_SRV_DIMENSION_TEXTURECUBE;
-        cubeMapSRVDesc.TextureCube.MipLevels           = static_cast<UINT>(-1);  // Use all mips.
-
-        m_SkyboxSRV = Renderer::GetInstance().GetDevice()->CreateShaderResourceView(m_SkyboxCubemap, &cubeMapSRVDesc);
-
         // Setup the input layout for the skybox vertex shader.
         D3D12_INPUT_ELEMENT_DESC inputLayout[1] = {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT,
