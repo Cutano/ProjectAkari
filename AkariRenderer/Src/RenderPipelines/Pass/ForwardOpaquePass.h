@@ -17,7 +17,8 @@ namespace Akari
         ForwardOpaquePass(
             std::shared_ptr<RenderTarget> renderTarget,
             std::shared_ptr<ShaderResourceView> skyboxSRV,
-            std::shared_ptr<ShaderResourceView> skyboxIrrSRV);
+            std::shared_ptr<ShaderResourceView> skyboxIrrSRV,
+            std::shared_ptr<ShaderResourceView> IBLTextureSRV);
 
         void Record(const RenderContext& context) override;
         void Execute() override;
@@ -27,6 +28,7 @@ namespace Akari
         
         std::shared_ptr<ShaderResourceView> m_SkyboxSRV;
         std::shared_ptr<ShaderResourceView> m_SkyboxIrrSRV;
+        std::shared_ptr<ShaderResourceView> m_IBLTextureSRV;
     };
 
     class ForwardOpaqueVisitor : public Visitor

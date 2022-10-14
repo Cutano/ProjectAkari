@@ -21,6 +21,7 @@ namespace Akari
         // Descriptor range for the textures.
         const CD3DX12_DESCRIPTOR_RANGE1 descriptorRage(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, static_cast<UINT>(Material::TextureType::NumTypes), 3);
         const CD3DX12_DESCRIPTOR_RANGE1 cubeMapRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 3 + static_cast<UINT>(Material::TextureType::NumTypes));
+        const CD3DX12_DESCRIPTOR_RANGE1 LUTsRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 2 + 3 + static_cast<UINT>(Material::TextureType::NumTypes));
 
         CD3DX12_ROOT_PARAMETER1 rootParameters[NumRootParameters];
         rootParameters[MatricesCB].InitAsConstantBufferView( 0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_ALL );
@@ -31,11 +32,17 @@ namespace Akari
         rootParameters[DirectionalLights].InitAsShaderResourceView( 2, 0, D3D12_ROOT_DESCRIPTOR_FLAG_NONE, D3D12_SHADER_VISIBILITY_PIXEL );
         rootParameters[Textures].InitAsDescriptorTable( 1, &descriptorRage, D3D12_SHADER_VISIBILITY_PIXEL );
         rootParameters[CubeMaps].InitAsDescriptorTable( 1, &cubeMapRange, D3D12_SHADER_VISIBILITY_PIXEL );
+        rootParameters[LUTs].InitAsDescriptorTable( 1, &LUTsRange, D3D12_SHADER_VISIBILITY_PIXEL );
 
-        const CD3DX12_STATIC_SAMPLER_DESC anisotropicSampler( 0, D3D12_FILTER_ANISOTROPIC );
+        constexpr int numSamplers = 2;
+        CD3DX12_STATIC_SAMPLER_DESC samplers[numSamplers] = {
+            {0, D3D12_FILTER_ANISOTROPIC},
+            {1, D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR, D3D12_TEXTURE_ADDRESS_MODE_CLAMP,
+            D3D12_TEXTURE_ADDRESS_MODE_CLAMP, D3D12_TEXTURE_ADDRESS_MODE_CLAMP}
+        };
 
         CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
-        rootSignatureDescription.Init_1_1(NumRootParameters, rootParameters, 1, &anisotropicSampler, rootSignatureFlags );
+        rootSignatureDescription.Init_1_1(NumRootParameters, rootParameters, numSamplers, samplers, rootSignatureFlags );
 
         m_RootSig = device->CreateRootSignature( rootSignatureDescription.Desc_1_1 );
 
@@ -81,6 +88,11 @@ namespace Akari
     {
         m_SkyboxSRV = skyboxSRV;
         m_SkyboxIrrSRV = skyboxIrrSRV;
+    }
+
+    void RenderStateObject::SetLUTs(const std::shared_ptr<ShaderResourceView>& IBLTextureSRV)
+    {
+        m_IBLTextureSRV = IBLTextureSRV;
     }
 
     void RenderStateObject::SetMaterial(const std::shared_ptr<Material>& mat)
@@ -161,6 +173,7 @@ namespace Akari
         cmd.SetGraphicsDynamicStructuredBuffer(DirectionalLights, m_DirLights);
         cmd.SetShaderResourceView(CubeMaps, 0, m_SkyboxSRV, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         cmd.SetShaderResourceView(CubeMaps, 1, m_SkyboxIrrSRV, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        cmd.SetShaderResourceView(LUTs, 0, m_IBLTextureSRV, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
         using TextureType = Material::TextureType;
 

@@ -19,13 +19,15 @@ namespace Akari
     ForwardOpaquePass::ForwardOpaquePass(
         std::shared_ptr<RenderTarget> renderTarget,
         std::shared_ptr<ShaderResourceView> skyboxSRV,
-        std::shared_ptr<ShaderResourceView> skyboxIrrSRV)
-    : RenderPass(renderTarget), m_SkyboxSRV(skyboxSRV), m_SkyboxIrrSRV(skyboxIrrSRV)
+        std::shared_ptr<ShaderResourceView> skyboxIrrSRV,
+        std::shared_ptr<ShaderResourceView> IBLTextureSRV)
+    : RenderPass(renderTarget), m_SkyboxSRV(skyboxSRV), m_SkyboxIrrSRV(skyboxIrrSRV), m_IBLTextureSRV(IBLTextureSRV)
     {
         m_RenderState = std::make_shared<RenderStateObject>(Renderer::GetInstance().GetDevice());
         m_RenderState->SetRenderTarget(renderTarget);
         m_RenderState->SetShader(g_Lit_VS, sizeof g_Lit_VS, g_Lit_PS, sizeof g_Lit_PS);
         m_RenderState->SetCubeMaps(m_SkyboxSRV, m_SkyboxIrrSRV);
+        m_RenderState->SetLUTs(m_IBLTextureSRV);
     }
 
     void ForwardOpaquePass::Record(const RenderContext& context)

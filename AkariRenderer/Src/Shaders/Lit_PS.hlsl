@@ -70,12 +70,32 @@ ConstantBuffer<LightProperties> LightPropertiesCB : register(b1);
 
 StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
 
+Texture2D AmbientTexture : register( t3 );
+Texture2D EmissiveTexture : register( t4 );
+Texture2D DiffuseTexture : register( t5 );
+Texture2D SpecularTexture : register( t6 );
+Texture2D SpecularPowerTexture : register( t7 );
+Texture2D NormalTexture : register( t8 );
+Texture2D BumpTexture : register( t9 );
+Texture2D OpacityTexture : register( t10 );
+TextureCube<float4> Skybox : register( t11 );
+TextureCube<float4> SkyboxIrr : register( t12 );
+Texture2D IBLTexture : register( t13 );
+
+SamplerState AnisotropicSampler : register(s0);
+SamplerState LinearClampSampler : register(s1);
+
 static const float PI = 3.141592653589793;
 
 float3 fresnelSchlick(float cosTheta, float3 F0)
 {
 	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
+
+float3 fresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
+{
+	return F0 + (max(float3(1.0 - roughness.xxx), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}   
 
 float AntiAliasingDistributionGGX(float3 N, float3 H, float roughness)
 {
@@ -109,32 +129,12 @@ float GeometrySchlickGGX(float NdotV, float roughness)
 	return nom / denom;
 }
 
-float IBLGeometrySchlickGGX(float NdotV, float roughness)
-{
-	float k = roughness * roughness / 2.0;
-
-	float nom   = NdotV;
-	float denom = NdotV * (1.0 - k) + k;
-
-	return nom / denom;
-}
-
 float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
 {
 	float NdotV = max(dot(N, V), 0.0);
 	float NdotL = max(dot(N, L), 0.0);
 	float ggx2 = GeometrySchlickGGX(NdotV, roughness);
 	float ggx1 = GeometrySchlickGGX(NdotL, roughness);
-
-	return ggx1 * ggx2;
-}
-
-float IBLGeometrySmith(float3 N, float3 V, float3 L, float roughness)
-{
-	float NdotV = max(dot(N, V), 0.0);
-	float NdotL = max(dot(N, L), 0.0);
-	float ggx2 = IBLGeometrySchlickGGX(NdotV, roughness);
-	float ggx1 = IBLGeometrySchlickGGX(NdotL, roughness);
 
 	return ggx1 * ggx2;
 }
@@ -161,6 +161,30 @@ float3 DirectPBRLighting(float3 baseColor, float3 V, float3 L, float3 N, float3 
 	return (kD * baseColor / PI + specular) * NoL;
 }
 
+float3 ImageBasedPBRLighting(float3 baseColor, float3 V, float3 N, float3 F0, float roughness, float metallic, float ao)
+{
+	// Cook-Torrance BRDF
+	F0 = lerp(F0, baseColor, metallic);
+	float3 F  = fresnelSchlickRoughness(saturate(dot(N, V)), F0, roughness);
+	float3 R = reflect(-V, N); 
+
+	float3 kS = F;
+	float3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;
+	
+	float3 irradiance = SkyboxIrr.Sample(LinearClampSampler, N).rgb;
+	float3 diffuse    = irradiance * baseColor;
+
+	const float MAX_REFLECTION_LOD = 10.0;
+	float3 prefilteredColor = Skybox.SampleLevel(LinearClampSampler, R, roughness * MAX_REFLECTION_LOD).rgb;
+	float2 brdf = IBLTexture.Sample(LinearClampSampler, float2(saturate(dot(N, V)), roughness)).rg;
+	float3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+	
+	float3 ambient = (kD * diffuse + specular) * ao;
+
+	return ambient;
+}
+
 float4 main(VertexShaderOutput psInput) : SV_TARGET
 {
 	float3 normalWS = normalize(psInput.NormalWS);
@@ -184,6 +208,9 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 			viewDir, lightDir, normalWS, 0.04f,
 			MaterialCB.Roughness, MaterialCB.Metallic) * DirectionalLights[i].Radiance * DirectionalLights[i].Intensity;
 	}
-
+	col += ImageBasedPBRLighting(MaterialCB.BaseColor.rgb,
+				viewDir, normalWS, 0.04f,
+				MaterialCB.Roughness, MaterialCB.Metallic, 1.0);
+	
 	return float4(col, 1.0f);
 }
