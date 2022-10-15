@@ -527,7 +527,7 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
 
     CD3DX12_DESCRIPTOR_RANGE1 srcCubeMap( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0,
                                       D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
-    CD3DX12_DESCRIPTOR_RANGE1 outMip( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 4, 0, 0,
+    CD3DX12_DESCRIPTOR_RANGE1 outMip( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 10, 0, 0,
                                       D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
 
     CD3DX12_ROOT_PARAMETER1 rootParameters[2];
@@ -644,7 +644,7 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
 
     TransitionBarrier(uavTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
-    for ( uint32_t mip = 0; mip < 4; ++mip )
+    for ( uint32_t mip = 0; mip < 10; ++mip )
     {
         D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
         uavDesc.Format                           = resourceDesc.Format;

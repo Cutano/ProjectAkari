@@ -175,7 +175,7 @@ float3 ImageBasedPBRLighting(float3 baseColor, float3 V, float3 N, float3 F0, fl
 	float3 irradiance = SkyboxIrr.Sample(LinearClampSampler, N).rgb;
 	float3 diffuse    = irradiance * baseColor;
 
-	const float MAX_REFLECTION_LOD = 4.0;
+	const float MAX_REFLECTION_LOD = 10.0;
 	float3 prefilteredColor = Skybox.SampleLevel(LinearClampSampler, R, roughness * MAX_REFLECTION_LOD).rgb;
 	float2 brdf = IBLTexture.Sample(LinearClampSampler, float2(saturate(dot(N, V)), roughness)).rg;
 	float3 specular = prefilteredColor * (F * brdf.x + brdf.y);

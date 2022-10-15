@@ -5,6 +5,12 @@ RWTexture2DArray<float4> OutMip1 : register(u0);
 RWTexture2DArray<float4> OutMip2 : register(u1);
 RWTexture2DArray<float4> OutMip3 : register(u2);
 RWTexture2DArray<float4> OutMip4 : register(u3);
+RWTexture2DArray<float4> OutMip5 : register(u4);
+RWTexture2DArray<float4> OutMip6 : register(u5);
+RWTexture2DArray<float4> OutMip7 : register(u6);
+RWTexture2DArray<float4> OutMip8 : register(u7);
+RWTexture2DArray<float4> OutMip9 : register(u8);
+RWTexture2DArray<float4> OutMip10 : register(u9);
 
 SamplerState LinearClampSampler : register(s0);
 
@@ -65,9 +71,9 @@ float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
 
 float3 Calculate(uint mip, float3 N, float3 V)
 {
-    const uint SAMPLE_COUNT = 2048u;
+    const uint SAMPLE_COUNT = 1024u;
     
-    float roughness = (float)mip / 4.0;
+    float roughness = (float)mip / 10.0;
     float3 prefilteredColor = 0.0;
     float totalWeight = 0.0;
 
@@ -134,4 +140,10 @@ void main(uint3 DTid : SV_DispatchThreadID)
     OutMip2[uint3(DTid.xy / 4, DTid.z)] = float4(Calculate(2, N, V), 1.0);
     OutMip3[uint3(DTid.xy / 8, DTid.z)] = float4(Calculate(3, N, V), 1.0);
     OutMip4[uint3(DTid.xy / 16, DTid.z)] = float4(Calculate(4, N, V), 1.0);
+    OutMip5[uint3(DTid.xy / 32, DTid.z)] = float4(Calculate(5, N, V), 1.0);
+    OutMip6[uint3(DTid.xy / 64, DTid.z)] = float4(Calculate(6, N, V), 1.0);
+    OutMip7[uint3(DTid.xy / 128, DTid.z)] = float4(Calculate(7, N, V), 1.0);
+    OutMip8[uint3(DTid.xy / 256, DTid.z)] = float4(Calculate(8, N, V), 1.0);
+    OutMip9[uint3(DTid.xy / 512, DTid.z)] = float4(Calculate(9, N, V), 1.0);
+    OutMip10[uint3(DTid.xy / 1024, DTid.z)] = float4(Calculate(10, N, V), 1.0);
 }

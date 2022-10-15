@@ -82,6 +82,14 @@ namespace Akari {
 		// TODO: Load resource and prepare first frame
 		RenderContext context{};
 		context.scene = m_Scene;
+
+		const std::future future(Renderer::GetInstance().PrepareFirstFrameAsync());
+		std::future_status status;
+
+		do {
+			status = future.wait_for(std::chrono::milliseconds(300));
+			glfwWaitEventsTimeout(0.3);
+		} while (status != std::future_status::ready); 
 		
 		while (m_Running)
 		{

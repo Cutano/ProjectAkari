@@ -15,7 +15,8 @@ namespace Akari
     public:
         RenderPipeline();
         virtual ~RenderPipeline();
-        
+
+        virtual void Prepare() = 0;
         virtual void Render(const RenderContext& context) = 0;
         virtual void OnEvent(Event& event);
         virtual bool OnSceneResize(SceneWindowResizeEvent& event) const;

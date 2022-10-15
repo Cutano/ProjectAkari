@@ -14,6 +14,7 @@ namespace Akari
     public:
         ForwardPipeline();
 
+        void Prepare() override;
         void Render(const RenderContext& context) override;
 
     private:

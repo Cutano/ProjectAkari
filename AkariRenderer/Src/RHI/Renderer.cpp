@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Renderer.h"
 
+#include <future>
+
 #include "CommandQueue.h"
 #include "Device.h"
 #include "SwapChain.h"
@@ -62,6 +64,16 @@ namespace Akari
 
         m_ImGuiLayer = std::make_shared<ImGuiLayer>();
         m_ImGuiLayer->OnAttach();
+    }
+
+    std::future<void> Renderer::PrepareFirstFrameAsync() const
+    {
+        return std::async(std::launch::async, [this]
+        {
+            spdlog::info("Initializing render pipeline...");
+            CoInitialize(nullptr);
+            m_RenderPipeline->Prepare();
+        });
     }
 
     void Renderer::ShutDown()

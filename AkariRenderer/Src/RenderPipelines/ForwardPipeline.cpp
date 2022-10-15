@@ -14,8 +14,15 @@ namespace Akari
 {
     ForwardPipeline::ForwardPipeline()
     {
+        
+    }
+
+    void ForwardPipeline::Prepare()
+    {
         {
             const auto cmdCopy = Renderer::GetInstance().GetCommandListCopy();
+
+            spdlog::info("\tLoading cube maps...");
             m_SkyboxPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_3k.hdr", true);
             m_SkyboxIrrPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_Env.hdr", true);
             m_IBLTexture = cmdCopy->LoadTextureFromFile(L"Res/Textures/LUT/IBL.png", true);
@@ -47,7 +54,8 @@ namespace Akari
             cmdCompute->PanoToCubemap(m_SkyboxIrrCubemap, m_SkyboxIrrPano);
 
             cmdCompute->PrefilterCubeMap(m_SkyboxCubemap);
-            
+
+            spdlog::info("\tPreprocessing textures...");
             Renderer::GetInstance().ExecuteCommandList(cmdCompute);
         }
 
@@ -70,7 +78,7 @@ namespace Akari
         m_SkyboxIrrSRV = Renderer::GetInstance().GetDevice()->CreateShaderResourceView(m_SkyboxIrrCubemap, &cubeMapSRVDesc);
         m_IBLTextureSRV = Renderer::GetInstance().GetDevice()->CreateShaderResourceView(m_IBLTexture, &IBLSRVDesc);
 
-        
+        spdlog::info("\tSetting up passes...");
         m_SkyboxPass = std::make_unique<SkyboxPass>(m_SceneMsaaRenderTarget, m_SkyboxSRV);
         m_GroundGridPass = std::make_unique<GroundGridPass>(m_SceneMsaaRenderTarget);
         m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>(m_SceneMsaaRenderTarget, m_SkyboxSRV, m_SkyboxIrrSRV, m_IBLTextureSRV);

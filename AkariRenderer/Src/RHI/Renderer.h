@@ -1,4 +1,6 @@
 #pragma once
+#include <future>
+
 #include "Timing/DeltaTime.h"
 
 namespace Akari
@@ -29,6 +31,7 @@ namespace Akari
         void operator=(Renderer const&) = delete;
 
         void Init();
+        std::future<void> PrepareFirstFrameAsync() const;
         void ShutDown();
         std::shared_ptr<Model> LoadModel(std::wstring path);
         
@@ -57,6 +60,8 @@ namespace Akari
         std::shared_ptr<ImGuiLayer> m_ImGuiLayer = nullptr;
         std::shared_ptr<RenderPipeline> m_RenderPipeline = nullptr;
         std::shared_ptr<RenderTarget> m_MsaaRenderTarget = nullptr;
+
+        std::shared_ptr<std::thread> m_LoadingThread = nullptr;
     };
     
 }
