@@ -9,5 +9,5 @@ SamplerState LinearClampSampler : register(s0);
 
 float4 main(PixelShaderInput IN) : SV_Target
 {
-	return SkyboxTexture.Sample(LinearClampSampler, IN.TexCoord);
+	return SkyboxTexture.SampleLevel(LinearClampSampler, IN.TexCoord, 0);
 }
