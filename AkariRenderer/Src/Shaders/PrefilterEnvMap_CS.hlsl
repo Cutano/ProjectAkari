@@ -42,7 +42,7 @@ float2 Hammersley(uint i, uint N)
 
 float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
 {
-    float a = roughness*roughness;
+    float a = roughness * roughness;
 	
     float phi = 2.0 * PI * Xi.x;
     float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
@@ -65,7 +65,7 @@ float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
 
 float3 Calculate(uint mip, float3 N, float3 V)
 {
-    const uint SAMPLE_COUNT = 1024u;
+    const uint SAMPLE_COUNT = 2048u;
     
     float roughness = (float)mip / 4.0;
     float3 prefilteredColor = 0.0;
@@ -112,7 +112,7 @@ float3 Calculate(uint mip, float3 N, float3 V)
 // UV = TexelSize * (SV_DispatchThreadID.xy + 0.5)
 // CubeMapIndex = SV_DispatchThreadID.z
 // Sampling: float3(uv, CubeMapIndex)
-[numthreads(32, 32, 1)]
+[numthreads(8, 8, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
     float texelSize0 = 1.0 / 1024.0;

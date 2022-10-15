@@ -657,7 +657,7 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
         SetUnorderedAccessView(1, mip, uav, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, mip + 1, 1 );
     }
 
-    Dispatch(32, 32, 6);
+    Dispatch(128, 128, 6);
 
     UAVBarrier(uavTexture);
     
