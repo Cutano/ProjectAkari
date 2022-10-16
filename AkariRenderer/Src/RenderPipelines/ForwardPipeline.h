@@ -3,6 +3,7 @@
 #include "Pass/ForwardOpaquePass.h"
 #include "Pass/GroundGridPass.h"
 #include "Pass/SkyboxPass.h"
+#include "Pass/BloomPass/BloomPass.h"
 #include "Pass/ToneMappingPass/ToneMappingPass.h"
 
 namespace Akari
@@ -21,6 +22,7 @@ namespace Akari
         std::unique_ptr<SkyboxPass> m_SkyboxPass = nullptr;
         std::unique_ptr<GroundGridPass> m_GroundGridPass = nullptr;
         std::unique_ptr<ForwardOpaquePass> m_ForwardOpaquePass = nullptr;
+        std::unique_ptr<BloomPass> m_BloomPass = nullptr;
         std::unique_ptr<ToneMappingPass> m_ToneMappingPass = nullptr;
 
         std::shared_ptr<Texture> m_SkyboxPano;

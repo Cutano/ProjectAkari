@@ -75,6 +75,7 @@
     <ClCompile Include="Lib\imguizmo\ImGradient.cpp" />
     <ClCompile Include="Lib\imguizmo\ImGuizmo.cpp" />
     <ClCompile Include="Lib\imguizmo\ImSequencer.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\BloomPass\BloomPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
@@ -169,9 +170,13 @@
     <ClInclude Include="Lib\imguizmo\ImSequencer.h" />
     <ClInclude Include="Lib\imguizmo\ImZoomSlider.h" />
     <ClInclude Include="Src\SceneComponents\Light.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\BloomPass\BloomParameters.h" />
+    <ClInclude Include="Src\RenderPipelines\Pass\BloomPass\BloomPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Src\Shaders\Bloom\Bloom.hlsli" />
+    <None Include="Src\Shaders\Bloom\Sampling.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Lib\imgui\misc\debuggers\imgui.natvis" />
@@ -190,6 +195,9 @@
     <FxCompile Include="Src\Shaders\Lit_VS.hlsl" />
     <FxCompile Include="Src\Shaders\Lit_PS.hlsl" />
     <FxCompile Include="Src\Shaders\PrefilterEnvMap_CS.hlsl" />
+    <FxCompile Include="Src\Shaders\Bloom\Prefilter_CS.hlsl" />
+    <FxCompile Include="Src\Shaders\Bloom\Downsample_CS.hlsl" />
+    <FxCompile Include="Src\Shaders\Bloom\Upsample_CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AkariRenderer.rc" />

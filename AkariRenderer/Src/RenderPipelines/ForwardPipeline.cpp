@@ -82,6 +82,7 @@ namespace Akari
         m_SkyboxPass = std::make_unique<SkyboxPass>(m_SceneMsaaRenderTarget, m_SkyboxSRV);
         m_GroundGridPass = std::make_unique<GroundGridPass>(m_SceneMsaaRenderTarget);
         m_ForwardOpaquePass = std::make_unique<ForwardOpaquePass>(m_SceneMsaaRenderTarget, m_SkyboxSRV, m_SkyboxIrrSRV, m_IBLTextureSRV);
+        m_BloomPass = std::make_unique<BloomPass>(m_SceneMsaaRenderTarget, m_SceneHDRFrameBuffer);
         m_ToneMappingPass = std::make_unique<ToneMappingPass>(m_SceneSDRRenderTarget, m_SceneHDRFrameBuffer);
     }
 
@@ -113,7 +114,10 @@ namespace Akari
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
 
+        // m_BloomPass->Record(context);
         m_ToneMappingPass->Record(context);
+        
+        // m_BloomPass->Execute();
         m_ToneMappingPass->Execute();
     }
 }
