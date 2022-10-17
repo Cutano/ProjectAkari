@@ -149,8 +149,6 @@ namespace Akari
             m_Params.TextureTexelSize = i == 0
                 ? glm::vec4(1.0f / rtWith, 1.0f / rtHeight, 1.0f / tw_stereo, 1.0f / th)
                 : glm::vec4(1.0f / m_Pyramid[i - 1].Width, 1.0f / m_Pyramid[i - 1].Height, 1.0f / tw_stereo, 1.0f / th);
-            
-            m_Cmd->TransitionBarrier(m_Pyramid[i].DownSampledTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
             m_Cmd->SetPipelineState(pass);
             m_Cmd->SetComputeRootSignature(m_RootSig);
@@ -162,8 +160,6 @@ namespace Akari
 
             m_Cmd->Dispatch(tw_stereo, th);
 
-            m_Cmd->UAVBarrier(m_Pyramid[i].DownSampledTexture);
-
             lastDown = m_Pyramid[i].DownSampledTexture;
             tw_stereo = tw_stereo / 2;
             tw_stereo = glm::max(tw_stereo, 1);
@@ -171,7 +167,7 @@ namespace Akari
         }
 
         // Upsample
-        m_Pyramid[iterations - 1].UpSampledTexture = m_Pyramid[iterations - 1].DownSampledTexture;
+        std::shared_ptr<Texture> lastUp = m_Pyramid[iterations - 1].DownSampledTexture;
         for (int i = iterations - 2; i >= 0; i--)
         {
             if (m_Pyramid[i].UpSampledTexture->GetD3D12ResourceDesc().Width != m_Pyramid[i].Width || m_Pyramid[i].UpSampledTexture->GetD3D12ResourceDesc().Height != m_Pyramid[i].Height)
@@ -181,19 +177,17 @@ namespace Akari
 
             m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[i + 1].Width, 1.0f / m_Pyramid[i + 1].Height, 1.0f / m_Pyramid[i].Width, 1.0f / m_Pyramid[i].Height);
             
-            m_Cmd->TransitionBarrier(m_Pyramid[i].UpSampledTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-            
             m_Cmd->SetPipelineState(m_UpSamplePSO);
             m_Cmd->SetComputeRootSignature(m_RootSig);
 
             m_Cmd->SetCompute32BitConstants(BloomParams, m_Params);
-            m_Cmd->SetShaderResourceView(PreviousTexture, 0, m_Pyramid[i + 1].UpSampledTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+            m_Cmd->SetShaderResourceView(PreviousTexture, 0, lastUp, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
             m_Cmd->SetShaderResourceView(BloomTexture, 0, m_Pyramid[i].DownSampledTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
             m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_Pyramid[i].UpSampledTexture, 0);
 
             m_Cmd->Dispatch(m_Pyramid[i].Width, m_Pyramid[i].Height);
 
-            m_Cmd->UAVBarrier(m_Pyramid[i].UpSampledTexture);
+            lastUp = m_Pyramid[i].UpSampledTexture;
         }
 
         // PostFilter
@@ -205,7 +199,6 @@ namespace Akari
             
             m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[0].Width, 1.0f / m_Pyramid[0].Height, 1.0f / rtWith, 1.0f / rtHeight);
             m_Params.Intensity = glm::vec4(g_BloomParameters.Intensity);
-            m_Cmd->TransitionBarrier(m_OutTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
             
             m_Cmd->SetPipelineState(m_PostFilterPSO);
             m_Cmd->SetComputeRootSignature(m_RootSig);
@@ -216,8 +209,6 @@ namespace Akari
             m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_OutTexture, 0);
 
             m_Cmd->Dispatch(rtWith, rtHeight);
-
-            m_Cmd->UAVBarrier(m_OutTexture);
 
             m_Cmd->CopyResource(m_MainTexture, m_OutTexture);
         }
