@@ -76,6 +76,7 @@
     <ClCompile Include="Lib\imguizmo\ImGuizmo.cpp" />
     <ClCompile Include="Lib\imguizmo\ImSequencer.cpp" />
     <ClCompile Include="Src\RenderPipelines\Pass\BloomPass\BloomPass.cpp" />
+    <ClCompile Include="Src\RenderPipelines\Pass\BloomPass\BloomParameters.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\pch.h" />
