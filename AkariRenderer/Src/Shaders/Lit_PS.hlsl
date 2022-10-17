@@ -191,6 +191,7 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 	float3 viewPosWS = MatCB.InverseViewMatrix._14_24_34;
 	float3 viewDir = normalize(viewPosWS - psInput.PositionWS.xyz);
 	float3 col = 0;
+	float3 F0 = lerp(0.04f, MaterialCB.BaseColor.rgb * MaterialCB.Metallic, MaterialCB.Metallic);
 	for (uint i = 0; i < LightPropertiesCB.NumDirectionalLights; ++i)
 	{
 		float pitch = DirectionalLights[i].Rotation.x;
@@ -205,11 +206,11 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 
 		float3 lightDir = normalize(float3(x, y, z));
 		col += DirectPBRLighting(MaterialCB.BaseColor.rgb,
-			viewDir, lightDir, normalWS, 0.04f,
+			viewDir, lightDir, normalWS, F0,
 			MaterialCB.Roughness, MaterialCB.Metallic) * DirectionalLights[i].Radiance * DirectionalLights[i].Intensity;
 	}
 	col += ImageBasedPBRLighting(MaterialCB.BaseColor.rgb,
-				viewDir, normalWS, 0.04f,
+				viewDir, normalWS, F0,
 				MaterialCB.Roughness, MaterialCB.Metallic, 1.0);
 
 	col += MaterialCB.Emissive.rgb;
