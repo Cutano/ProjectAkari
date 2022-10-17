@@ -128,13 +128,6 @@ namespace Akari
         float lclamp = g_BloomParameters.Clamp;
         m_Params.Params.y = lclamp;
 
-        // D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-        // srvDesc.Format                    = m_RenderTarget->GetRenderTargetFormats().RTFormats[0];
-        // srvDesc.Shader4ComponentMapping   = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-        // srvDesc.ViewDimension             = D3D12_SRV_DIMENSION_TEXTURE2D;
-        // srvDesc.Texture2D.MipLevels       = 1;
-        // srvDesc.Texture2D.MostDetailedMip = 0;
-
         m_Cmd->TransitionBarrier(m_MainTexture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
         // DownSample
@@ -145,7 +138,7 @@ namespace Akari
                 ? m_PrefilterPSO
                 : m_DownSamplePSO;
 
-            m_OutTexture->Resize(tw_stereo, th);
+            m_Pyramid[i].DownSampledTexture->Resize(tw_stereo, th);
 
             m_Pyramid[i].Width = tw_stereo;
             m_Pyramid[i].Height = th;
@@ -154,9 +147,7 @@ namespace Akari
                 ? glm::vec4(1.0f / rtWith, 1.0f / rtHeight, 1.0f / tw_stereo, 1.0f / th)
                 : glm::vec4(1.0f / m_Pyramid[i - 1].Width, 1.0f / m_Pyramid[i - 1].Height, 1.0f / tw_stereo, 1.0f / th);
             
-            // auto srv = Renderer::GetInstance().GetDevice()->CreateShaderResourceView(lastDown, &srvDesc);
-            
-            m_Cmd->TransitionBarrier(m_OutTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+            m_Cmd->TransitionBarrier(m_Pyramid[i].DownSampledTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
             m_Cmd->SetPipelineState(pass);
             m_Cmd->SetComputeRootSignature(m_RootSig);
@@ -164,14 +155,11 @@ namespace Akari
             m_Cmd->SetCompute32BitConstants(BloomParams, m_Params);
             m_Cmd->SetShaderResourceView(PreviousTexture, 0, lastDown, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
             m_Cmd->SetShaderResourceView(BloomTexture, 0, lastDown, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE); // unused
-            m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_OutTexture, 0);
+            m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_Pyramid[i].DownSampledTexture, 0);
 
             m_Cmd->Dispatch(tw_stereo, th);
 
-            m_Cmd->UAVBarrier(m_OutTexture);
-
-            m_Pyramid[i].DownSampledTexture->Resize(tw_stereo, th);
-            m_Cmd->CopyResource(m_Pyramid[i].DownSampledTexture, m_OutTexture);
+            m_Cmd->UAVBarrier(m_Pyramid[i].DownSampledTexture);
 
             lastDown = m_Pyramid[i].DownSampledTexture;
             tw_stereo = tw_stereo / 2;
@@ -183,13 +171,11 @@ namespace Akari
         m_Pyramid[iterations - 1].UpSampledTexture = m_Pyramid[iterations - 1].DownSampledTexture;
         for (int i = iterations - 2; i >= 0; i--)
         {
-            m_OutTexture->Resize(m_Pyramid[i].Width, m_Pyramid[i].Height);
-
-            // auto srv = Renderer::GetInstance().GetDevice()->CreateShaderResourceView(lastUp, &srvDesc);
+            m_Pyramid[i].UpSampledTexture->Resize(m_Pyramid[i].Width, m_Pyramid[i].Height);
 
             m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[i + 1].Width, 1.0f / m_Pyramid[i + 1].Height, 1.0f / m_Pyramid[i].Width, 1.0f / m_Pyramid[i].Height);
             
-            m_Cmd->TransitionBarrier(m_OutTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+            m_Cmd->TransitionBarrier(m_Pyramid[i].UpSampledTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
             
             m_Cmd->SetPipelineState(m_UpSamplePSO);
             m_Cmd->SetComputeRootSignature(m_RootSig);
@@ -197,14 +183,11 @@ namespace Akari
             m_Cmd->SetCompute32BitConstants(BloomParams, m_Params);
             m_Cmd->SetShaderResourceView(PreviousTexture, 0, m_Pyramid[i + 1].UpSampledTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
             m_Cmd->SetShaderResourceView(BloomTexture, 0, m_Pyramid[i].DownSampledTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-            m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_OutTexture, 0);
+            m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_Pyramid[i].UpSampledTexture, 0);
 
             m_Cmd->Dispatch(m_Pyramid[i].Width, m_Pyramid[i].Height);
 
-            m_Cmd->UAVBarrier(m_OutTexture);
-
-            m_Pyramid[i].UpSampledTexture->Resize(m_Pyramid[i].Width, m_Pyramid[i].Height);
-            m_Cmd->CopyResource(m_Pyramid[i].UpSampledTexture, m_OutTexture);
+            m_Cmd->UAVBarrier(m_Pyramid[i].UpSampledTexture);
         }
 
         // PostFilter
