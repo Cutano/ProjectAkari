@@ -166,9 +166,11 @@ namespace Akari
             th = glm::max(th / 2, 1);
         }
 
+        const int quality = g_BloomParameters.LowQuality; // 1: Low, 0: High
+
         // Upsample
         std::shared_ptr<Texture> lastUp = m_Pyramid[iterations - 1].DownSampledTexture;
-        for (int i = iterations - 2; i >= 0; i--)
+        for (int i = iterations - 2; i >= quality; i--)
         {
             if (m_Pyramid[i].UpSampledTexture->GetD3D12ResourceDesc().Width != m_Pyramid[i].Width || m_Pyramid[i].UpSampledTexture->GetD3D12ResourceDesc().Height != m_Pyramid[i].Height)
             {
@@ -197,14 +199,14 @@ namespace Akari
                 m_OutTexture->Resize(rtWith, rtHeight);
             }
             
-            m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[0].Width, 1.0f / m_Pyramid[0].Height, 1.0f / rtWith, 1.0f / rtHeight);
+            m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[quality].Width, 1.0f / m_Pyramid[quality].Height, 1.0f / rtWith, 1.0f / rtHeight);
             m_Params.Intensity = glm::vec4(g_BloomParameters.Intensity);
             
             m_Cmd->SetPipelineState(m_PostFilterPSO);
             m_Cmd->SetComputeRootSignature(m_RootSig);
 
             m_Cmd->SetCompute32BitConstants(BloomParams, m_Params);
-            m_Cmd->SetShaderResourceView(PreviousTexture, 0, m_Pyramid[0].UpSampledTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+            m_Cmd->SetShaderResourceView(PreviousTexture, 0, m_Pyramid[quality].UpSampledTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
             m_Cmd->SetShaderResourceView(BloomTexture, 0, m_MainTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
             m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_OutTexture, 0);
 
