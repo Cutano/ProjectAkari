@@ -58,7 +58,7 @@ namespace Akari
 
         struct BloomParam
         {
-            glm::vec4 InputTextureTexelSize;
+            glm::vec4 TextureTexelSize; // xy: OutputSize zw: InputSize
             glm::vec4 Intensity;
             glm::vec4 Threshold;
             glm::vec4 Params;
@@ -68,7 +68,8 @@ namespace Akari
         {
             int Width;
             int Height;
-            std::shared_ptr<Texture> FilteredTexture;
+            std::shared_ptr<Texture> DownSampledTexture;
+            std::shared_ptr<Texture> UpSampledTexture;
         };
 
         inline static constexpr int k_MaxPyramidSize = 16;

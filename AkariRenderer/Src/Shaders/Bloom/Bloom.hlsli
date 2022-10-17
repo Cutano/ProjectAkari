@@ -35,7 +35,7 @@
 
 cbuffer GenerateMipsCB : register(b0)
 {
-    float4 MainTextureTexelSize;
+    float4 TextureTexelSize; // xy: OutputSize zw: InputSize
     float4 Intensity;
     float4 Threshold;    // x: threshold value (linear), y: threshold - knee, z: knee * 2, w: 0.25 / knee
     float4 PackedParams; // x: SampleScale, y: Clamp
