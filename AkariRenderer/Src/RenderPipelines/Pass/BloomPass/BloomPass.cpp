@@ -12,6 +12,7 @@
 #include "Shaders/Generated/Bloom/Prefilter_CS.h"
 #include "Shaders/Generated/Bloom/Downsample_CS.h"
 #include "Shaders/Generated/Bloom/Upsample_CS.h"
+#include "Shaders/Generated/Bloom/Postfilter_CS.h"
 
 namespace Akari
 {
@@ -65,9 +66,14 @@ namespace Akari
         upSamplePSO.pRootSignature = m_RootSig->GetD3D12RootSignature().Get();
         upSamplePSO.CS = {g_Upsample_CS, sizeof g_Upsample_CS};
 
+        PipelineStateStream postFilterPSO{};
+        postFilterPSO.pRootSignature = m_RootSig->GetD3D12RootSignature().Get();
+        postFilterPSO.CS = {g_Postfilter_CS, sizeof g_Postfilter_CS};
+
         m_PrefilterPSO = Renderer::GetInstance().GetDevice()->CreatePipelineStateObject(prefilterPSO);
         m_DownSamplePSO = Renderer::GetInstance().GetDevice()->CreatePipelineStateObject(downSamplePSO);
         m_UpSamplePSO = Renderer::GetInstance().GetDevice()->CreatePipelineStateObject(upSamplePSO);
+        m_PostFilterPSO = Renderer::GetInstance().GetDevice()->CreatePipelineStateObject(postFilterPSO);
 
         CD3DX12_RESOURCE_DESC desc;
         desc = CD3DX12_RESOURCE_DESC::Tex2D(m_RenderTarget->GetRenderTargetFormats().RTFormats[0], m_RenderTarget->GetWidth(), m_RenderTarget->GetHeight());
@@ -201,10 +207,27 @@ namespace Akari
             m_Cmd->CopyResource(m_Pyramid[i].UpSampledTexture, m_OutTexture);
         }
 
-        // TODO: Check if this clears the texture
-        m_Pyramid[0].UpSampledTexture->Resize(rtWith, rtHeight);
+        // PostFilter
+        {
+            m_OutTexture->Resize(rtWith, rtHeight);
+            m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[0].Width, 1.0f / m_Pyramid[0].Height, 1.0f / rtWith, 1.0f / rtHeight);
+            m_Params.Intensity = glm::vec4(g_BloomParameters.Intensity);
+            m_Cmd->TransitionBarrier(m_OutTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+            
+            m_Cmd->SetPipelineState(m_PostFilterPSO);
+            m_Cmd->SetComputeRootSignature(m_RootSig);
 
-        m_Cmd->CopyResource(m_MainTexture, m_Pyramid[0].UpSampledTexture);
+            m_Cmd->SetCompute32BitConstants(BloomParams, m_Params);
+            m_Cmd->SetShaderResourceView(PreviousTexture, 0, m_Pyramid[0].UpSampledTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+            m_Cmd->SetShaderResourceView(BloomTexture, 0, m_MainTexture, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+            m_Cmd->SetUnorderedAccessView(OutTexture, 0, m_OutTexture, 0);
+
+            m_Cmd->Dispatch(rtWith, rtHeight);
+
+            m_Cmd->UAVBarrier(m_OutTexture);
+
+            m_Cmd->CopyResource(m_MainTexture, m_OutTexture);
+        }
     }
 
     void BloomPass::Execute()
