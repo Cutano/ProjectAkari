@@ -13,6 +13,7 @@
 
 #include "Events/KeyEvent.h"
 #include "Input/Input.h"
+#include "RenderPipelines/Pass/BloomPass/BloomParameters.h"
 #include "RHI/DynamicDescriptorHeap.h"
 #include "RHI/CommandQueue.h"
 #include "RHI/CommandList.h"
@@ -403,6 +404,7 @@ namespace Akari
             if (ImGui::BeginMenu("Post Processing"))
             {
                 ImGui::MenuItem("Tone Mapping", nullptr, &m_ShowToneMappingSettings);
+                ImGui::MenuItem("Bloom", nullptr, &m_ShowBloomSettings);
                 ImGui::EndMenu();
             }
 
@@ -434,6 +436,10 @@ namespace Akari
         if (m_ShowToneMappingSettings)
         {
             DrawToneMappingSettingsWindow();
+        }
+        if (m_ShowBloomSettings)
+        {
+            DrawBloomSettingsWindow();
         }
     }
 
@@ -674,6 +680,21 @@ namespace Akari
             g_ToneMappingParameters = ToneMappingParameters();
             g_ToneMappingParameters.ToneMappingMethod = method;
         }
+        ImGui::End();
+    }
+
+    void ImGuiLayer::DrawBloomSettingsWindow()
+    {
+        ImGuiWindowFlags windowFlags = 0;
+        ImGui::Begin("Bloom Settings", &m_ShowBloomSettings, windowFlags);
+
+        ImGui::DragFloat("Threshold", &g_BloomParameters.Threshold, 0.01f, 0.0f, 1024.0f);
+        ImGui::DragFloat("Intensity", &g_BloomParameters.Intensity, 0.01f, 0.0f, 1024.0f);
+        ImGui::DragFloat("Clamp", &g_BloomParameters.Clamp, 0.5f, 0.0f, 65535.0f);
+        ImGui::DragFloat("SoftKnee", &g_BloomParameters.SoftKnee, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat("Diffusion", &g_BloomParameters.Diffusion, 1.0f, 0.0f, 10.0f);
+        ImGui::DragFloat("AnamorphicRatio", &g_BloomParameters.AnamorphicRatio, 0.01f, -1.0f, 1.0f);
+        
         ImGui::End();
     }
 

@@ -41,6 +41,7 @@ namespace Akari {
         bool m_ShowBrowserWindow = true;
         bool m_ShowPropertyWindow = true;
         bool m_ShowToneMappingSettings = false;
+        bool m_ShowBloomSettings = false;
 
         float m_SceneWindowWidth;
         float m_SceneWindowHeight;
@@ -66,6 +67,7 @@ namespace Akari {
         void DrawBrowserWindow();
         void DrawPropertyWindow();
         void DrawToneMappingSettingsWindow();
+        void DrawBloomSettingsWindow();
 
         void DrawHierarchyNode(SceneObject& obj);
         void DrawGizmo();

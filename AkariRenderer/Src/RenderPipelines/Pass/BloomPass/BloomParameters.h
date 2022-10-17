@@ -12,5 +12,5 @@ namespace Akari
         float AnamorphicRatio = 0.0f;
     };
 
-    inline static BloomParameters g_BloomParameters;
+    extern BloomParameters g_BloomParameters;
 }
