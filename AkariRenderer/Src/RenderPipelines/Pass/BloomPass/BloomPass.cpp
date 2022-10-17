@@ -138,7 +138,10 @@ namespace Akari
                 ? m_PrefilterPSO
                 : m_DownSamplePSO;
 
-            m_Pyramid[i].DownSampledTexture->Resize(tw_stereo, th);
+            if (m_Pyramid[i].DownSampledTexture->GetD3D12ResourceDesc().Width != tw_stereo || m_Pyramid[i].DownSampledTexture->GetD3D12ResourceDesc().Height != th)
+            {
+                m_Pyramid[i].DownSampledTexture->Resize(tw_stereo, th);
+            }
 
             m_Pyramid[i].Width = tw_stereo;
             m_Pyramid[i].Height = th;
@@ -171,7 +174,10 @@ namespace Akari
         m_Pyramid[iterations - 1].UpSampledTexture = m_Pyramid[iterations - 1].DownSampledTexture;
         for (int i = iterations - 2; i >= 0; i--)
         {
-            m_Pyramid[i].UpSampledTexture->Resize(m_Pyramid[i].Width, m_Pyramid[i].Height);
+            if (m_Pyramid[i].UpSampledTexture->GetD3D12ResourceDesc().Width != m_Pyramid[i].Width || m_Pyramid[i].UpSampledTexture->GetD3D12ResourceDesc().Height != m_Pyramid[i].Height)
+            {
+                m_Pyramid[i].UpSampledTexture->Resize(m_Pyramid[i].Width, m_Pyramid[i].Height);
+            }
 
             m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[i + 1].Width, 1.0f / m_Pyramid[i + 1].Height, 1.0f / m_Pyramid[i].Width, 1.0f / m_Pyramid[i].Height);
             
@@ -192,7 +198,11 @@ namespace Akari
 
         // PostFilter
         {
-            m_OutTexture->Resize(rtWith, rtHeight);
+            if (m_OutTexture->GetD3D12ResourceDesc().Width != rtWith || m_OutTexture->GetD3D12ResourceDesc().Height != rtHeight)
+            {
+                m_OutTexture->Resize(rtWith, rtHeight);
+            }
+            
             m_Params.TextureTexelSize = glm::vec4(1.0f / m_Pyramid[0].Width, 1.0f / m_Pyramid[0].Height, 1.0f / rtWith, 1.0f / rtHeight);
             m_Params.Intensity = glm::vec4(g_BloomParameters.Intensity);
             m_Cmd->TransitionBarrier(m_OutTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);

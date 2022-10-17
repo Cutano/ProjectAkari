@@ -24,7 +24,7 @@ Texture::~Texture() {}
 
 void Texture::Resize( uint32_t width, uint32_t height, uint32_t depthOrArraySize )
 {
-    if ( m_d3d12Resource )
+    if ( m_d3d12Resource != nullptr )
     {
         // ResourceStateTracker::RemoveGlobalResourceState( m_d3d12Resource.Get() );
 
