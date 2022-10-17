@@ -142,6 +142,7 @@ float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
 float3 DirectPBRLighting(float3 baseColor, float3 V, float3 L, float3 N, float3 F0, float roughness, float metallic)
 {
 	// Cook-Torrance BRDF
+	F0 = lerp(F0, baseColor, metallic);
 	float3 H = normalize(V + L);
 	
 	float NDF = AntiAliasingDistributionGGX(N, H, roughness);        
@@ -191,7 +192,6 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 	float3 viewPosWS = MatCB.InverseViewMatrix._14_24_34;
 	float3 viewDir = normalize(viewPosWS - psInput.PositionWS.xyz);
 	float3 col = 0;
-	float3 F0 = lerp(0.04f, MaterialCB.BaseColor.rgb * MaterialCB.Metallic, MaterialCB.Metallic);
 	for (uint i = 0; i < LightPropertiesCB.NumDirectionalLights; ++i)
 	{
 		float pitch = DirectionalLights[i].Rotation.x;
@@ -206,11 +206,11 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 
 		float3 lightDir = normalize(float3(x, y, z));
 		col += DirectPBRLighting(MaterialCB.BaseColor.rgb,
-			viewDir, lightDir, normalWS, F0,
+			viewDir, lightDir, normalWS, 0.04f,
 			MaterialCB.Roughness, MaterialCB.Metallic) * DirectionalLights[i].Radiance * DirectionalLights[i].Intensity;
 	}
 	col += ImageBasedPBRLighting(MaterialCB.BaseColor.rgb,
-				viewDir, normalWS, F0,
+				viewDir, normalWS, 0.04f,
 				MaterialCB.Roughness, MaterialCB.Metallic, 1.0);
 
 	col += MaterialCB.Emissive.rgb;
