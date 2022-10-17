@@ -142,6 +142,7 @@ float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
 float3 DirectPBRLighting(float3 baseColor, float3 V, float3 L, float3 N, float3 F0, float roughness, float metallic)
 {
 	// Cook-Torrance BRDF
+	F0 = lerp(F0, baseColor, metallic);
 	float3 H = normalize(V + L);
 	
 	float NDF = AntiAliasingDistributionGGX(N, H, roughness);        

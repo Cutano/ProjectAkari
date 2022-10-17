@@ -99,6 +99,7 @@ inline void ThrowIfFailed(HRESULT hr)
     {
         _com_error err(hr);
         OutputDebugString(err.ErrorMessage());
+        spdlog::critical(ConvertString(err.ErrorMessage()));
 
         throw std::runtime_error(ConvertString(err.ErrorMessage()));
     }

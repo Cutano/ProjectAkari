@@ -2,7 +2,7 @@
 #include "RPI/RenderPass.h"
 #include "SceneComponents/Visitor.h"
 
-// Procedure: Prefilter -> DownSample -> UpSample
+// Procedure: Prefilter -> DownSample -> UpSample -> PostFilter
 //
 // Example: Texture Filtered[N], N = 7
 // RT -> Filtered[0] -> Filtered[1] -> Filtered[2] -> Filtered[3]    (Prefilter & DownSampling) x 4
@@ -28,6 +28,11 @@
 //     Purpose: UpSample and Accumulate
 //     Input:   Filtered Texture[i - 1] & Filtered Texture[N - 1 - i]
 //     Output:  Filtered Texture[i]
+//
+// PostFilter[0]:
+//     Purpose: Blit BloomTexture to MainTexture
+//     Input:   Filtered Texture[N - 1]
+//     Output:  MainTexture
 
 namespace Akari
 {
@@ -58,7 +63,7 @@ namespace Akari
 
         struct BloomParam
         {
-            glm::vec4 InputTextureTexelSize;
+            glm::vec4 TextureTexelSize; // xy: InputSize zw: OutputSize
             glm::vec4 Intensity;
             glm::vec4 Threshold;
             glm::vec4 Params;
@@ -68,7 +73,8 @@ namespace Akari
         {
             int Width;
             int Height;
-            std::shared_ptr<Texture> FilteredTexture;
+            std::shared_ptr<Texture> DownSampledTexture;
+            std::shared_ptr<Texture> UpSampledTexture;
         };
 
         inline static constexpr int k_MaxPyramidSize = 16;
@@ -84,6 +90,7 @@ namespace Akari
         std::shared_ptr<PipelineStateObject> m_PrefilterPSO;
         std::shared_ptr<PipelineStateObject> m_DownSamplePSO;
         std::shared_ptr<PipelineStateObject> m_UpSamplePSO;
+        std::shared_ptr<PipelineStateObject> m_PostFilterPSO;
     };
     
 }

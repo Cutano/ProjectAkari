@@ -71,7 +71,10 @@ float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
 
 float3 Calculate(uint mip, float3 N, float3 V)
 {
-    const uint SAMPLE_COUNT = 1024u;
+    uint SAMPLE_COUNT = 1024u;
+#ifdef _DEBUG
+    SAMPLE_COUNT = 256u;
+#endif
     
     float roughness = (float)mip / 10.0;
     float3 prefilteredColor = 0.0;

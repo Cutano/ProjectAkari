@@ -114,10 +114,10 @@ namespace Akari
             Renderer::GetInstance().ExecuteCommandList(cmd);
         }
 
-        // m_BloomPass->Record(context);
+        m_BloomPass->Record(context);
         m_ToneMappingPass->Record(context);
         
-        // m_BloomPass->Execute();
+        m_BloomPass->Execute();
         m_ToneMappingPass->Execute();
     }
 }

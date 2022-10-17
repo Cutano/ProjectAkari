@@ -55,6 +55,7 @@ namespace Akari
     void ToneMappingPass::Record(const RenderContext& context)
     {
         m_Cmd = Renderer::GetInstance().GetCommandListDirect();
+        m_Cmd->GetD3D12CommandList()->SetName(L"ToneMappingPass CommandList");
 
         // Perform HDR -> SDR tonemapping directly to scene render target.
         m_Cmd->SetRenderTarget( *m_RenderTarget );
