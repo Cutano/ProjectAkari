@@ -64,20 +64,34 @@ struct VertexShaderOutput
 	float4 Position    : SV_POSITION;
 };
 
+struct SurfaceShadingData
+{
+	float4 BaseColor;
+	float4 Emissive;
+	float3 Normal;
+	float3 Tangent;
+	float3 Bitangent;
+	float Opacity;                       // If Opacity < 1, then the material is transparent.
+	float Roughness;
+	float Occlusion;
+	float Metallic;             
+	float NormalScale;
+};
+
 ConstantBuffer<Matrices> MatCB : register(b0, space0);
 ConstantBuffer<MaterialProperties> MaterialCB : register(b0, space1);
 ConstantBuffer<LightProperties> LightPropertiesCB : register(b1);
 
 StructuredBuffer<DirectionalLight> DirectionalLights : register(t2);
 
-Texture2D AmbientTexture : register( t3 );
-Texture2D EmissiveTexture : register( t4 );
-Texture2D DiffuseTexture : register( t5 );
-Texture2D SpecularTexture : register( t6 );
-Texture2D SpecularPowerTexture : register( t7 );
-Texture2D NormalTexture : register( t8 );
-Texture2D BumpTexture : register( t9 );
-Texture2D OpacityTexture : register( t10 );
+Texture2D BaseColor : register( t3 );
+Texture2D Metallic : register( t4 );
+Texture2D Roughness : register( t5 );
+Texture2D Emissive : register( t6 );
+Texture2D Occlusion : register( t7 );
+Texture2D Normal : register( t8 );
+Texture2D Bump : register( t9 );
+Texture2D Opacity : register( t10 );
 TextureCube<float4> Skybox : register( t11 );
 TextureCube<float4> SkyboxIrr : register( t12 );
 Texture2D IBLTexture : register( t13 );
@@ -186,9 +200,106 @@ float3 ImageBasedPBRLighting(float3 baseColor, float3 V, float3 N, float3 F0, fl
 	return ambient;
 }
 
+float3 ExpandNormal(float3 n)
+{
+	return n * 2.0f - 1.0f;
+}
+
+float3 NormalMapping(float3x3 TBN, float3 N)
+{
+	N = ExpandNormal(N);
+
+	// Transform normal from tangent space to view space.
+	N = mul(N, TBN);
+	return normalize(N);
+}
+
+SurfaceShadingData GetSurfaceData(VertexShaderOutput psInput)
+{
+	SurfaceShadingData o;
+
+	if (MaterialCB.HasBaseColorTexture)
+	{
+		o.BaseColor = BaseColor.Sample(AnisotropicSampler, psInput.TexCoord);
+	}
+	else
+	{
+		o.BaseColor = MaterialCB.BaseColor;
+	}
+
+	if (MaterialCB.HasRoughnessTexture)
+	{
+		o.Roughness = Roughness.Sample(AnisotropicSampler, psInput.TexCoord).r;
+	}
+	else
+	{
+		o.Roughness = MaterialCB.Roughness;
+	}
+
+	if (MaterialCB.HasMetallicTexture)
+	{
+		o.Metallic = Metallic.Sample(AnisotropicSampler, psInput.TexCoord).r;
+	}
+	else
+	{
+		o.Metallic = MaterialCB.Metallic;
+	}
+
+	if (MaterialCB.HasEmissiveTexture)
+	{
+		o.Emissive = Emissive.Sample(AnisotropicSampler, psInput.TexCoord);
+	}
+	else
+	{
+		o.Emissive = MaterialCB.Emissive;
+	}
+
+	if (MaterialCB.HasOpacityTexture)
+	{
+		o.Opacity = Opacity.Sample(AnisotropicSampler, psInput.TexCoord).r;
+	}
+	else
+	{
+		o.Opacity = MaterialCB.Opacity;
+	}
+	
+	if (MaterialCB.HasOcclusionTexture)
+	{
+		o.Occlusion = Occlusion.Sample(AnisotropicSampler, psInput.TexCoord).r;
+	}
+	else
+	{
+		o.Occlusion = 1.0f;
+	}
+
+	if (MaterialCB.HasNormalTexture)
+	{
+		float3 tangent = normalize(psInput.TangentWS);
+		float3 bitangent = normalize(psInput.BitangentWS);
+		float3 normal = normalize(psInput.NormalWS);
+		float3x3 TBN = float3x3(tangent, bitangent, normal);
+
+		o.Normal = NormalMapping(TBN, Normal.SampleLevel(AnisotropicSampler, psInput.TexCoord, 0).rgb);
+		o.Tangent = psInput.TangentWS;
+		o.Bitangent = psInput.BitangentWS;
+	}
+	else
+	{
+		o.Normal = psInput.NormalWS;
+		o.Tangent = psInput.TangentWS;
+		o.Bitangent = psInput.BitangentWS;
+	}
+
+	o.NormalScale = MaterialCB.NormalScale;
+	
+	return o;
+}
+
 float4 main(VertexShaderOutput psInput) : SV_TARGET
 {
-	float3 normalWS = normalize(psInput.NormalWS);
+	SurfaceShadingData surface = GetSurfaceData(psInput);
+	
+	float3 normalWS = surface.Normal;
 	float3 viewPosWS = MatCB.InverseViewMatrix._14_24_34;
 	float3 viewDir = normalize(viewPosWS - psInput.PositionWS.xyz);
 	float3 col = 0;
@@ -205,15 +316,15 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 		float z = sin(pitch) * cos(yaw);
 
 		float3 lightDir = normalize(float3(x, y, z));
-		col += DirectPBRLighting(MaterialCB.BaseColor.rgb,
+		col += DirectPBRLighting(surface.BaseColor.rgb,
 			viewDir, lightDir, normalWS, 0.04f,
-			MaterialCB.Roughness, MaterialCB.Metallic) * DirectionalLights[i].Radiance * DirectionalLights[i].Intensity;
+			surface.Roughness, surface.Metallic) * DirectionalLights[i].Radiance * DirectionalLights[i].Intensity;
 	}
-	col += ImageBasedPBRLighting(MaterialCB.BaseColor.rgb,
+	col += ImageBasedPBRLighting(surface.BaseColor.rgb,
 				viewDir, normalWS, 0.04f,
-				MaterialCB.Roughness, MaterialCB.Metallic, 1.0);
+				surface.Roughness, surface.Metallic, 1.0);
 
-	col += MaterialCB.Emissive.rgb;
+	col += surface.Emissive.rgb;
 	
 	return float4(col, 1.0f);
 }

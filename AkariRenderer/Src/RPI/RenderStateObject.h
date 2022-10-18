@@ -32,14 +32,14 @@ namespace Akari
             SpotLights,         // StructuredBuffer<SpotLight> SpotLights : register( t1 );
             DirectionalLights,  // StructuredBuffer<DirectionalLight> DirectionalLights : register( t2 )
 
-            Textures,  // Texture2D AmbientTexture       : register( t3 );
-                       // Texture2D EmissiveTexture : register( t4 );
-                       // Texture2D DiffuseTexture : register( t5 );
-                       // Texture2D SpecularTexture : register( t6 );
-                       // Texture2D SpecularPowerTexture : register( t7 );
-                       // Texture2D NormalTexture : register( t8 );
-                       // Texture2D BumpTexture : register( t9 );
-                       // Texture2D OpacityTexture : register( t10 );
+            Textures,  // Texture2D BaseColor : register( t3 );
+                       // Texture2D Metallic : register( t4 );
+                       // Texture2D Roughness : register( t5 );
+                       // Texture2D Emissive : register( t6 );
+                       // Texture2D Occlusion : register( t7 );
+                       // Texture2D Normal : register( t8 );
+                       // Texture2D Bump : register( t9 );
+                       // Texture2D Opacity : register( t10 );
             CubeMaps,  // TextureCube<float4> Skybox : register( t11 );
                        // TextureCube<float4> SkyboxIrr : register( t12 );
             LUTs,      // Texture2D IBLTexture : register( t13 );
