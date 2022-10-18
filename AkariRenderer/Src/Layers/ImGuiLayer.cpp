@@ -468,9 +468,6 @@ namespace Akari
                 }
             }
             ImGui::EndMenuBar();
-        }
-        else
-        {
             ImGui::End();
         }
     }
