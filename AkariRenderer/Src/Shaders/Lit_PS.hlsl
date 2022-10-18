@@ -75,7 +75,6 @@ struct SurfaceShadingData
 	float Roughness;
 	float Occlusion;
 	float Metallic;             
-	float NormalScale;
 };
 
 ConstantBuffer<Matrices> MatCB : register(b0, space0);
@@ -208,6 +207,7 @@ float3 ExpandNormal(float3 n)
 float3 NormalMapping(float3x3 TBN, float3 N)
 {
 	N = ExpandNormal(N);
+	N.xy *= MaterialCB.NormalScale;
 
 	// Transform normal from tangent space to view space.
 	N = mul(N, TBN);
@@ -289,8 +289,6 @@ SurfaceShadingData GetSurfaceData(VertexShaderOutput psInput)
 		o.Tangent = psInput.TangentWS;
 		o.Bitangent = psInput.BitangentWS;
 	}
-
-	o.NormalScale = MaterialCB.NormalScale;
 	
 	return o;
 }

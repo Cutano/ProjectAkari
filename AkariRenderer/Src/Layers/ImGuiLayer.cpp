@@ -1183,7 +1183,7 @@ namespace Akari
         ImGui::DragFloat("Opacity", &props.Opacity, 0.01f, 0, 1.0f);
         ImGui::DragFloat("Roughness", &props.Roughness, 0.01f, 0, 1.0f);
         ImGui::DragFloat("Metallic", &props.Metallic, 0.01f, 0, 1.0f);
-        ImGui::DragFloat("NormalScale", &props.NormalScale);
+        ImGui::DragFloat("Normal Scale", &props.NormalScale, 0.01f);
         ImGui::Spacing();
     }
 }
