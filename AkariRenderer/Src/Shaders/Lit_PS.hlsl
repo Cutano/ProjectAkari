@@ -206,6 +206,7 @@ float3 ExpandNormal(float3 n)
 
 float3 NormalMapping(float3x3 TBN, float3 N)
 {
+	N = float3(N.r, 1.0f - N.g, N.b);
 	N = ExpandNormal(N);
 	N.xy *= MaterialCB.NormalScale;
 
