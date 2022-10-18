@@ -209,7 +209,7 @@ public:
     /**
      * Load a texture by a filename.
      */
-    std::shared_ptr<Texture> LoadTextureFromFile( const std::wstring& fileName, bool sRGB = false );
+    std::shared_ptr<Texture> LoadTextureFromFile( const std::wstring& fileName, bool sRGB = false, bool genMip = true );
 
     /**
      * Load a scene file.

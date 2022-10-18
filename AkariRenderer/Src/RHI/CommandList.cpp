@@ -295,7 +295,7 @@ void CommandList::SetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY primitiveTopology
     m_d3d12CommandList->IASetPrimitiveTopology( primitiveTopology );
 }
 
-std::shared_ptr<Texture> CommandList::LoadTextureFromFile( const std::wstring& fileName, bool sRGB )
+std::shared_ptr<Texture> CommandList::LoadTextureFromFile( const std::wstring& fileName, bool sRGB, bool genMip )
 {
     std::shared_ptr<Texture> texture;
     std::filesystem::path                 filePath( fileName );
@@ -386,7 +386,7 @@ std::shared_ptr<Texture> CommandList::LoadTextureFromFile( const std::wstring& f
 
         CopyTextureSubresource( texture, 0, static_cast<uint32_t>( subresources.size() ), subresources.data() );
 
-        if ( subresources.size() < textureResource->GetDesc().MipLevels )
+        if ( genMip && subresources.size() < textureResource->GetDesc().MipLevels )
         {
             GenerateMips( texture );
         }
