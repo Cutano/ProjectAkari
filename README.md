@@ -51,6 +51,7 @@ Use Visual Studio 2022 to build the solution, if you want to use DirectX Debug L
 ### Model
 - [x] Simple Geometry
 - [ ] Model Loading
+- [ ] Model Animation
 
 ### Material
 - [x] Built-in PBR Material

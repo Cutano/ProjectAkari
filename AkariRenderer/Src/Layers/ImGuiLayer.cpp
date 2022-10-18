@@ -11,6 +11,9 @@
 
 #include <ImGuizmo.h>
 
+#include <ShObjIdl.h>  // For IFileOpenDialog
+#include <shlwapi.h>
+
 #include "Events/KeyEvent.h"
 #include "Input/Input.h"
 #include "RenderPipelines/Pass/BloomPass/BloomParameters.h"
@@ -391,6 +394,16 @@ namespace Akari
 
         if (ImGui::BeginMenuBar())
         {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Load Model"))
+                {
+                    OpenLoadModelDialog();
+                }
+                
+                ImGui::EndMenu();
+            }
+            
             if (ImGui::BeginMenu("Window"))
             {
                 ImGui::MenuItem("Show Demo", nullptr, &m_ShowDemoWindow);
@@ -499,6 +512,23 @@ namespace Akari
         {
             if (ImGui::BeginMenu("Create"))
             {
+                if (ImGui::BeginMenu("Loaded Models"))
+                {
+                    for (const auto [name, id] : m_LoadedModelList)
+                    {
+                        if (ImGui::MenuItem(ConvertString(name).c_str()))
+                        {
+                            auto model = scene.CreateSceneObject(ConvertString(name).c_str());
+                            auto & [ModelID]= model.AddComponent<ModelComponent>();
+                            ModelID = id;
+
+                            m_SelectedSceneObject = model.GetUUID();
+                        }
+                    }
+
+                    ImGui::EndMenu();
+                }
+                
                 if (ImGui::MenuItem("Cube"))
                 {
                     auto cube = scene.CreateSceneObject("Cube");
@@ -887,6 +917,109 @@ namespace Akari
         colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
         colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
         colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+    }
+
+    void ImGuiLayer::OpenLoadModelDialog()
+    {
+        static const COMDLG_FILTERSPEC g_FileFilters[] = { 
+            { L"Autodesk", L"*.fbx" }, 
+            { L"Collada", L"*.dae" },
+            { L"glTF", L"*.gltf;*.glb" },
+            { L"Blender 3D", L"*.blend" },
+            { L"3ds Max 3DS", L"*.3ds" },
+            { L"3ds Max ASE", L"*.ase" },
+            { L"Wavefront Object", L"*.obj" },
+            { L"Industry Foundation Classes (IFC/Step)", L"*.ifc" },
+            { L"XGL", L"*.xgl;*.zgl" },
+            { L"Stanford Polygon Library", L"*.ply" },
+            { L"AutoCAD DXF", L"*.dxf" },
+            { L"LightWave", L"*.lws" },
+            { L"LightWave Scene", L"*.lws" },
+            { L"Modo", L"*.lxo" },
+            { L"Stereolithography", L"*.stl" },
+            { L"DirectX X", L"*.x" },
+            { L"AC3D", L"*.ac" },
+            { L"Milkshape 3D", L"*.ms3d" },
+            { L"TrueSpace", L"*.cob;*.scn" },
+            { L"Ogre XML", L"*.xml" },
+            { L"Irrlicht Mesh", L"*.irrmesh" },
+            { L"Irrlicht Scene", L"*.irr" },
+            { L"Quake I", L"*.mdl" },
+            { L"Quake II", L"*.md2" },
+            { L"Quake III", L"*.md3" },
+            { L"Quake III Map/BSP", L"*.pk3" },
+            { L"Return to Castle Wolfenstein", L"*.mdc" },
+            { L"Doom 3", L"*.md5*" },
+            { L"Valve Model", L"*.smd;*.vta" },
+            { L"Open Game Engine Exchange", L"*.ogx" },
+            { L"Unreal", L"*.3d" },
+            { L"BlitzBasic 3D", L"*.b3d" },
+            { L"Quick3D", L"*.q3d;*.q3s" },
+            { L"Neutral File Format", L"*.nff" },
+            { L"Sense8 WorldToolKit", L"*.nff" },
+            { L"Object File Format", L"*.off" },
+            { L"PovRAY Raw", L"*.raw" },
+            { L"Terragen Terrain", L"*.ter" },
+            { L"Izware Nendo", L"*.ndo" },
+            { L"All Files", L"*.*" }
+        };
+
+        ComPtr<IFileOpenDialog> pFileOpen;
+        HRESULT                 hr = CoCreateInstance( CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS( &pFileOpen ) );
+
+        if ( SUCCEEDED( hr ) )
+        {
+            // Create an event handling object, and hook it up to the dialog.
+            // ComPtr<IFileDialogEvents> pDialogEvents;
+            // hr = DialogEventHandler_CreateInstance( IID_PPV_ARGS( &pDialogEvents ) );
+
+            if ( SUCCEEDED( hr ) )
+            {
+                // Setup filters.
+                hr = pFileOpen->SetFileTypes( _countof( g_FileFilters ), g_FileFilters );
+                pFileOpen->SetFileTypeIndex( 40 );  // All Files (*.*)
+
+                // Show the open dialog box.
+                if (SUCCEEDED(pFileOpen->Show( dynamic_cast<WindowsWindow*>(&Application::Get().GetWindow())->GetHandle())))
+                {
+                    ComPtr<IShellItem> pItem;
+                    if ( SUCCEEDED( pFileOpen->GetResult( &pItem ) ) )
+                    {
+                        PWSTR pszFilePath;
+                        if ( SUCCEEDED( pItem->GetDisplayName( SIGDN_FILESYSPATH, &pszFilePath ) ) )
+                        {
+                            // try to load the scene file (asynchronously).
+                            m_LoadingTask =
+                                std::async( std::launch::async, [=, this]{return LoadModel(pszFilePath);} );
+
+                            CoTaskMemFree( pszFilePath );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bool ImGuiLayer::LoadModel(const std::wstring path)
+    {
+        m_IsLoading     = true;
+        m_CancelLoading = false;
+        m_LoadingText   = std::string( "Loading " ) + ConvertString( path ) + "...";
+
+        // Load a scene, passing an optional function object for receiving loading progress events.
+        const UUID id = ModelManager::GetInstance().LoadModelFromFile(path, [this](const float progress)
+        {
+            m_LoadingProgress = progress;
+            return !m_CancelLoading;
+        });
+
+        if (id != 0)
+        {
+            const std::filesystem::path _path(path);
+            m_LoadedModelList[_path.filename()] = id;
+        }
+
+        return id != 0;
     }
 
     bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e)

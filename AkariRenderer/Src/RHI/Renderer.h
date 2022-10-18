@@ -51,6 +51,7 @@ namespace Akari
         void SetRenderPipeline(const std::shared_ptr<RenderPipeline>& rp);
 
         uint64_t ExecuteCommandList(std::shared_ptr<CommandList> commandList) const;
+        void ExecuteAndFlushCommandList(std::shared_ptr<CommandList> commandList) const;
 
     private:
         Renderer() = default;
