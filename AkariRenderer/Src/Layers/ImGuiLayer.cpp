@@ -14,6 +14,7 @@
 #include <ShObjIdl.h>  // For IFileOpenDialog
 #include <shlwapi.h>
 
+#include "imgui_internal.h"
 #include "Events/KeyEvent.h"
 #include "Input/Input.h"
 #include "RenderPipelines/Pass/BloomPass/BloomParameters.h"
@@ -377,7 +378,7 @@ namespace Akari
     void ImGuiLayer::Draw()
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-        const ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->WorkPos);
         ImGui::SetNextWindowSize(viewport->WorkSize);
         ImGui::SetNextWindowViewport(viewport->ID);
@@ -454,6 +455,24 @@ namespace Akari
         {
             DrawBloomSettingsWindow();
         }
+
+        if (ImGui::BeginViewportSideBar("Status Bar", viewport, ImGuiDir_Down, ImGui::GetFrameHeight(), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
+        {
+            ImGui::BeginMenuBar();
+            if (m_IsLoading)
+            {
+                ImGui::ProgressBar(m_LoadingProgress, {200.0f, 0.0f});
+                if (ImGui::MenuItem("Cancel"))
+                {
+                    m_CancelLoading = true;
+                }
+            }
+            ImGui::EndMenuBar();
+        }
+        else
+        {
+            ImGui::End();
+        }
     }
 
     // https://github.com/ocornut/imgui/issues/984
@@ -469,7 +488,7 @@ namespace Akari
         ImVec2 view = ImGui::GetContentRegionAvail();
         if (view.x != m_SceneWindowWidth || view.y != m_SceneWindowHeight)
         {
-            if (view.x == 0 || view.y == 0)
+            if (view.x <= 0 || view.y <= 0)
             {
                 // The window is too small or collapsed.
                 ImGui::End();
@@ -514,15 +533,22 @@ namespace Akari
             {
                 if (ImGui::BeginMenu("Loaded Models"))
                 {
-                    for (const auto [name, id] : m_LoadedModelList)
+                    if (m_LoadedModelList.size() == 0)
                     {
-                        if (ImGui::MenuItem(ConvertString(name).c_str()))
+                        ImGui::MenuItem("Empty", nullptr, false, false);
+                    }
+                    else
+                    {
+                        for (const auto [name, id] : m_LoadedModelList)
                         {
-                            auto model = scene.CreateSceneObject(ConvertString(name).c_str());
-                            auto & [ModelID]= model.AddComponent<ModelComponent>();
-                            ModelID = id;
+                            if (ImGui::MenuItem(ConvertString(name).c_str()))
+                            {
+                                auto model = scene.CreateSceneObject(ConvertString(name).c_str());
+                                auto & [ModelID]= model.AddComponent<ModelComponent>();
+                                ModelID = id;
 
-                            m_SelectedSceneObject = model.GetUUID();
+                                m_SelectedSceneObject = model.GetUUID();
+                            }
                         }
                     }
 
@@ -1018,6 +1044,8 @@ namespace Akari
             const std::filesystem::path _path(path);
             m_LoadedModelList[_path.filename()] = id;
         }
+
+        m_IsLoading = false;
 
         return id != 0;
     }
