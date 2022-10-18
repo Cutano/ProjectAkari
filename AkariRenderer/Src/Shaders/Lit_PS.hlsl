@@ -227,22 +227,41 @@ SurfaceShadingData GetSurfaceData(VertexShaderOutput psInput)
 		o.BaseColor = MaterialCB.BaseColor;
 	}
 
-	if (MaterialCB.HasRoughnessTexture)
+	if (MaterialCB.HasRoughnessTexture && MaterialCB.HasMetallicTexture)
 	{
-		o.Roughness = Roughness.Sample(AnisotropicSampler, psInput.TexCoord).r;
-	}
-	else
-	{
-		o.Roughness = MaterialCB.Roughness;
-	}
+		float3 temp1 = Roughness.Sample(AnisotropicSampler, psInput.TexCoord).rgb;
+		float3 temp2 = Metallic.Sample(AnisotropicSampler, psInput.TexCoord).rgb;
 
-	if (MaterialCB.HasMetallicTexture)
-	{
-		o.Metallic = Metallic.Sample(AnisotropicSampler, psInput.TexCoord).r;
+		if (abs(length(temp1 - temp2)) < 0.001)
+		{
+			o.Metallic = temp2.b;
+			o.Roughness = temp1.g;
+		}
+		else
+		{
+			o.Metallic = temp2.r;
+			o.Roughness = temp1.r;
+		}
 	}
 	else
 	{
-		o.Metallic = MaterialCB.Metallic;
+		if (MaterialCB.HasRoughnessTexture)
+		{
+			o.Roughness = Roughness.Sample(AnisotropicSampler, psInput.TexCoord).r;
+		}
+		else
+		{
+			o.Roughness = MaterialCB.Roughness;
+		}
+
+		if (MaterialCB.HasMetallicTexture)
+		{
+			o.Metallic = Metallic.Sample(AnisotropicSampler, psInput.TexCoord).r;
+		}
+		else
+		{
+			o.Metallic = MaterialCB.Metallic;
+		}
 	}
 
 	if (MaterialCB.HasEmissiveTexture)

@@ -301,6 +301,36 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
         pMaterial->SetTexture( textureType, texture );
     }
 
+    // Load base color textures.
+    if ( material.GetTextureCount( aiTextureType_BASE_COLOR ) > 0 &&
+         material.GetTexture( aiTextureType_BASE_COLOR, 0, &aiTexturePath, nullptr, nullptr, &blendFactor,
+                              &aiBlendOperation ) == aiReturn_SUCCESS )
+    {
+        std::filesystem::path texturePath( aiTexturePath.C_Str() );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
+        pMaterial->SetTexture( Material::TextureType::BaseColor, texture );
+    }
+
+    // Load metallic textures.
+    if ( material.GetTextureCount( aiTextureType_METALNESS ) > 0 &&
+         material.GetTexture( aiTextureType_METALNESS, 0, &aiTexturePath, nullptr, nullptr, &blendFactor,
+                              &aiBlendOperation ) == aiReturn_SUCCESS )
+    {
+        std::filesystem::path texturePath( aiTexturePath.C_Str() );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
+        pMaterial->SetTexture( Material::TextureType::Metallic, texture );
+    }
+
+    // Load roughness textures.
+    if ( material.GetTextureCount( aiTextureType_DIFFUSE_ROUGHNESS ) > 0 &&
+         material.GetTexture( aiTextureType_DIFFUSE_ROUGHNESS, 0, &aiTexturePath, nullptr, nullptr, &blendFactor,
+                              &aiBlendOperation ) == aiReturn_SUCCESS )
+    {
+        std::filesystem::path texturePath( aiTexturePath.C_Str() );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
+        pMaterial->SetTexture( Material::TextureType::Roughness, texture );
+    }
+
     // m_MaterialMap.insert( MaterialMap::value_type( materialName.C_Str(), pMaterial ) );
     m_Materials.push_back( pMaterial );
 }
