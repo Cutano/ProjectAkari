@@ -244,7 +244,7 @@ namespace Akari {
 
 	void WindowsWindow::ProcessEvents()
 	{
-		glfwPollEvents();
+		glfwWaitEventsTimeout(0.005);
 		Input::Update();
 	}
 
