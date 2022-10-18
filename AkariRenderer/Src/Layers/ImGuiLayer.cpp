@@ -745,7 +745,7 @@ namespace Akari
         ImGui::DragFloat("Intensity", &g_BloomParameters.Intensity, 0.01f, 0.0f, 1024.0f);
         ImGui::DragFloat("Clamp", &g_BloomParameters.Clamp, 0.5f, 0.0f, 65535.0f);
         ImGui::DragFloat("SoftKnee", &g_BloomParameters.SoftKnee, 0.01f, 0.0f, 1.0f);
-        ImGui::DragFloat("Diffusion", &g_BloomParameters.Diffusion, 1.0f, 0.0f, 10.0f);
+        ImGui::DragFloat("Diffusion", &g_BloomParameters.Diffusion, 1.0f, 4.0f, 10.0f);
         ImGui::DragFloat("AnamorphicRatio", &g_BloomParameters.AnamorphicRatio, 0.01f, -1.0f, 1.0f);
         ImGui::Checkbox("Low Quality", &g_BloomParameters.LowQuality);
         
