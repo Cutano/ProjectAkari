@@ -25,7 +25,7 @@ namespace Akari
         void Init();
         void Shutdown();
 
-        UUID LoadModelFromFile(std::wstring& path);
+        UUID LoadModelFromFile(const std::wstring& path, const std::function<bool( float )>& loadingProgress);
 
         std::shared_ptr<Model> GetModelByID(UUID id);
 

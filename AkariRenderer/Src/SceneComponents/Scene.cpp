@@ -15,7 +15,7 @@ namespace Akari
     Scene::Scene(const std::string& name)
     {
         const auto& rt = Renderer::GetInstance().GetMsaaRenderTarget();
-        m_Camera = std::make_shared<EditorCamera>(45.0f, rt->GetWidth(), rt->GetHeight(), 0.01f, 200.0f);
+        m_Camera = std::make_shared<EditorCamera>(45.0f, rt->GetWidth(), rt->GetHeight(), 0.1f, 2000.0f);
         m_Camera->SetActive(true);
     }
 

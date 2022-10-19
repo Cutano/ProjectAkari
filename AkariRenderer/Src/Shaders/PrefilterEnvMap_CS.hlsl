@@ -76,7 +76,7 @@ float3 Calculate(uint mip, float3 N, float3 V)
     SAMPLE_COUNT = 256u;
 #endif
     
-    float roughness = (float)mip / 10.0;
+    float roughness = saturate((float)mip / 10.0);
     float3 prefilteredColor = 0.0;
     float totalWeight = 0.0;
 

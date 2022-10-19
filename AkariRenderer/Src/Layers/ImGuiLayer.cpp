@@ -11,6 +11,10 @@
 
 #include <ImGuizmo.h>
 
+#include <ShObjIdl.h>  // For IFileOpenDialog
+#include <shlwapi.h>
+
+#include "imgui_internal.h"
 #include "Events/KeyEvent.h"
 #include "Input/Input.h"
 #include "RenderPipelines/Pass/BloomPass/BloomParameters.h"
@@ -374,7 +378,7 @@ namespace Akari
     void ImGuiLayer::Draw()
     {
         ImGuiWindowFlags windowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-        const ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->WorkPos);
         ImGui::SetNextWindowSize(viewport->WorkSize);
         ImGui::SetNextWindowViewport(viewport->ID);
@@ -391,6 +395,16 @@ namespace Akari
 
         if (ImGui::BeginMenuBar())
         {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Load Model"))
+                {
+                    OpenLoadModelDialog();
+                }
+                
+                ImGui::EndMenu();
+            }
+            
             if (ImGui::BeginMenu("Window"))
             {
                 ImGui::MenuItem("Show Demo", nullptr, &m_ShowDemoWindow);
@@ -441,6 +455,21 @@ namespace Akari
         {
             DrawBloomSettingsWindow();
         }
+
+        if (ImGui::BeginViewportSideBar("Status Bar", viewport, ImGuiDir_Down, ImGui::GetFrameHeight(), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar))
+        {
+            ImGui::BeginMenuBar();
+            if (m_IsLoading)
+            {
+                ImGui::ProgressBar(m_LoadingProgress, {200.0f, 0.0f});
+                if (ImGui::MenuItem("Cancel"))
+                {
+                    m_CancelLoading = true;
+                }
+            }
+            ImGui::EndMenuBar();
+            ImGui::End();
+        }
     }
 
     // https://github.com/ocornut/imgui/issues/984
@@ -456,7 +485,7 @@ namespace Akari
         ImVec2 view = ImGui::GetContentRegionAvail();
         if (view.x != m_SceneWindowWidth || view.y != m_SceneWindowHeight)
         {
-            if (view.x == 0 || view.y == 0)
+            if (view.x <= 0 || view.y <= 0)
             {
                 // The window is too small or collapsed.
                 ImGui::End();
@@ -499,6 +528,30 @@ namespace Akari
         {
             if (ImGui::BeginMenu("Create"))
             {
+                if (ImGui::BeginMenu("Loaded Models"))
+                {
+                    if (m_LoadedModelList.size() == 0)
+                    {
+                        ImGui::MenuItem("Empty", nullptr, false, false);
+                    }
+                    else
+                    {
+                        for (const auto [name, id] : m_LoadedModelList)
+                        {
+                            if (ImGui::MenuItem(ConvertString(name).c_str()))
+                            {
+                                auto model = scene.CreateSceneObject(ConvertString(name).c_str());
+                                auto & [ModelID]= model.AddComponent<ModelComponent>();
+                                ModelID = id;
+
+                                m_SelectedSceneObject = model.GetUUID();
+                            }
+                        }
+                    }
+
+                    ImGui::EndMenu();
+                }
+                
                 if (ImGui::MenuItem("Cube"))
                 {
                     auto cube = scene.CreateSceneObject("Cube");
@@ -692,8 +745,9 @@ namespace Akari
         ImGui::DragFloat("Intensity", &g_BloomParameters.Intensity, 0.01f, 0.0f, 1024.0f);
         ImGui::DragFloat("Clamp", &g_BloomParameters.Clamp, 0.5f, 0.0f, 65535.0f);
         ImGui::DragFloat("SoftKnee", &g_BloomParameters.SoftKnee, 0.01f, 0.0f, 1.0f);
-        ImGui::DragFloat("Diffusion", &g_BloomParameters.Diffusion, 1.0f, 0.0f, 10.0f);
+        ImGui::DragFloat("Diffusion", &g_BloomParameters.Diffusion, 1.0f, 4.0f, 10.0f);
         ImGui::DragFloat("AnamorphicRatio", &g_BloomParameters.AnamorphicRatio, 0.01f, -1.0f, 1.0f);
+        ImGui::Checkbox("Low Quality", &g_BloomParameters.LowQuality);
         
         ImGui::End();
     }
@@ -888,6 +942,111 @@ namespace Akari
         colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
     }
 
+    void ImGuiLayer::OpenLoadModelDialog()
+    {
+        static const COMDLG_FILTERSPEC g_FileFilters[] = { 
+            { L"Autodesk", L"*.fbx" }, 
+            { L"Collada", L"*.dae" },
+            { L"glTF", L"*.gltf;*.glb" },
+            { L"Blender 3D", L"*.blend" },
+            { L"3ds Max 3DS", L"*.3ds" },
+            { L"3ds Max ASE", L"*.ase" },
+            { L"Wavefront Object", L"*.obj" },
+            { L"Industry Foundation Classes (IFC/Step)", L"*.ifc" },
+            { L"XGL", L"*.xgl;*.zgl" },
+            { L"Stanford Polygon Library", L"*.ply" },
+            { L"AutoCAD DXF", L"*.dxf" },
+            { L"LightWave", L"*.lws" },
+            { L"LightWave Scene", L"*.lws" },
+            { L"Modo", L"*.lxo" },
+            { L"Stereolithography", L"*.stl" },
+            { L"DirectX X", L"*.x" },
+            { L"AC3D", L"*.ac" },
+            { L"Milkshape 3D", L"*.ms3d" },
+            { L"TrueSpace", L"*.cob;*.scn" },
+            { L"Ogre XML", L"*.xml" },
+            { L"Irrlicht Mesh", L"*.irrmesh" },
+            { L"Irrlicht Scene", L"*.irr" },
+            { L"Quake I", L"*.mdl" },
+            { L"Quake II", L"*.md2" },
+            { L"Quake III", L"*.md3" },
+            { L"Quake III Map/BSP", L"*.pk3" },
+            { L"Return to Castle Wolfenstein", L"*.mdc" },
+            { L"Doom 3", L"*.md5*" },
+            { L"Valve Model", L"*.smd;*.vta" },
+            { L"Open Game Engine Exchange", L"*.ogx" },
+            { L"Unreal", L"*.3d" },
+            { L"BlitzBasic 3D", L"*.b3d" },
+            { L"Quick3D", L"*.q3d;*.q3s" },
+            { L"Neutral File Format", L"*.nff" },
+            { L"Sense8 WorldToolKit", L"*.nff" },
+            { L"Object File Format", L"*.off" },
+            { L"PovRAY Raw", L"*.raw" },
+            { L"Terragen Terrain", L"*.ter" },
+            { L"Izware Nendo", L"*.ndo" },
+            { L"All Files", L"*.*" }
+        };
+
+        ComPtr<IFileOpenDialog> pFileOpen;
+        HRESULT                 hr = CoCreateInstance( CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_PPV_ARGS( &pFileOpen ) );
+
+        if ( SUCCEEDED( hr ) )
+        {
+            // Create an event handling object, and hook it up to the dialog.
+            // ComPtr<IFileDialogEvents> pDialogEvents;
+            // hr = DialogEventHandler_CreateInstance( IID_PPV_ARGS( &pDialogEvents ) );
+
+            if ( SUCCEEDED( hr ) )
+            {
+                // Setup filters.
+                hr = pFileOpen->SetFileTypes( _countof( g_FileFilters ), g_FileFilters );
+                pFileOpen->SetFileTypeIndex( 40 );  // All Files (*.*)
+
+                // Show the open dialog box.
+                if (SUCCEEDED(pFileOpen->Show( dynamic_cast<WindowsWindow*>(&Application::Get().GetWindow())->GetHandle())))
+                {
+                    ComPtr<IShellItem> pItem;
+                    if ( SUCCEEDED( pFileOpen->GetResult( &pItem ) ) )
+                    {
+                        PWSTR pszFilePath;
+                        if ( SUCCEEDED( pItem->GetDisplayName( SIGDN_FILESYSPATH, &pszFilePath ) ) )
+                        {
+                            // try to load the scene file (asynchronously).
+                            m_LoadingTask =
+                                std::async( std::launch::async, [=, this]{return LoadModel(pszFilePath);} );
+
+                            CoTaskMemFree( pszFilePath );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bool ImGuiLayer::LoadModel(const std::wstring path)
+    {
+        m_IsLoading     = true;
+        m_CancelLoading = false;
+        m_LoadingText   = std::string( "Loading " ) + ConvertString( path ) + "...";
+
+        // Load a scene, passing an optional function object for receiving loading progress events.
+        const UUID id = ModelManager::GetInstance().LoadModelFromFile(path, [this](const float progress)
+        {
+            m_LoadingProgress = progress;
+            return !m_CancelLoading;
+        });
+
+        if (id != 0)
+        {
+            const std::filesystem::path _path(path);
+            m_LoadedModelList[_path.filename()] = id;
+        }
+
+        m_IsLoading = false;
+
+        return id != 0;
+    }
+
     bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e)
     {
         if (m_IsSceneWindowHovered && !Input::IsMouseButtonPressed(MouseButton::Right))
@@ -1024,7 +1183,7 @@ namespace Akari
         ImGui::DragFloat("Opacity", &props.Opacity, 0.01f, 0, 1.0f);
         ImGui::DragFloat("Roughness", &props.Roughness, 0.01f, 0, 1.0f);
         ImGui::DragFloat("Metallic", &props.Metallic, 0.01f, 0, 1.0f);
-        ImGui::DragFloat("NormalScale", &props.NormalScale);
+        ImGui::DragFloat("Normal Scale", &props.NormalScale, 0.01f);
         ImGui::Spacing();
     }
 }

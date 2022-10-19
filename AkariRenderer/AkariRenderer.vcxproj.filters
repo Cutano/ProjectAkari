@@ -200,6 +200,7 @@
     <FxCompile Include="Src\Shaders\Bloom\Downsample_CS.hlsl" />
     <FxCompile Include="Src\Shaders\Bloom\Upsample_CS.hlsl" />
     <FxCompile Include="Src\Shaders\Bloom\Postfilter_CS.hlsl" />
+    <FxCompile Include="Src\Shaders\PrefilterIrrEnvMap_CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AkariRenderer.rc" />

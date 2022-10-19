@@ -27,6 +27,7 @@
 #include "UploadBuffer.h"
 #include "VertexBuffer.h"
 #include "Shaders/Generated/PrefilterEnvMap_CS.h"
+#include "Shaders/Generated/PrefilterIrrEnvMap_CS.h"
 
 using namespace Akari;
 using namespace DirectX;
@@ -295,7 +296,7 @@ void CommandList::SetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY primitiveTopology
     m_d3d12CommandList->IASetPrimitiveTopology( primitiveTopology );
 }
 
-std::shared_ptr<Texture> CommandList::LoadTextureFromFile( const std::wstring& fileName, bool sRGB )
+std::shared_ptr<Texture> CommandList::LoadTextureFromFile( const std::wstring& fileName, bool sRGB, bool genMip )
 {
     std::shared_ptr<Texture> texture;
     std::filesystem::path                 filePath( fileName );
@@ -386,7 +387,7 @@ std::shared_ptr<Texture> CommandList::LoadTextureFromFile( const std::wstring& f
 
         CopyTextureSubresource( texture, 0, static_cast<uint32_t>( subresources.size() ), subresources.data() );
 
-        if ( subresources.size() < textureResource->GetDesc().MipLevels )
+        if ( genMip && subresources.size() < textureResource->GetDesc().MipLevels )
         {
             GenerateMips( texture );
         }
@@ -523,11 +524,14 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
 {
     assert(texture);
 
+    auto resource     = texture->GetD3D12Resource();
+    auto resourceDesc = resource->GetDesc();
+
     auto d3d12Device = m_Device.GetD3D12Device();
 
     CD3DX12_DESCRIPTOR_RANGE1 srcCubeMap( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0,
                                       D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
-    CD3DX12_DESCRIPTOR_RANGE1 outMip( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 10, 0, 0,
+    CD3DX12_DESCRIPTOR_RANGE1 outMip( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, resourceDesc.MipLevels - 1, 0, 0,
                                       D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
 
     CD3DX12_ROOT_PARAMETER1 rootParameters[2];
@@ -557,9 +561,6 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
 
     SetPipelineState(pso);
     SetComputeRootSignature(rootSig);
-
-    auto resource     = texture->GetD3D12Resource();
-    auto resourceDesc = resource->GetDesc();
 
     ComPtr<ID3D12Resource> uavResource = resource;
     ComPtr<ID3D12Resource> aliasResource;
@@ -644,7 +645,7 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
 
     TransitionBarrier(uavTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
-    for ( uint32_t mip = 0; mip < 10; ++mip )
+    for ( uint32_t mip = 0; mip < resourceDesc.MipLevels - 1u; ++mip )
     {
         D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
         uavDesc.Format                           = resourceDesc.Format;
@@ -666,6 +667,116 @@ void CommandList::PrefilterCubeMap(const std::shared_ptr<Texture>& texture)
         AliasingBarrier( uavResource, aliasResource );
         // Copy the alias resource back to the original resource.
         CopyResource( resource, aliasResource );
+    }
+}
+
+void CommandList::PrefilterIrrCubeMap(const std::shared_ptr<Texture>& texture, const std::shared_ptr<Texture>& destTex)
+{
+    assert( destTex && texture );
+
+    auto d3d12Device = m_Device.GetD3D12Device();
+
+    CD3DX12_DESCRIPTOR_RANGE1 srcCubeMap( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0, 0,
+                                      D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
+    CD3DX12_DESCRIPTOR_RANGE1 outRange( D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0,
+                                      D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
+
+    CD3DX12_ROOT_PARAMETER1 rootParameters[2];
+    rootParameters[0].InitAsDescriptorTable( 1, &srcCubeMap );
+    rootParameters[1].InitAsDescriptorTable( 1, &outRange );
+
+    CD3DX12_STATIC_SAMPLER_DESC linearClampSampler( 0, D3D12_FILTER_MIN_MAG_MIP_LINEAR,
+                                                    D3D12_TEXTURE_ADDRESS_MODE_WRAP, D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+                                                    D3D12_TEXTURE_ADDRESS_MODE_WRAP );
+
+    CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc( 2, rootParameters, 1,
+                                                             &linearClampSampler );
+
+    auto rootSig = m_Device.CreateRootSignature( rootSignatureDesc.Desc_1_1 );
+
+    struct PipelineStateStream
+    {
+        CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
+        CD3DX12_PIPELINE_STATE_STREAM_CS             CS;
+    } pipelineStateStream;
+
+    pipelineStateStream.pRootSignature = rootSig->GetD3D12RootSignature().Get();
+    pipelineStateStream.CS             = { g_PrefilterIrrEnvMap_CS, sizeof( g_PrefilterIrrEnvMap_CS ) };
+
+    auto pso = m_Device.CreatePipelineStateObject( pipelineStateStream );
+
+    if ( m_d3d12CommandListType == D3D12_COMMAND_LIST_TYPE_COPY )
+    {
+        if ( !m_ComputeCommandList )
+        {
+            m_ComputeCommandList = m_Device.GetCommandQueue( D3D12_COMMAND_LIST_TYPE_COMPUTE ).GetCommandList();
+        }
+        m_ComputeCommandList->PrefilterIrrCubeMap(texture, destTex);
+        return;
+    }
+
+    auto irrResource = destTex->GetD3D12Resource();
+    if ( !irrResource )
+        return;
+
+    CD3DX12_RESOURCE_DESC irrDesc( irrResource->GetDesc() );
+
+    auto stagingResource = irrResource;
+    auto stagingTexture  = m_Device.CreateTexture( stagingResource );
+    // If the passed-in resource does not allow for UAV access
+    // then create a staging resource that is used to generate
+    // the cubemap.
+    if ( ( irrDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS ) == 0 )
+    {
+        auto d3d12Device = m_Device.GetD3D12Device();
+
+        auto stagingDesc   = irrDesc;
+        stagingDesc.Format = Texture::GetUAVCompatableFormat( irrDesc.Format );
+        stagingDesc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+        const auto heapProp = CD3DX12_HEAP_PROPERTIES( D3D12_HEAP_TYPE_DEFAULT );
+        ThrowIfFailed( d3d12Device->CreateCommittedResource(
+            &heapProp, D3D12_HEAP_FLAG_NONE, &stagingDesc,
+            D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS( &stagingResource )
+
+                ) );
+
+        ResourceStateTracker::AddGlobalResourceState( stagingResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST );
+
+        stagingTexture = m_Device.CreateTexture( stagingResource );
+        stagingTexture->SetName( L"Irr EnvMap Staging Texture" );
+
+        CopyResource( stagingTexture, destTex );
+    }
+
+    TransitionBarrier( stagingTexture, D3D12_RESOURCE_STATE_UNORDERED_ACCESS );
+
+    SetPipelineState( pso );
+    SetComputeRootSignature( rootSig );
+
+    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+    uavDesc.Format                           = Texture::GetUAVCompatableFormat( irrDesc.Format );
+    uavDesc.ViewDimension                    = D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
+    uavDesc.Texture2DArray.FirstArraySlice   = 0;
+    uavDesc.Texture2DArray.ArraySize         = 6;
+
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format                           = Texture::GetUAVCompatableFormat( texture->GetD3D12ResourceDesc().Format );
+    srvDesc.Shader4ComponentMapping          = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    srvDesc.ViewDimension                    = D3D12_SRV_DIMENSION_TEXTURECUBE;
+    srvDesc.TextureCube.MipLevels            = static_cast<UINT>(-1);  // Use all mips.
+
+    auto srv = m_Device.CreateShaderResourceView( texture, &srvDesc );
+    SetShaderResourceView( 0, 0, srv, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE );
+
+    auto uav = m_Device.CreateUnorderedAccessView( stagingTexture, nullptr, &uavDesc );
+    SetUnorderedAccessView( 1, 0, uav, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
+    Dispatch( 16, 16, 6 );
+
+    if ( stagingResource != irrResource )
+    {
+        CopyResource( destTex, stagingTexture );
     }
 }
 

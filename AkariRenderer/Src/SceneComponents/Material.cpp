@@ -114,17 +114,17 @@ void Material::SetTexture( TextureType type, std::shared_ptr<Texture> texture )
     break;
     case TextureType::Metallic:
     {
-        m_MaterialProperties->HasEmissiveTexture = ( texture != nullptr );
+        m_MaterialProperties->HasMetallicTexture = ( texture != nullptr );
     }
     break;
     case TextureType::Roughness:
     {
-        m_MaterialProperties->HasMetallicTexture = ( texture != nullptr );
+        m_MaterialProperties->HasRoughnessTexture = ( texture != nullptr );
     }
     break;
     case TextureType::Emissive:
     {
-        m_MaterialProperties->HasRoughnessTexture = ( texture != nullptr );
+        m_MaterialProperties->HasEmissiveTexture = ( texture != nullptr );
     }
     break;
     case TextureType::Occlusion:

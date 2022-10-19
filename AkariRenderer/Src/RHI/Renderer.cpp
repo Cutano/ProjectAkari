@@ -187,4 +187,11 @@ namespace Akari
     {
         return m_Device->GetCommandQueue(commandList->GetCommandListType()).ExecuteCommandList(commandList);
     }
+
+    void Renderer::ExecuteAndFlushCommandList(std::shared_ptr<CommandList> commandList) const
+    {
+        auto& queue = m_Device->GetCommandQueue(commandList->GetCommandListType());
+        queue.ExecuteCommandList(commandList);
+        queue.Flush();
+    }
 }

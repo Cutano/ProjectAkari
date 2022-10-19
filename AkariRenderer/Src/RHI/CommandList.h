@@ -209,7 +209,7 @@ public:
     /**
      * Load a texture by a filename.
      */
-    std::shared_ptr<Texture> LoadTextureFromFile( const std::wstring& fileName, bool sRGB = false );
+    std::shared_ptr<Texture> LoadTextureFromFile( const std::wstring& fileName, bool sRGB = false, bool genMip = true );
 
     /**
      * Load a scene file.
@@ -309,6 +309,7 @@ public:
     void GenerateMips( const std::shared_ptr<Texture>& texture );
 
     void PrefilterCubeMap(const std::shared_ptr<Texture>& texture);
+    void PrefilterIrrCubeMap(const std::shared_ptr<Texture>& texture, const std::shared_ptr<Texture>& destTex);
 
     /**
      * Generate a cubemap texture from a panoramic (equirectangular) texture.

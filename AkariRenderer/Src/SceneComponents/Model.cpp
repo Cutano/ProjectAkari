@@ -226,7 +226,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
-        pMaterial->SetTexture( Material::TextureType::Metallic, texture );
+        pMaterial->SetTexture( Material::TextureType::Emissive, texture );
     }
 
     // Load diffuse textures.
@@ -236,7 +236,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
-        pMaterial->SetTexture( Material::TextureType::Roughness, texture );
+        pMaterial->SetTexture( Material::TextureType::BaseColor, texture );
     }
 
     // Load specular texture.
@@ -246,7 +246,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
-        pMaterial->SetTexture( Material::TextureType::Emissive, texture );
+        pMaterial->SetTexture( Material::TextureType::Roughness, texture );
     }
 
     // Load specular power texture.
@@ -256,7 +256,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false );
-        pMaterial->SetTexture( Material::TextureType::Occlusion, texture );
+        pMaterial->SetTexture( Material::TextureType::Roughness, texture );
     }
 
     if ( material.GetTextureCount( aiTextureType_OPACITY ) > 0 &&
@@ -271,6 +271,13 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
     // Load normal map texture.
     if ( material.GetTextureCount( aiTextureType_NORMALS ) > 0 &&
          material.GetTexture( aiTextureType_NORMALS, 0, &aiTexturePath ) == aiReturn_SUCCESS )
+    {
+        std::filesystem::path texturePath( aiTexturePath.C_Str() );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false );
+        pMaterial->SetTexture( Material::TextureType::Normal, texture );
+    }
+    if ( material.GetTextureCount( aiTextureType_HEIGHT ) > 0 &&
+         material.GetTexture( aiTextureType_HEIGHT, 0, &aiTexturePath ) == aiReturn_SUCCESS )
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
         auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false );
@@ -292,6 +299,36 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
             ( texture->BitsPerPixel() >= 24 ) ? Material::TextureType::Normal : Material::TextureType::Bump;
 
         pMaterial->SetTexture( textureType, texture );
+    }
+
+    // Load base color textures.
+    if ( material.GetTextureCount( aiTextureType_BASE_COLOR ) > 0 &&
+         material.GetTexture( aiTextureType_BASE_COLOR, 0, &aiTexturePath, nullptr, nullptr, &blendFactor,
+                              &aiBlendOperation ) == aiReturn_SUCCESS )
+    {
+        std::filesystem::path texturePath( aiTexturePath.C_Str() );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
+        pMaterial->SetTexture( Material::TextureType::BaseColor, texture );
+    }
+
+    // Load metallic textures.
+    if ( material.GetTextureCount( aiTextureType_METALNESS ) > 0 &&
+         material.GetTexture( aiTextureType_METALNESS, 0, &aiTexturePath, nullptr, nullptr, &blendFactor,
+                              &aiBlendOperation ) == aiReturn_SUCCESS )
+    {
+        std::filesystem::path texturePath( aiTexturePath.C_Str() );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
+        pMaterial->SetTexture( Material::TextureType::Metallic, texture );
+    }
+
+    // Load roughness textures.
+    if ( material.GetTextureCount( aiTextureType_DIFFUSE_ROUGHNESS ) > 0 &&
+         material.GetTexture( aiTextureType_DIFFUSE_ROUGHNESS, 0, &aiTexturePath, nullptr, nullptr, &blendFactor,
+                              &aiBlendOperation ) == aiReturn_SUCCESS )
+    {
+        std::filesystem::path texturePath( aiTexturePath.C_Str() );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, true );
+        pMaterial->SetTexture( Material::TextureType::Roughness, texture );
     }
 
     // m_MaterialMap.insert( MaterialMap::value_type( materialName.C_Str(), pMaterial ) );

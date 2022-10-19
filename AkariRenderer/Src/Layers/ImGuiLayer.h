@@ -1,5 +1,7 @@
 #pragma once
 
+#include <future>
+
 #include "Layer.h"
 
 #include <imgui.h>
@@ -61,6 +63,15 @@ namespace Akari {
         std::shared_ptr<RootSignature>       m_RootSignature;
         std::shared_ptr<PipelineStateObject> m_PipelineState;
 
+        std::future<bool> m_LoadingTask;
+
+        std::atomic_bool m_IsLoading;
+        std::atomic_bool m_CancelLoading;;
+        float            m_LoadingProgress;
+        std::string      m_LoadingText;
+
+        std::unordered_map<std::wstring, UUID> m_LoadedModelList;
+
         void Draw();
         void DrawSceneWindow();
         void DrawHierarchyWindow();
@@ -72,6 +83,9 @@ namespace Akari {
         void DrawHierarchyNode(SceneObject& obj);
         void DrawGizmo();
         void SetStyle();
+
+        void OpenLoadModelDialog();
+        bool LoadModel(std::wstring path);
 
         bool OnKeyPressedEvent(KeyPressedEvent& e);
 

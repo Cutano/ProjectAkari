@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "ModelManager.h"
 
+#include <DirectXCollision.h>
+
+#include "Model.h"
+#include "ModelNode.h"
 #include "RHI/CommandList.h"
 #include "RHI/Renderer.h"
 
@@ -27,16 +31,34 @@ namespace Akari
     {
     }
 
-    UUID ModelManager::LoadModelFromFile(std::wstring& path)
+    UUID ModelManager::LoadModelFromFile(const std::wstring& path, const std::function<bool( float )>& loadingProgress)
     {
-        const auto model = Renderer::GetInstance().LoadModel(path);
-        if (model == nullptr)
+        // Load a scene, passing an optional function object for receiving loading progress events.
+        const auto& cmd = Renderer::GetInstance().GetCommandListCopy();
+        auto model = cmd->LoadModelFromFile( path, loadingProgress);
+
+        if (model)
         {
-            return 0;
+            // Scale the scene so it fits in the camera frustum.
+            DirectX::BoundingSphere s;
+            DirectX::BoundingSphere::CreateFromBoundingBox( s, model->GetAABB() );
+            auto scale = 50.0f / ( s.Radius * 2.0f );
+            s.Radius *= scale;
+
+            model->GetRootNode()->SetLocalTransform(DirectX::XMMatrixScaling( scale, scale, scale ) );
         }
         
+        Renderer::GetInstance().ExecuteAndFlushCommandList(cmd);
+        
         UUID id{};
-        m_ModelRegistry[id] = model;
+        if (model != nullptr)
+        {
+            m_ModelRegistry[id] = model;
+        }
+        else
+        {
+            id = 0;
+        }
         return id;
     }
 

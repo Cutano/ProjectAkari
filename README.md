@@ -13,11 +13,15 @@ Run  `.\GenerateDepsProj.bat` before opening the solution. (CMake required)
 ### Build
 Use Visual Studio 2022 to build the solution, if you want to use DirectX Debug Layer, make sure you got Graphics Tools installed.
 
+## Screenshots
+![Sponza-10-19-2022](Images/Sponza-10-19-2022.png)
+
 ## Current Features
 
 ### Lighting
 - [x] Punctual Lighting
 - [x] Image Based Lighting
+- [ ] kulla-Conty Approximation
 - [ ] Spherical Harmonics Lighting
 
 ### Rendering
@@ -51,6 +55,7 @@ Use Visual Studio 2022 to build the solution, if you want to use DirectX Debug L
 ### Model
 - [x] Simple Geometry
 - [ ] Model Loading
+- [ ] Model Animation
 
 ### Material
 - [x] Built-in PBR Material
