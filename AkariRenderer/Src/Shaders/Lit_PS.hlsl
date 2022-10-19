@@ -62,6 +62,7 @@ struct VertexShaderOutput
 	float3 BitangentWS : BITANGENT;
 	float2 TexCoord    : TEXCOORD;
 	float4 Position    : SV_POSITION;
+	bool IsFrontFace   : SV_IsFrontFace;
 };
 
 struct SurfaceShadingData
@@ -297,6 +298,12 @@ SurfaceShadingData GetSurfaceData(VertexShaderOutput psInput)
 		float3 tangent = normalize(psInput.TangentWS);
 		float3 bitangent = normalize(psInput.BitangentWS);
 		float3 normal = normalize(psInput.NormalWS);
+		if (psInput.IsFrontFace == false)
+		{
+			tangent *= -1.0;
+			bitangent *= -1.0;
+			normal *= -1.0;
+		}
 		float3x3 TBN = float3x3(tangent, bitangent, normal);
 
 		o.Normal = NormalMapping(TBN, Normal.SampleLevel(AnisotropicSampler, psInput.TexCoord, 0).rgb);
