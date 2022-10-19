@@ -21,7 +21,7 @@ Use Visual Studio 2022 to build the solution, if you want to use DirectX Debug L
 ### Lighting
 - [x] Punctual Lighting
 - [x] Image Based Lighting
-- [ ] kulla-Conty Approximation
+- [x] Kulla-Conty Approximation
 - [ ] Spherical Harmonics Lighting
 
 ### Rendering
