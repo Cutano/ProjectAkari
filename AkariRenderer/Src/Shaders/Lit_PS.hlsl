@@ -347,7 +347,7 @@ float4 main(VertexShaderOutput psInput) : SV_TARGET
 	}
 	col += ImageBasedPBRLighting(surface.BaseColor.rgb,
 				viewDir, normalWS, 0.04f,
-				surface.Roughness, surface.Metallic, 1.0);
+				surface.Roughness, surface.Metallic, surface.Occlusion);
 
 	col += surface.Emissive.rgb;
 	
