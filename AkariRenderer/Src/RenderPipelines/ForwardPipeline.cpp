@@ -24,7 +24,7 @@ namespace Akari
 
             spdlog::info("\tLoading cube maps...");
             m_SkyboxPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_3k.hdr", true);
-            m_SkyboxIrrPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_Env.hdr", true);
+            // m_SkyboxIrrPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_Env.hdr", true);
             m_IBLTexture = cmdCopy->LoadTextureFromFile(L"Res/Textures/LUT/IBL.png", false);
             Renderer::GetInstance().ExecuteCommandList(cmdCopy);
         }
@@ -34,11 +34,6 @@ namespace Akari
         cubemapDesc.DepthOrArraySize           = 6;
         cubemapDesc.MipLevels                  = 0;
 
-        auto cubemapIrrDesc  = m_SkyboxIrrPano->GetD3D12ResourceDesc();
-        cubemapIrrDesc.Width = cubemapIrrDesc.Height = 128;
-        cubemapIrrDesc.DepthOrArraySize              = 6;
-        cubemapIrrDesc.MipLevels                     = 0;
-
         auto IBLDesc  = m_IBLTexture->GetD3D12ResourceDesc();
 
         {
@@ -47,12 +42,17 @@ namespace Akari
             m_SkyboxCubemap = Renderer::GetInstance().GetDevice()->CreateTexture(cubemapDesc);
             m_SkyboxCubemap->SetName(L"Skybox Cubemap");
 
+            cmdCompute->PanoToCubemap(m_SkyboxCubemap, m_SkyboxPano);
+
+            auto cubemapIrrDesc  = m_SkyboxCubemap->GetD3D12ResourceDesc();
+            cubemapIrrDesc.Width = cubemapIrrDesc.Height = 128;
+            cubemapIrrDesc.DepthOrArraySize              = 6;
+            cubemapIrrDesc.MipLevels                     = 1;
+
             m_SkyboxIrrCubemap = Renderer::GetInstance().GetDevice()->CreateTexture(cubemapIrrDesc);
             m_SkyboxIrrCubemap->SetName(L"Skybox Irradiance Cubemap");
 
-            cmdCompute->PanoToCubemap(m_SkyboxCubemap, m_SkyboxPano);
-            cmdCompute->PanoToCubemap(m_SkyboxIrrCubemap, m_SkyboxIrrPano);
-
+            cmdCompute->PrefilterIrrCubeMap(m_SkyboxCubemap, m_SkyboxIrrCubemap);
             cmdCompute->PrefilterCubeMap(m_SkyboxCubemap);
 
             spdlog::info("\tPreprocessing textures...");
