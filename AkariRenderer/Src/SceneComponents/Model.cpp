@@ -273,14 +273,14 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
          material.GetTexture( aiTextureType_NORMALS, 0, &aiTexturePath ) == aiReturn_SUCCESS )
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
-        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false, false );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false );
         pMaterial->SetTexture( Material::TextureType::Normal, texture );
     }
     if ( material.GetTextureCount( aiTextureType_HEIGHT ) > 0 &&
          material.GetTexture( aiTextureType_HEIGHT, 0, &aiTexturePath ) == aiReturn_SUCCESS )
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
-        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false, false );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false );
         pMaterial->SetTexture( Material::TextureType::Normal, texture );
     }
     // Load bump map (only if there is no normal map).
@@ -289,7 +289,7 @@ void Model::ImportMaterial( CommandList& commandList, const aiMaterial& material
                   aiReturn_SUCCESS )
     {
         std::filesystem::path texturePath( aiTexturePath.C_Str() );
-        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false, false );
+        auto     texture = commandList.LoadTextureFromFile( parentPath / texturePath, false );
 
         // Some materials actually store normal maps in the bump map slot. Assimp can't tell the difference between
         // these two texture types, so we try to make an assumption about whether the texture is a normal map or a bump

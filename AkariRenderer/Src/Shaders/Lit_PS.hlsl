@@ -306,7 +306,7 @@ SurfaceShadingData GetSurfaceData(VertexShaderOutput psInput)
 		}
 		float3x3 TBN = float3x3(tangent, bitangent, normal);
 
-		o.Normal = NormalMapping(TBN, Normal.SampleLevel(AnisotropicSampler, psInput.TexCoord, 0).rgb);
+		o.Normal = NormalMapping(TBN, Normal.Sample(AnisotropicSampler, psInput.TexCoord).rgb);
 		o.Tangent = psInput.TangentWS;
 		o.Bitangent = psInput.BitangentWS;
 	}
