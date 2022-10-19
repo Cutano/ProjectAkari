@@ -8,7 +8,7 @@ SamplerState LinearClampSampler : register(s0);
 [numthreads(8, 8, 1)]
 void main( uint3 DTid : SV_DispatchThreadID )
 {
-    float texelSize0 = 1.0 / 1024.0;
+    float texelSize0 = 1.0 / 128.0;
     float2 uv = texelSize0 * (DTid.xy + 0.5) - 0.5;
     float3 sampleNormal[6];
     sampleNormal[0] = float3(0.5, -uv.y, -uv.x);
@@ -27,7 +27,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     float3 right = normalize(-cross(up, N));
     up         = normalize(-cross(N, right));
        
-    float sampleDelta = 0.025;
+    float sampleDelta = 0.0125;
     float nrSamples = 0.0;
     for(float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta)
     {
