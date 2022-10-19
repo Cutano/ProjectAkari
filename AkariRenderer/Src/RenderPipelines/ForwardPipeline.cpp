@@ -38,6 +38,7 @@ namespace Akari
 
         {
             const auto cmdCompute = Renderer::GetInstance().GetCommandListCompute();
+            spdlog::info("\tPreprocessing textures...");
 
             m_SkyboxCubemap = Renderer::GetInstance().GetDevice()->CreateTexture(cubemapDesc);
             m_SkyboxCubemap->SetName(L"Skybox Cubemap");
@@ -54,8 +55,7 @@ namespace Akari
 
             cmdCompute->PrefilterIrrCubeMap(m_SkyboxCubemap, m_SkyboxIrrCubemap);
             cmdCompute->PrefilterCubeMap(m_SkyboxCubemap);
-
-            spdlog::info("\tPreprocessing textures...");
+            
             Renderer::GetInstance().ExecuteCommandList(cmdCompute);
         }
 
