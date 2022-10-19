@@ -25,7 +25,7 @@ namespace Akari
             spdlog::info("\tLoading cube maps...");
             m_SkyboxPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_3k.hdr", true);
             m_SkyboxIrrPano = cmdCopy->LoadTextureFromFile(L"Res/Textures/HDR/Subway_Lights_Env.hdr", true);
-            m_IBLTexture = cmdCopy->LoadTextureFromFile(L"Res/Textures/LUT/IBL.png", true);
+            m_IBLTexture = cmdCopy->LoadTextureFromFile(L"Res/Textures/LUT/IBL.png", false);
             Renderer::GetInstance().ExecuteCommandList(cmdCopy);
         }
         
