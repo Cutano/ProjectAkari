@@ -13,6 +13,9 @@ Run  `.\GenerateDepsProj.bat` before opening the solution. (CMake required)
 ### Build
 Use Visual Studio 2022 to build the solution, if you want to use DirectX Debug Layer, make sure you got Graphics Tools installed.
 
+## Screenshots
+![Sponza-10-19-2022](Images/Sponza-10-19-2022.png)
+
 ## Current Features
 
 ### Lighting
